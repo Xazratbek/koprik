@@ -55,6 +55,11 @@ step "Build tools (native, so they do not run thousands of times under Rosetta)"
 mkdir -p build-tools
 ( cd build-tools && ../winecx/configure --enable-archs=i386,x86_64 --without-x --without-wayland \
     --without-gstreamer --without-freetype --without-gnutls --disable-tests >/dev/null && make -j"$JOBS" __tooldeps__ )
+# wrc looks for nls/locale.nls beside its own build tree, which an
+# out-of-tree build does not have ("Error: unable to load locale.nls").
+( cd build-tools && { make nls/locale.nls >/dev/null 2>&1 || true; } )
+[ -e build-tools/nls/locale.nls ] || { rm -rf build-tools/nls; ln -s "$WORK/winecx/nls" build-tools/nls; }
+ls -la build-tools/nls/locale.nls
 
 step "Configuring Wine for x86_64"
 mkdir -p build

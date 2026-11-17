@@ -353,8 +353,83 @@ import Testing
         let game = Program(id: "steam-1", name: "Game", kind: .steam, location: "/nowhere", steamAppID: 1)
 
         #expect(launcher.graphicsDecision(for: .program(steam)).backend == .dxvk)
-        #expect(launcher.graphicsDecision(for: .program(game)).backend == .dxvk)
+        // Games from Steam are started directly and choose like any other program.
+        #expect(launcher.graphicsDecision(for: .program(game)).backend == .dxmt)
         #expect(launcher.graphicsDecision(for: .program(steam), overrides: LaunchSettings(backend: .wined3d)).backend == .wined3d)
         #expect(launcher.graphicsDecision(for: .command("notepad", arguments: [])).backend == .dxmt)
+    }
+}
+
+@Suite struct LocalGraphicsTests {
+    private func makeEngine(_ scratch: Scratch) throws -> Engine {
+        let libraries = scratch.root.appending(path: "engine/Libraries", directoryHint: .isDirectory)
+        for (path, content) in ["DXMT/x64/d3d11.dll": "dxmt-d3d11", "DXMT/x64/dxgi.dll": "dxmt-dxgi", "Wine/bin/.keep": ""] {
+            let url = libraries.appending(path: path)
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try Data(content.utf8).write(to: url)
+        }
+        return Engine(
+            manifest: EngineManifest(id: "e", name: "E", source: .winecxGPTK(tag: "t"), d3dmetalCapable: true, wineRoot: "Libraries/Wine"),
+            directory: scratch.root.appending(path: "engine", directoryHint: .isDirectory)
+        )
+    }
+
+    @Test func placesAndRemovesOnlyItsOwnFiles() throws {
+        let scratch = try Scratch()
+        let engine = try makeEngine(scratch)
+        let game = scratch.root.appending(path: "game", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: game, withIntermediateDirectories: true)
+        // The game ships its own dxgi.dll, which must survive.
+        try Data("game-dxgi".utf8).write(to: game.appending(path: "dxgi.dll"))
+
+        try Graphics.prepareLocal(.dxmt, engine: engine, directory: game)
+        #expect(try String(contentsOf: game.appending(path: "d3d11.dll"), encoding: .utf8) == "dxmt-d3d11")
+        #expect(try String(contentsOf: game.appending(path: "dxgi.dll"), encoding: .utf8) == "game-dxgi")
+
+        try Graphics.clearLocal(in: game)
+        #expect(!FileManager.default.fileExists(atPath: game.appending(path: "d3d11.dll").path))
+        #expect(try String(contentsOf: game.appending(path: "dxgi.dll"), encoding: .utf8) == "game-dxgi")
+        #expect(!FileManager.default.fileExists(atPath: game.appending(path: Graphics.localMarkerName).path))
+    }
+
+    @Test func steamOverlaySwitchEditsEveryAccount() throws {
+        let scratch = try Scratch()
+        let bottle = Bottle(config: BottleConfig(name: "B", engineID: "e"), directory: scratch.root.appending(path: "b"))
+        let steam = bottle.driveC.appending(path: "Program Files (x86)/Steam", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: steam.appending(path: "userdata/1/config"), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: steam.appending(path: "userdata/2/config"), withIntermediateDirectories: true)
+        try Data().write(to: steam.appending(path: "steam.exe"))
+        let fresh = "\"UserLocalConfigStore\"\n{\n\t\"system\"\n\t{\n\t\t\"PushToTalkKey\"\t\t\"0\"\n\t}\n}\n"
+        try fresh.write(to: steam.appending(path: "userdata/1/config/localconfig.vdf"), atomically: true, encoding: .utf8)
+        try fresh.replacingOccurrences(of: "\t\t\"PushToTalkKey\"", with: "\t\t\"EnableGameOverlay\"\t\t\"1\"\n\t\t\"PushToTalkKey\"")
+            .write(to: steam.appending(path: "userdata/2/config/localconfig.vdf"), atomically: true, encoding: .utf8)
+
+        SteamLibrary.setGameOverlay(enabled: false, in: bottle)
+        for account in ["1", "2"] {
+            let text = try String(contentsOf: steam.appending(path: "userdata/\(account)/config/localconfig.vdf"), encoding: .utf8)
+            #expect(VDFValue.parse(text)["UserLocalConfigStore"]?["system"]?["EnableGameOverlay"]?.string == "0")
+            #expect(VDFValue.parse(text)["UserLocalConfigStore"]?["system"]?["PushToTalkKey"]?.string == "0")
+        }
+    }
+
+    @Test func picksTheMainGameExecutable() throws {
+        let scratch = try Scratch()
+        let game = scratch.root.appending(path: "Game", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: game.appending(path: "redist"), withIntermediateDirectories: true)
+        try Data(count: 3 << 20).write(to: game.appending(path: "Game.exe"))
+        try Data(count: 1 << 20).write(to: game.appending(path: "CrashReporter.exe"))
+        try Data(count: 9 << 20).write(to: game.appending(path: "redist/vc_redist.x64.exe"))
+        #expect(Launcher.mainExecutable(ofSteamGameAt: game)?.lastPathComponent == "Game.exe")
+    }
+}
+
+@Suite struct SteamExecutableTests {
+    @Test func aSmallExecutableNamedLikeTheGameWins() throws {
+        let scratch = try Scratch()
+        let game = scratch.root.appending(path: "Brawlhalla", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: game.appending(path: "Adobe AIR"), withIntermediateDirectories: true)
+        try Data(count: 185 * 1024).write(to: game.appending(path: "Brawlhalla.exe"))
+        try Data(count: 4 << 20).write(to: game.appending(path: "Adobe AIR/Helper.exe"))
+        #expect(Launcher.mainExecutable(ofSteamGameAt: game)?.lastPathComponent == "Brawlhalla.exe")
     }
 }

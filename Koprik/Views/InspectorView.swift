@@ -103,7 +103,7 @@ struct ProgramInspector: View {
                     .lineLimit(2)
                 HStack {
                     if model.isRunning(item) {
-                        Button("Stop", systemImage: "stop.fill") { Task { await model.stopAll(in: item.bottle) } }
+                        Button("Stop", systemImage: "stop.fill") { Task { await model.stop(item) } }
                             .tint(.red)
                     } else {
                         Button("Play", systemImage: "play.fill") { model.launch(item) }

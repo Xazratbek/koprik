@@ -41,6 +41,14 @@ public struct Launcher: Sendable {
         self.engine = engine
     }
 
+    /// Settings for helper processes (taskkill, wineserver, winetricks). They
+    /// must match the running server's synchronisation mode, or Wine refuses
+    /// them: "Server is running with WINEMSYNC but this process is not" (B11).
+    public static func baseSettings(engine: Engine, bottle: Bottle) -> LaunchSettings {
+        let full = LaunchSettings.resolve([engine.defaultSettings, bottle.config.settings])
+        return LaunchSettings(sync: full.sync)
+    }
+
     /// The settings a target would run with, lowest layer first:
     /// engine defaults, the bottle, the program, then one-off overrides.
     public func resolvedSettings(for target: LaunchTarget, overrides: LaunchSettings = LaunchSettings()) -> LaunchSettings {
@@ -64,7 +72,7 @@ public struct Launcher: Sendable {
         if (settings.backend ?? .auto) == .auto, isStoreLauncher(target), Graphics.capabilities(of: engine).dxvk {
             return GraphicsDecision(
                 backend: .dxvk,
-                reason: "Store launchers draw with Chromium, which only renders correctly on DXVK. Games started from the launcher use DXVK too."
+                reason: "Store launchers draw with Chromium, which only renders correctly on DXVK."
             )
         }
         return Graphics.decide(requested: settings.backend, engine: engine, executables: executables(of: target))
@@ -82,18 +90,36 @@ public struct Launcher: Sendable {
         let runner = WineRunner(engine: engine)
         var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: settings)
 
-        // A game started through Steam inherits the Steam client's environment
-        // and DLLs. If the client is already up with another backend, it has to
-        // be restarted for this game's settings to take effect.
-        if case .program(let program) = target, program.kind == .steam,
-           BottleActivity.isRunning(bottle), BottleActivity.activeBackend(of: bottle) != decision.backend,
-           let steam = SteamLibrary.steamDirectory(in: bottle) {
-            let log = bottle.newLogURL(label: "steam-restart")
-            _ = try? await runner.run([steam.appending(path: "steam.exe").path, "-shutdown"], environment: environment, logURL: log)
-            await BottleActivity.waitForProcess(named: "steam.exe", toExitWithin: .seconds(25))
+        // Steam games are started directly rather than through `steam.exe
+        // -applaunch`: a game started by Steam inherits the client's
+        // environment and DLLs, so per-game settings would have no effect.
+        // The game still needs the client running to sign in to Steam.
+        var steamGame: (executable: URL, appID: Int)?
+        if case .program(let program) = target, program.kind == .steam, let appID = program.steamAppID,
+           let executable = Self.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: program.location)) {
+            try await ensureSteamClientRunning()
+            steamGame = (executable, appID)
+            environment["SteamAppId"] = String(appID)
+            environment["SteamGameId"] = String(appID)
+            environment["SteamOverlayGameId"] = String(appID)
         }
 
-        if !BottleActivity.isRunning(bottle) || BottleActivity.activeBackend(of: bottle) != decision.backend {
+        // The DLLs in system32 serve every program in the bottle. While other
+        // programs run (Steam, typically, which needs DXVK), they stay as they
+        // are and this program gets its backend from its own folder instead:
+        // Windows looks for DLLs next to the executable first.
+        let localDirectory = steamGame?.executable.deletingLastPathComponent() ?? executableDirectory(of: target)
+        if !BottleActivity.isRunning(bottle) {
+            try Graphics.prepare(decision.backend, engine: engine, prefix: bottle.prefix)
+            BottleActivity.setActiveBackend(decision.backend, of: bottle)
+            if let localDirectory { try Graphics.clearLocal(in: localDirectory) }
+        } else if let localDirectory {
+            if BottleActivity.activeBackend(of: bottle) == decision.backend {
+                try Graphics.clearLocal(in: localDirectory)
+            } else {
+                try Graphics.prepareLocal(decision.backend, engine: engine, directory: localDirectory)
+            }
+        } else if BottleActivity.activeBackend(of: bottle) != decision.backend {
             try Graphics.prepare(decision.backend, engine: engine, prefix: bottle.prefix)
             BottleActivity.setActiveBackend(decision.backend, of: bottle)
         }
@@ -115,17 +141,24 @@ public struct Launcher: Sendable {
                 arguments = WineRunner.startArguments(for: url, programArguments: program.arguments, wait: wait)
                 workingDirectory = url.deletingLastPathComponent()
             case .steam:
-                guard let steam = SteamLibrary.steamDirectory(in: bottle), let appID = program.steamAppID else {
-                    throw KoprikError.invalidArgument("Steam is not installed in this bottle.")
+                if let steamGame {
+                    arguments = WineRunner.startArguments(for: steamGame.executable, programArguments: program.arguments, wait: wait)
+                    workingDirectory = steamGame.executable.deletingLastPathComponent()
+                } else {
+                    // No obvious game executable: let Steam decide how to start it.
+                    guard let steam = SteamLibrary.steamDirectory(in: bottle), let appID = program.steamAppID else {
+                        throw KoprikError.invalidArgument("Steam is not installed in this bottle.")
+                    }
+                    arguments = [steamClientPath(steam), "-applaunch", String(appID)] + program.arguments
+                    workingDirectory = steam
                 }
-                arguments = [steam.appending(path: "steam.exe").path, "-applaunch", String(appID)] + program.arguments
-                workingDirectory = steam
             }
         }
 
         if isSteamClient(target) {
             // Steam's own interface is a Chromium view; async shader compilation keeps it responsive.
             environment["DXVK_ASYNC"] = environment["DXVK_ASYNC"] ?? "1"
+            SteamLibrary.setGameOverlay(enabled: false, in: bottle)
         }
 
         let process = try runner.launch(
@@ -137,12 +170,119 @@ public struct Launcher: Sendable {
         return Launch(process: process, graphics: decision, settings: settings, environment: environment, arguments: arguments)
     }
 
+    /// Starts the Windows Steam client in the background if it is not running,
+    /// and waits until it can serve games.
+    public func ensureSteamClientRunning(timeout: Duration = .seconds(60)) async throws {
+        guard let steam = SteamLibrary.steamDirectory(in: bottle) else {
+            throw KoprikError.invalidArgument("Steam is not installed in this bottle.")
+        }
+        if await BottleActivity.isProcessRunning(named: "steam.exe") { return }
+
+        // A webhelper left over from a crashed client blocks a new one (see B2 in docs/SINOV.md).
+        if await BottleActivity.isProcessRunning(named: "steamwebhelper.exe") { await stopAll() }
+
+        SteamLibrary.setGameOverlay(enabled: false, in: bottle)
+        if !BottleActivity.isRunning(bottle) {
+            try Graphics.prepare(.dxvk, engine: engine, prefix: bottle.prefix)
+            BottleActivity.setActiveBackend(.dxvk, of: bottle)
+        }
+        _ = try WineRunner(engine: engine).launch(
+            [steamClientPath(steam), "-silent"],
+            environment: WineEnvironment.build(
+                engine: engine, prefix: bottle.prefix,
+                settings: LaunchSettings.resolve([engine.defaultSettings, bottle.config.settings, LaunchSettings(backend: .dxvk)])
+            ),
+            workingDirectory: steam,
+            logURL: bottle.newLogURL(label: "Steam")
+        )
+        // A game whose client is not signed in yet fails SteamAPI_Init and
+        // aborts (c0000409), so wait for Steam's own "Logged On" line.
+        let connectionLog = steam.appending(path: "logs/connection_log.txt")
+        let alreadyLogged = (try? FileManager.default.attributesOfItem(atPath: connectionLog.path)[.size] as? NSNumber)?.intValue ?? 0
+        let deadline = ContinuousClock.now + timeout
+        var helperSeen: ContinuousClock.Instant?
+        while ContinuousClock.now < deadline {
+            if let handle = try? FileHandle(forReadingFrom: connectionLog) {
+                try? handle.seek(toOffset: UInt64(alreadyLogged))
+                let fresh = String(decoding: (try? handle.readToEnd()) ?? Data(), as: UTF8.self)
+                try? handle.close()
+                if fresh.contains("[Logged On") {
+                    try? await Task.sleep(for: .seconds(2))
+                    return
+                }
+            }
+            // Offline, or signed out: once the interface is up there is nothing more to wait for.
+            if helperSeen == nil, await BottleActivity.isProcessRunning(named: "steamwebhelper.exe") {
+                helperSeen = .now
+            }
+            if let helperSeen, ContinuousClock.now - helperSeen > .seconds(20) { return }
+            try? await Task.sleep(for: .seconds(1))
+        }
+    }
+
+    /// The Steam client as a Windows path. Started by a Unix path, Wine shows
+    /// the process under that path in `ps`, where it is not recognised as a
+    /// Windows program (and Steam was started six times over before this).
+    private func steamClientPath(_ steam: URL) -> String {
+        let client = steam.appending(path: "steam.exe")
+        return WindowsPath.windowsPath(for: client, prefix: bottle.prefix) ?? client.path
+    }
+
+    /// Closes one program the way Windows would (a close request first, then
+    /// termination), leaving the rest of the bottle running.
+    public func stop(programNamed executableName: String) async {
+        let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Launcher.baseSettings(engine: engine, bottle: bottle))
+        let runner = WineRunner(engine: engine)
+        let log = bottle.newLogURL(label: "stop")
+        _ = try? await runner.run(["taskkill", "/IM", executableName], environment: environment, logURL: log)
+        await BottleActivity.waitForProcess(named: executableName, toExitWithin: .seconds(10))
+        if await BottleActivity.isProcessRunning(named: executableName) {
+            _ = try? await runner.run(["taskkill", "/F", "/IM", executableName], environment: environment, logURL: log)
+        }
+    }
+
+    /// The executable a Steam game is most likely started with.
+    ///
+    /// In order: an executable named like the game's folder (Brawlhalla's is
+    /// a 185 KB stub, so size alone misleads), then the largest one near the
+    /// top of the folder, then the largest anywhere.
+    public static func mainExecutable(ofSteamGameAt folder: URL) -> URL? {
+        let candidates = gameExecutables(in: folder, limit: 16, minimumSize: 64 * 1024)
+        let folderName = normalized(folder.lastPathComponent)
+        if let named = candidates.first(where: {
+            let name = normalized($0.deletingPathExtension().lastPathComponent)
+            return name == folderName || (name.count > 3 && folderName.hasPrefix(name)) || (folderName.count > 3 && name.hasPrefix(folderName))
+        }) {
+            return named
+        }
+        let depth = folder.standardizedFileURL.pathComponents.count
+        let shallow = candidates.filter { $0.deletingLastPathComponent().standardizedFileURL.pathComponents.count <= depth + 2 }
+        return shallow.first ?? candidates.first
+    }
+
+    private static func normalized(_ name: String) -> String {
+        name.lowercased().filter { $0.isLetter || $0.isNumber }
+    }
+
+    /// The folder of the executable the target runs, where DLLs placed next to it take effect.
+    private func executableDirectory(of target: LaunchTarget) -> URL? {
+        switch target {
+        case .file(let url, _):
+            url.pathExtension.lowercased() == "exe" ? url.deletingLastPathComponent() : nil
+        case .program(let program) where program.kind == .executable:
+            program.executableURL(in: bottle).map { $0.deletingLastPathComponent() }
+        case .program, .command:
+            nil
+        }
+    }
+
     /// Stops everything running in the bottle.
     public func stopAll() async {
-        let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: LaunchSettings())
+        let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Launcher.baseSettings(engine: engine, bottle: bottle))
         // `wineserver -k` exits non-zero when nothing was running, which is fine here.
         _ = try? await WineRunner(engine: engine)
             .wineserver(["-k"], environment: environment, logURL: bottle.newLogURL(label: "kill"))
+        await BottleActivity.killOrphans(of: bottle)
     }
 
     // MARK: Helpers
@@ -157,7 +297,9 @@ public struct Launcher: Sendable {
         let path: String
         switch target {
         case .program(let program):
-            if program.kind == .steam { return true }
+            // Games from Steam are not launchers: they are started directly
+            // and pick their backend like any other program.
+            if program.kind == .steam { return false }
             path = program.location
         case .file(let url, _):
             path = url.path
@@ -200,7 +342,7 @@ public struct Launcher: Sendable {
     /// The larger executables in a game folder, a few levels deep. Small files
     /// are skipped: they are crash reporters, redistributable installers and
     /// the like, and would only blur the picture.
-    public static func gameExecutables(in folder: URL, limit: Int = 12) -> [URL] {
+    public static func gameExecutables(in folder: URL, limit: Int = 12, minimumSize: Int = 512 * 1024) -> [URL] {
         let keys: Set<URLResourceKey> = [.fileSizeKey, .isRegularFileKey]
         guard let enumerator = FileManager.default.enumerator(
             at: folder, includingPropertiesForKeys: Array(keys), options: [.skipsHiddenFiles]
@@ -210,7 +352,7 @@ public struct Launcher: Sendable {
             if enumerator.level > 4 { enumerator.skipDescendants(); continue }
             guard url.pathExtension.lowercased() == "exe",
                   let values = try? url.resourceValues(forKeys: keys),
-                  values.isRegularFile == true, let size = values.fileSize, size > 512 * 1024 else { continue }
+                  values.isRegularFile == true, let size = values.fileSize, size > minimumSize else { continue }
             let lowered = url.lastPathComponent.lowercased()
             if ["redist", "setup", "install", "crash", "unins", "vc_", "dxsetup", "dotnet"].contains(where: lowered.contains) { continue }
             found.append((url, size))
@@ -227,11 +369,32 @@ public enum BottleActivity {
     /// folder named after the prefix directory's device and inode numbers.
     public static func isRunning(_ bottle: Bottle) -> Bool {
         guard let attributes = try? FileManager.default.attributesOfItem(atPath: bottle.prefix.path),
-              let device = attributes[.systemNumber] as? UInt64 ?? (attributes[.systemNumber] as? Int).map(UInt64.init),
-              let inode = attributes[.systemFileNumber] as? UInt64 ?? (attributes[.systemFileNumber] as? Int).map(UInt64.init)
+              let device = (attributes[.systemNumber] as? NSNumber)?.uint64Value,
+              let inode = (attributes[.systemFileNumber] as? NSNumber)?.uint64Value
         else { return false }
         let socket = "/tmp/.wine-\(getuid())/server-\(String(device, radix: 16))-\(String(inode, radix: 16))/socket"
-        return FileManager.default.fileExists(atPath: socket)
+        // The socket file outlives a killed server, so existence proves
+        // nothing (B10 in docs/SINOV.md): only a server that accepts counts.
+        return canConnect(toUnixSocket: socket)
+    }
+
+    static func canConnect(toUnixSocket path: String) -> Bool {
+        let descriptor = socket(AF_UNIX, SOCK_STREAM, 0)
+        guard descriptor >= 0 else { return false }
+        defer { close(descriptor) }
+        var address = sockaddr_un()
+        address.sun_family = sa_family_t(AF_UNIX)
+        let capacity = MemoryLayout.size(ofValue: address.sun_path)
+        guard path.utf8.count < capacity else { return false }
+        withUnsafeMutableBytes(of: &address.sun_path) { buffer in
+            buffer.copyBytes(from: path.utf8)
+            buffer[path.utf8.count] = 0
+        }
+        let length = socklen_t(MemoryLayout<sockaddr_un>.size)
+        let result = withUnsafePointer(to: &address) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { connect(descriptor, $0, length) }
+        }
+        return result == 0
     }
 
     private static func backendFile(of bottle: Bottle) -> URL {
@@ -258,17 +421,50 @@ public enum BottleActivity {
             let fields = line.split(separator: " ", maxSplits: 4, omittingEmptySubsequences: true)
             guard fields.count == 5, let pid = Int32(fields[0]) else { return nil }
             let command = String(fields[4])
-            guard command.count > 3, command.dropFirst().hasPrefix(":\\"), command.first?.isLetter == true else { return nil }
+            let isWindowsPath = command.count > 3 && command.dropFirst().hasPrefix(":\\") && command.first?.isLetter == true
+            // Programs Wine was given a Unix path for keep it in their command line.
+            let isUnixPathInAPrefix = command.hasPrefix("/") && command.contains("/drive_c/")
+                && command.range(of: ".exe", options: .caseInsensitive) != nil
+            guard isWindowsPath || isUnixPathInAPrefix else { return nil }
             let path = command.range(of: ".exe", options: .caseInsensitive).map { String(command[..<$0.upperBound]) } ?? command
+            let name = path.split(whereSeparator: { $0 == "\\" || $0 == "/" }).last.map(String.init) ?? path
             return WindowsProcess(
                 pid: pid,
-                name: path.split(separator: "\\").last.map(String.init) ?? path,
+                name: name,
                 path: path,
                 residentBytes: (Int64(fields[1]) ?? 0) * 1024,
                 cpuPercent: Double(fields[2]) ?? 0,
                 elapsed: String(fields[3])
             )
         }
+    }
+
+    /// Kills Windows processes of this bottle that no wineserver looks after.
+    ///
+    /// When a wineserver dies abnormally its clients can linger, some of them
+    /// spinning a CPU core (B9 in docs/SINOV.md), and `wineserver -k` from a
+    /// new server cannot see them. They are recognised by a working directory
+    /// inside the bottle's prefix.
+    public static func killOrphans(of bottle: Bottle) async {
+        let pids = await windowsProcesses().map(\.pid)
+        guard !pids.isEmpty,
+              let result = try? await ProcessRunner.run(
+                URL(fileURLWithPath: "/usr/sbin/lsof"),
+                arguments: ["-a", "-d", "cwd", "-p", pids.map(String.init).joined(separator: ","), "-Fpn"]
+              ) else { return }
+        let prefix = bottle.prefix.standardizedFileURL.path
+        var current: pid_t?
+        for line in result.stdout.split(separator: "\n") {
+            if line.hasPrefix("p") {
+                current = pid_t(line.dropFirst())
+            } else if line.hasPrefix("n"), let pid = current, String(line.dropFirst()).hasPrefix(prefix) {
+                kill(pid, SIGKILL)
+            }
+        }
+    }
+
+    public static func isProcessRunning(named name: String) async -> Bool {
+        await windowsProcesses().contains { $0.name.caseInsensitiveCompare(name) == .orderedSame }
     }
 
     public static func waitForProcess(named name: String, toExitWithin timeout: Duration) async {

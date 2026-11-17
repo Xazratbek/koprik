@@ -246,7 +246,7 @@ final class AppModel {
     /// Watches which bottles and programs are running, and books play time
     /// when a program stops. Works the same for programs started elsewhere,
     /// for example by Steam itself or from the command-line tool.
-    private func refreshActivity() async {
+    func refreshActivity() async {
         let running = Set(bottles.filter { BottleActivity.isRunning($0) }.map(\.id))
         if running != runningBottles { runningBottles = running }
         guard !running.isEmpty || !runningSince.isEmpty else {
@@ -426,6 +426,21 @@ final class AppModel {
         program.hidden = true
         if selectedItemID == item.id { selectedItemID = nil }
         await save(program, in: item.bottle)
+    }
+
+    /// Closes one program, leaving the rest of its bottle (Steam, say) running.
+    func stop(_ item: LibraryItem) async {
+        guard let engine = engine(for: item.bottle) else { return }
+        let executable: URL? = switch item.program.kind {
+        case .executable: item.program.executableURL(in: item.bottle)
+        case .steam: Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: item.program.location))
+        }
+        guard let name = executable?.lastPathComponent else {
+            await stopAll(in: item.bottle)
+            return
+        }
+        await Launcher(bottle: item.bottle, engine: engine).stop(programNamed: name)
+        await refreshActivity()
     }
 
     func isRunning(_ item: LibraryItem) -> Bool {

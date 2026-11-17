@@ -1,21 +1,45 @@
+import Darwin
 import Foundation
 
 /// A running Wine program.
 public final class WineProcess: @unchecked Sendable {
     public let logURL: URL
-    public let pid: Int32
+    public let pid: pid_t
 
-    private let process: Process
     private let exitTask: Task<Int32, Never>
+    private let lock = NSLock()
+    private var exited = false
 
-    fileprivate init(process: Process, logURL: URL, exitTask: Task<Int32, Never>) {
-        self.process = process
+    fileprivate init(pid: pid_t, logURL: URL) {
+        self.pid = pid
         self.logURL = logURL
-        self.pid = process.processIdentifier
-        self.exitTask = exitTask
+        let (statuses, continuation) = AsyncStream<Int32>.makeStream()
+        exitTask = Task<Int32, Never> {
+            for await status in statuses { return status }
+            return -1
+        }
+        // waitpid blocks, so it gets a thread of its own rather than one of
+        // the cooperative pool's.
+        Thread.detachNewThread { [weak self] in
+            var raw: Int32 = 0
+            while waitpid(pid, &raw, 0) == -1 && errno == EINTR {}
+            self?.markExited()
+            continuation.yield(Self.exitStatus(fromWaitStatus: raw))
+            continuation.finish()
+        }
     }
 
-    public var isRunning: Bool { process.isRunning }
+    private func markExited() {
+        lock.withLock { exited = true }
+    }
+
+    /// Decodes a `waitpid` status: the exit code, or 128 + signal number.
+    static func exitStatus(fromWaitStatus raw: Int32) -> Int32 {
+        let signal = raw & 0x7F
+        return signal == 0 ? (raw >> 8) & 0xFF : 128 + signal
+    }
+
+    public var isRunning: Bool { lock.withLock { !exited } }
 
     /// Waits for the launcher process to exit and returns its status.
     ///
@@ -27,14 +51,14 @@ public final class WineProcess: @unchecked Sendable {
     }
 
     public func terminate() {
-        if process.isRunning { process.terminate() }
+        if isRunning { kill(pid, SIGTERM) }
     }
 
     /// Lines appended to the log, delivered as they are written, ending shortly
     /// after the process exits.
     public func outputLines(pollInterval: Duration = .milliseconds(150)) -> AsyncStream<String> {
         AsyncStream { continuation in
-            let task = Task { [logURL, process] in
+            let task = Task { [logURL, weak self] in
                 guard let handle = try? FileHandle(forReadingFrom: logURL) else {
                     continuation.finish()
                     return
@@ -51,7 +75,7 @@ public final class WineProcess: @unchecked Sendable {
                     }
                 }
 
-                while process.isRunning, !Task.isCancelled {
+                while self?.isRunning == true, !Task.isCancelled {
                     drain()
                     try? await Task.sleep(for: pollInterval)
                 }
@@ -116,6 +140,12 @@ public struct WineRunner: Sendable {
         ["start"] + (wait ? ["/wait"] : []) + ["/unix", file.path] + programArguments
     }
 
+    /// Spawns the process in a session of its own.
+    ///
+    /// `wineserver` and every Windows program descend from the first Wine
+    /// process. Left in the caller's session, they would all be killed when
+    /// the terminal that ran `koprik run` closes, or when a tool that started
+    /// it cleans up its process group. Steam was lost this way during testing.
     private func start(
         _ executable: URL,
         arguments: [String],
@@ -132,38 +162,41 @@ public struct WineRunner: Sendable {
             manager.createFile(atPath: logURL.path, contents: nil)
         }
         let log = try FileHandle(forWritingTo: logURL)
+        defer { try? log.close() }
         try log.seekToEnd()
         let header = "\n--- \(Date.now.formatted(.iso8601)) \(executable.lastPathComponent) \(arguments.joined(separator: " "))\n"
         try log.write(contentsOf: Data(header.utf8))
 
-        let process = Process()
-        process.executableURL = executable
-        process.arguments = arguments
-        process.environment = environment
-        process.currentDirectoryURL = workingDirectory
-        process.standardOutput = log
-        process.standardError = log
-        process.standardInput = FileHandle.nullDevice
+        var attributes = posix_spawnattr_t(nil as OpaquePointer?)
+        posix_spawnattr_init(&attributes)
+        defer { posix_spawnattr_destroy(&attributes) }
+        posix_spawnattr_setflags(&attributes, Int16(POSIX_SPAWN_SETSID | POSIX_SPAWN_CLOEXEC_DEFAULT))
 
-        let (exits, continuation) = AsyncStream<Int32>.makeStream()
-        process.terminationHandler = { finished in
-            continuation.yield(finished.terminationStatus)
-            continuation.finish()
-        }
-        let exitTask = Task<Int32, Never> {
-            for await status in exits { return status }
-            return -1
+        var actions = posix_spawn_file_actions_t(nil as OpaquePointer?)
+        posix_spawn_file_actions_init(&actions)
+        defer { posix_spawn_file_actions_destroy(&actions) }
+        posix_spawn_file_actions_addopen(&actions, 0, "/dev/null", O_RDONLY, 0)
+        posix_spawn_file_actions_adddup2(&actions, log.fileDescriptor, 1)
+        posix_spawn_file_actions_adddup2(&actions, log.fileDescriptor, 2)
+        if let workingDirectory {
+            posix_spawn_file_actions_addchdir_np(&actions, workingDirectory.path)
         }
 
-        do {
-            try process.run()
-        } catch {
-            continuation.finish()
-            try? log.close()
-            throw error
+        let argv = ([executable.path] + arguments).map { strdup($0) } + [nil]
+        let envp = environment.map { strdup("\($0.key)=\($0.value)") } + [nil]
+        defer {
+            argv.forEach { free($0) }
+            envp.forEach { free($0) }
         }
-        // The child has its own copy of the descriptor now.
-        try? log.close()
-        return WineProcess(process: process, logURL: logURL, exitTask: exitTask)
+
+        var pid: pid_t = 0
+        let result = posix_spawn(&pid, executable.path, &actions, &attributes, argv, envp)
+        guard result == 0 else {
+            throw KoprikError.commandFailed(
+                command: executable.lastPathComponent, status: result,
+                output: String(cString: strerror(result))
+            )
+        }
+        return WineProcess(pid: pid, logURL: logURL)
     }
 }

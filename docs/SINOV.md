@@ -2,42 +2,113 @@
 
 Har bosqichning qabul sinovlari natijasi shu yerga yoziladi: nima ishladi, nima ishlamadi, nima hali sinalmagan.
 
+Sinov kompyuteri: MacBook Pro, Apple M2 Pro, 16 GB, macOS 27.2.1, Rosetta 2 o'rnatilgan.
+
 ## 1-bosqich. Yadro (`KoprikKit` + `koprik` CLI)
 
 ### 2026-11-17: kod va avtomatik testlar
 
-**Holat: kod yozildi, avtomatik testlar o'tdi. Haqiqiy Wine bilan hali sinalmagan.**
-
 | Tekshiruv | Natija |
 |---|---|
 | `swift build` | o'tdi |
-| `swift test`: 44 test, 8 to'plam | hammasi o'tdi |
-| CLI'ni soxta dvigatel bilan boshidan oxirigacha yurgizish | o'tdi |
+| `swift test`: 72 test, 18 to'plam | hammasi o'tdi |
 
-Avtomatik testlar nimani qamraydi:
+Avtomatik testlar qamraydi: muhit quruvchi, sozlamalar qatlamlari, dvigatel o'rnatish, yuklab olish, bottle yaratish/nusxalash/snapshot/tiklash, Wine jarayoni va log, VDF/ACF o'qish, `.lnk` o'qish, Windows yo'llari, PE fayl (haqiqiy `notepad.exe` dan import jadvali va ikonka), log tahlilchisi, `.app` launcher, retseptlar, dasturlar do'koni, grafika backendini almashtirish (fayllar to'g'ri almashadi va Wine'ning o'z nusxalari qaytadi).
 
-- muhit quruvchi: prefiks, `PATH`, MSync/ESync, backend uchun DLL override'lar, HUD va boshqa kalitlar, foydalanuvchi o'zgaruvchilarining ustunligi, mezbon muhitdagi begona Wine o'zgaruvchilarini tozalash;
-- sozlamalar qatlamlari (dvigatel → bottle → dastur → bir martalik);
-- dvigatel manbalari URL'lari, sha256 hisoblash va `shasum` faylini o'qish;
-- dvigatelni papkadan va arxivdan o'rnatish, ichma-ich joylashgan Wine'ni topish, buzuq arxivda iz qoldirmaslik, takroriy o'rnatishni rad etish;
-- yuklab olish (progress, mavjud faylni almashtirish, xato holati);
-- bottle yaratish, Wine xato bersa tozalash, nom tekshiruvi, qayta nomlash, nusxalash (simvolik havolalar bilan), snapshot va tiklash, o'chirish;
-- Wine jarayonini ishga tushirish, logga yozish, chiqish kodini qaytarish, log oqimi.
+### 2026-11-17: go/no-go sinovlari haqiqiy dvigatel bilan
 
-Bu testlar **soxta dvigatel** bilan ishlaydi: `wine64` o'rniga chaqiruvlarni yozib boradigan shell skript. Ular bizning kodimiz to'g'ri buyruq va muhitni berishini tasdiqlaydi, lekin haqiqiy Wine'ning o'zini tutishini tasdiqlamaydi.
+Dvigatel: `frankea/winecx-gptk` `runtime-v4.8.3` (Wine 11.19, DXMT 0.80, DXVK 1.10.3, MoltenVK 1.4.2). Yuklab olish 479 MB, sha256 mos keldi, diskda 1.3 GB.
 
-CLI sinovida topilib tuzatilgan xato: `koprik run` da dastur nomidan keyin yozilgan `--verbose`, `--backend` kabi parametrlar dasturga argument bo'lib ketayotgan edi. Endi parametrlar istalgan joyda yozilishi mumkin; chiziqcha bilan boshlanadigan dastur argumentlari `--` dan keyin beriladi.
-
-### Go/no-go sinovlari (haqiqiy dvigatel kerak, hali o'tkazilmagan)
-
-| # | Sinov | Holat |
+| # | Sinov | Natija |
 |---|---|---|
-| 1 | `koprik bottle create test && koprik run test notepad` oyna ochadi | kutilmoqda |
-| 2 | 7-Zip o'rnatuvchisi `/S` bilan o'rnatiladi | kutilmoqda |
-| 3 | Steam o'rnatiladi va do'kon sahifasi chiziladi | kutilmoqda |
-| 4 | Bitta DX11 o'yin DXMT bilan; GPTK importidan keyin bitta DX12 o'yin D3DMetal bilan | kutilmoqda |
-| 5 | Backendni almashtirish mexanizmini aniqlash (jarayon muhiti orqalimi yoki DLL nusxalashmi) | kutilmoqda |
+| 1 | `koprik bottle create test && koprik run test notepad` oyna ochadi | **o'tdi.** "Untitled - Notepad" oynasi chiqdi |
+| 2 | 7-Zip o'rnatuvchisi `/S` bilan o'rnatiladi | **o'tdi.** 7.8 soniya, `C:\Program Files\7-Zip` to'ldi, Start Menu yorliqlari paydo bo'ldi, kutubxona ularni o'zi topdi |
+| 3 | Steam o'rnatiladi va do'kon sahifasi chiziladi | **o'tdi, DXVK bilan.** Batafsil quyida |
+| 4 | DX11 o'yin DXMT bilan; DX12 o'yin D3DMetal bilan | **DX11 o'tdi** (Brawlhalla, DXMT). DX12: GPTK import qilinmagan, sinalmadi |
+| 5 | Backend almashtirish mexanizmi | **aniqlandi.** Quyida |
 
-Boshlash uchun: `koprik engine install gaming` (479 MB yuklab oladi, sha256 bilan tekshiradi).
+### 5-sinov: backend qanday almashadi
 
-Ma'lum taxminiy joy: `WineEnvironment.backendOverrides` dagi DXMT va DXVK override'lari hujjatlarga asoslangan; winecx-gptk dvigatelida ichki DXMT va import qilingan D3DMetal o'rtasida tanlov qanday bo'lishi 5-sinovda aniqlanadi.
+Dvigatel ichini ko'rib va frankea/Whisky manbasini o'qib aniqlandi:
+
+- DXMT va DXVK oddiy Windows DLL'lari (`Libraries/DXMT/x64`, `Libraries/DXVK/x64`). Ular bottle'ning `system32`/`syswow64` papkasiga nusxalanadi va `WINEDLLOVERRIDES` bilan tanlanadi (`dxgi,d3d10core,d3d11=n,b`, DXMT uchun yana `winemetal=b`).
+- D3DMetal dvigatelning o'ziga o'rnatiladi: GPTK'dagi DLL'lar Wine'ning `x86_64-windows` dagi Direct3D DLL'lari o'rniga, `x86_64-unix/{d3d10,d3d11,d3d12,dxgi}.so` esa `../../external/libd3dshared.dylib` ga simvolik havola (nusxa emas). Dvigatel ichidagi `lib/external/README` shuni yozadi.
+- wined3d: Wine'ning o'z DLL'lari va `WINED3DMETAL=0`.
+- DXMT va DXVK bir xil fayl nomlarini ishlatgani uchun bir bottle'da bir paytda bittasi turadi. `Graphics.prepare` ishga tushirishdan oldin fayllarni almashtiradi (faqat mazmuni farq qilsa yozadi).
+
+### 3-sinov: Steam
+
+| Backend | Natija |
+|---|---|
+| DXMT | Steam ishga tushadi, lekin `steamwebhelper` (Chromium) GPU jarayoni 2 daqiqa osiladi, keyin oyna **qop-qora**. Log: `CreateSwapChain: cross-process swapchain not supported yet` (DXMT boshqa jarayon oynasiga chiza olmaydi) |
+| DXMT + `-cef-disable-gpu` | oyna 12 s da chiqadi, lekin baribir qora |
+| wined3d | 6 s da chiqadi, qora. Chromium log: `link failed but did not provide an info log` (sheyder bog'lanmadi) |
+| **DXVK** | **15 s da chiqadi, to'liq chiziladi**: kirish oynasi, QR kod, keyin do'kon va kutubxona |
+| DXMT tizimda + DXVK faqat `steamwebhelper` yonida | oyna umuman chiqmadi (2 daqiqa) |
+
+Xulosa va kodga kiritilgan o'zgarish: do'kon launcherlari (Steam, Epic, GOG Galaxy, Battle.net, EA, Ubisoft, Rockstar) "Auto" rejimida **DXVK** bilan ochiladi. Interfeysda sababi yoziladi.
+
+Steam uchun qo'shilgan muhit: `STEAM_DISABLE_CEF_SANDBOX=1`, `CEF_DISABLE_SANDBOX=1`, `STEAM_RUNTIME=0`, `MTL_DEBUG_LAYER=0`, `GST_DEBUG=1` (frankea/Whisky bilan bir xil).
+
+Foydalanuvchi o'z akkauntiga o'zi kirdi (parol Ko'prik orqali kiritilmaydi). Do'kon sahifasi, rasmlar, savat, yuklab olish paneli to'g'ri chizildi.
+
+### Topilgan buglar
+
+| # | Bug | Holat |
+|---|---|---|
+| B1 | Steam DXMT va wined3d'da qora oyna | DXVK sukut qilib tuzatildi |
+| B2 | `steam.exe -shutdown` dan keyin bitta `steamwebhelper.exe` Wine loader qulfida osilib qoladi (`RtlpWaitForCriticalSection ... loader.c: loader_section wait timed out`), yangi Steam ishga tushmaydi | Launcher endi Steam'ni qayta ishga tushirishda shu jarayon qolsa butun bottle'ni (`wineserver -k`) to'xtatadi |
+| B3 | Bepul o'yin uchun `appmanifest_*.acf` yozish yuklab olishni boshlamaydi: avval akkauntga litsenziya qo'shilishi kerak | `steam://install/<appid>` ishlatiladi |
+| B4 | Bottle yaratish 95 soniya (`wineboot`) | Dvigatel+Windows versiyasi bo'yicha tayyor prefiks shabloni saqlanadi, keyingi bottle APFS klon bilan **0.42 s** da yaratiladi |
+| B5 | `gldriverquery.exe` `SDL2.dll` topa olmaydi | zararsiz: Steam'ning OpenGL tekshiruvi, Steam ishlashiga ta'sir qilmaydi |
+
+| B6 | Steam orqali (`-applaunch`) ochilgan o'yin ishlab turgan Steam'ning muhiti va DLL'larini oladi, o'yin uchun tanlangan sozlamalar ishlamaydi | Steam o'yinlari endi o'yin `.exe` sidan `SteamAppId` bilan to'g'ridan-to'g'ri ochiladi |
+| B7 | `koprik run --detach` bilan ochilgan Wine terminal jarayon guruhida qoladi: terminal yopilsa Steam va o'yin ham o'ladi | Wine `posix_spawn` + `POSIX_SPAWN_SETSID` bilan alohida sessiyada ochiladi |
+| B8 | Steam overlay (ikkinchi Chromium) GPU jarayoni Wine'da yo'q `D3DKMTSetProcessSchedulingPriorityClass` ni chaqirib yiqiladi, keyin Steam "Stalled cross-thread pipe" bilan o'zini yopadi, keyingi o'yin `c0000409` bilan yiqiladi | Ko'prik Steam'ni ochishdan oldin `localconfig.vdf` da overlay'ni o'chiradi. Shundan keyin 6 marta ketma-ket ochish/yopish muammosiz |
+| B9 | O'lgan server ortidan qolgan "yetim" Wine jarayonlari (`steam.exe` 123% CPU), `wineserver -k` ularni ko'rmaydi | `stopAll` ishchi papkasi bottle ichida bo'lgan jarayonlarni ham o'ldiradi (`lsof -d cwd`) |
+| B10 | Bottle ishlayaptimi degan tekshiruv server soket faylining borligiga qaragan. Fayl o'lgan serverdan keyin ham qoladi, natijada Steam DXMT bilan ochilib qora oynada qotgan va akkauntga kirmagan | Soketga haqiqatan ulanib tekshiriladi |
+| B11 | Yordamchi buyruqlar (`taskkill`, winetricks) MSync'siz ishga tushgan: `Server is running with WINEMSYNC but this process is not` | Yordamchilar bottle'ning sinxronizatsiya rejimini oladi |
+| B12 | Unix yo'li bilan ochilgan `steam.exe` `ps` da `/Users/...` bo'lib ko'rinadi va tanilmagan, Steam 6 marta ochib yuborilgan | Steam Windows yo'li bilan ochiladi, `ps` tahlili Unix yo'lli `.exe` larni ham taniydi |
+| B13 | Foundation `Process.waitUntilExit()` uzoq ishlaydigan CLI ichida qaytmay qolgan | `ProcessRunner` ham `posix_spawn` + `waitpid` ga o'tkazildi |
+| B14 | Brawlhalla'ning `.exe` si 185 KB (Adobe AIR), 512 KB chegarasi uni o'tkazib yuborgan | O'yin papkasi nomiga mos `.exe` birinchi tanlanadi |
+| B15 | `release.sh` qoldirgan Release nusxasi `koprik://` havolalarini o'ziga olgan | Skript oraliq nusxani ro'yxatdan chiqarib o'chiradi |
+
+### 4-sinov: Brawlhalla (Steam, bepul, Adobe AIR, Direct3D 11)
+
+O'rnatish: `steam://install/291550`, 1.53 GB, ~15 Mbit/s da 15 daqiqa. O'yin akkauntga kirdi, menyu, kunlik bonus, "Training Ground" to'g'ri chizildi. Anti-cheat ro'yxatida EAC "Supported", ProtonDB "Gold" (653 hisobot); ilova ikkalasini ham ko'rsatadi.
+
+Yakuniy tartib (bitta buyruq yoki bitta Play tugmasi): Steam yopiq bo'lsa fonda (`-silent`, DXVK) ochiladi, akkauntga kirishi kutiladi, o'yin o'z papkasidagi DXMT DLL'lari bilan ochiladi. Steam'ning `system32` dagi DXVK'siga tegilmaydi.
+
+| Holat | O'yin oynasi chiqishi |
+|---|---|
+| Steam yopiq, sovuq holat | 27 s (Steam ochilishi va kirishi bilan) |
+| Steam ochiq | 11 s |
+| O'yinni yopish (`koprik stop`) | 4.7-8 s, Steam ishlashda qoladi |
+
+Backendlar solishtiruvi, bir xil menyu, Metal HUD (oyna fonda bo'lgani uchun o'yin FPS'ni 5-11 ga cheklagan, shuning uchun asosiy ko'rsatkich GPU vaqti va xotira):
+
+| Backend | GPU xotira (Metal) | Ilova xotirasi | GPU vaqti/kadr | CPU |
+|---|---|---|---|---|
+| **DXMT** (sukut) | **77.9 MB** | **2.47 GB** | 0.57 ms | 40-120% |
+| DXVK | 463.0 MB | 2.87 GB | 0.83 ms | 56-191% |
+| wined3d | 164.2 MB | 2.55 GB | 0.45 ms, lekin FPS ikki baravar past | 123% |
+
+Xulosa: DXMT GPU xotirasini DXVK'dan 6 baravar kam ishlatadi va GPU vaqti 31% kam, shuning uchun o'yinlar uchun sukut to'g'ri.
+
+Hal qilinmagan:
+
+- **Game Mode o'chiq** (HUD: "Game Mode Off", "Composited"). macOS Game Mode'ni faqat `LSSupportsGameMode` li `.app` bundle'ga beradi; bu dvigatelda Wine bundle'siz ishlaydi. Symlink orqali bundle sinab ko'rildi, ishlamadi (Wine o'zining haqiqiy yo'lidan qayta ishga tushadi). Yechim: Wine'ni bundle ichida yig'ish (9-bosqich).
+- **Haqiqiy FPS** o'lchanmadi: o'yinni oldingi planga chiqarish foydalanuvchining ochiq oynasini almashtirib yuborardi.
+- DX12 / D3DMetal: Game Porting Toolkit import qilinmagan.
+
+### Unumdorlik o'lchovlari
+
+| O'lchov | Qiymat |
+|---|---|
+| Bottle yaratish, birinchi marta (`wineboot --init`) | 57-95 s |
+| Bottle yaratish, shablondan | 0.42 s |
+| Notepad oynasi chiqishi (sovuq bottle) | 7 s |
+| 7-Zip jim o'rnatish | 7.8 s |
+| Steam kirish oynasi chiqishi (DXVK) | 6-15 s |
+| Steam yuklab olish tezligi | ~15 Mbit/s (internetga bog'liq) |
+| Bo'sh bottle hajmi | 622 MB (klonlar diskda joy egallamaydi) |

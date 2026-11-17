@@ -301,7 +301,7 @@ public struct Winetricks: Sendable {
             throw KoprikError.invalidArgument("winetricks needs \(missing.joined(separator: ", ")). Install with: brew install \(missing.joined(separator: " "))")
         }
         let script = try await ensureScript()
-        var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: LaunchSettings())
+        var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Launcher.baseSettings(engine: engine, bottle: bottle))
         environment["WINE"] = engine.wineBinary.path
         environment["WINESERVER"] = engine.wineserverBinary.path
         environment["PATH"] = engine.binDirectory.path + ":/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"

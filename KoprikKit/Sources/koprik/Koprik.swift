@@ -7,7 +7,7 @@ struct Koprik: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "koprik",
         abstract: "Run Windows programs on macOS through Wine.",
-        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Programs.self, Processes.self, Kill.self, Env.self]
+        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Stop.self, Programs.self, Processes.self, Kill.self, Env.self]
     )
 }
 
@@ -387,6 +387,33 @@ struct Processes: AsyncParsableCommand {
     }
 }
 
+struct Stop: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        abstract: "Close one program and leave the rest of the bottle running.",
+        discussion: "PROGRAM is a name from 'koprik programs' or an executable name such as game.exe."
+    )
+
+    @Argument var bottle: String
+    @Argument var program: String
+
+    func run() async throws {
+        let (bottle, engine) = try await resolve(bottleNamed: bottle)
+        var executable = program
+        if let match = await ProgramStore().programs(in: bottle, includeHidden: true)
+            .first(where: { $0.name.compare(program, options: .caseInsensitive) == .orderedSame }) {
+            let url: URL? = switch match.kind {
+            case .executable: match.executableURL(in: bottle)
+            case .steam: Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: match.location))
+            }
+            executable = url?.lastPathComponent ?? program
+        }
+        await Launcher(bottle: bottle, engine: engine).stop(programNamed: executable)
+        let stillRunning = await BottleActivity.isProcessRunning(named: executable)
+        print(stillRunning ? "\(executable) is still running" : "Closed \(executable)")
+        if stillRunning { throw ExitCode.failure }
+    }
+}
+
 struct Kill: AsyncParsableCommand {
     static let configuration = CommandConfiguration(abstract: "Stop every program running in a bottle.")
 
@@ -430,9 +457,7 @@ func resolve(bottleNamed name: String) async throws -> (Bottle, Engine) {
 /// Kills the bottle's wineserver so that its files can be copied or replaced safely.
 func stopEverything(in bottle: Bottle) async throws {
     guard let engine = try? await EngineStore().engine(id: bottle.config.engineID) else { return }
-    let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: LaunchSettings())
-    // wineserver -k exits non-zero when nothing was running, which is fine here.
-    _ = try? await WineRunner(engine: engine).wineserver(["-k"], environment: environment, logURL: bottle.newLogURL(label: "kill"))
+    await Launcher(bottle: bottle, engine: engine).stopAll()
 }
 
 /// Prints download progress on one line, at most a few times per second.

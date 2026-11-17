@@ -192,3 +192,32 @@ public enum SteamLibrary {
         )
     }
 }
+
+extension SteamLibrary {
+    /// Turns the in-game Steam overlay on or off for every account in the bottle.
+    ///
+    /// Off by default under Ko'prik: the overlay is a second Chromium instance
+    /// whose GPU process calls `D3DKMTSetProcessSchedulingPriorityClass`, which
+    /// Wine does not implement. It aborts, and the Steam client then stalls
+    /// and quits the next time a game starts (B8 in docs/SINOV.md).
+    /// Steam rewrites this file on exit, so it is changed while Steam is closed.
+    public static func setGameOverlay(enabled: Bool, in bottle: Bottle) {
+        guard let steam = steamDirectory(in: bottle) else { return }
+        let userdata = steam.appending(path: "userdata", directoryHint: .isDirectory)
+        let accounts = (try? FileManager.default.contentsOfDirectory(at: userdata, includingPropertiesForKeys: nil)) ?? []
+        let value = enabled ? "1" : "0"
+        for account in accounts {
+            let file = account.appending(path: "config/localconfig.vdf")
+            guard var text = try? String(contentsOf: file, encoding: .utf8) else { continue }
+            let pattern = /"EnableGameOverlay"\s*"[01]"/
+            if text.contains(pattern) {
+                text.replace(pattern, with: "\"EnableGameOverlay\"\t\t\"\(value)\"")
+            } else if let system = text.firstMatch(of: /"system"\s*\{\s*\n/) {
+                text.insert(contentsOf: "\t\t\"EnableGameOverlay\"\t\t\"\(value)\"\n", at: system.range.upperBound)
+            } else {
+                continue
+            }
+            try? text.write(to: file, atomically: true, encoding: .utf8)
+        }
+    }
+}

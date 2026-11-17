@@ -175,3 +175,46 @@ extension GraphicsBackend {
         }
     }
 }
+
+extension Graphics {
+    /// Records which files `prepareLocal` placed in a folder, so they can be
+    /// told apart from DLLs the program ships itself.
+    static let localMarkerName = ".koprik-graphics"
+
+    /// Puts a backend's DLLs next to a program, for when the bottle's shared
+    /// `system32` has to stay on another backend. Files the program ships
+    /// itself are never replaced.
+    public static func prepareLocal(_ backend: GraphicsBackend, engine: Engine, directory: URL) throws {
+        try clearLocal(in: directory)
+        let component: URL? = switch backend {
+        case .dxmt: engine.wineRoot.deletingLastPathComponent().appending(path: "DXMT/x64", directoryHint: .isDirectory)
+        case .dxvk: engine.wineRoot.deletingLastPathComponent().appending(path: "DXVK/x64", directoryHint: .isDirectory)
+        // The engine's own DLLs are what Wine falls back to anyway.
+        case .wined3d, .d3dmetal, .auto: engine.wineRoot.appending(path: "lib/wine/x86_64-windows", directoryHint: .isDirectory)
+        }
+        guard let component else { return }
+        let manager = FileManager.default
+        var placed: [String] = []
+        // winemetal is the engine's bridge to Metal; the builtin copy in system32 is the one that matches it.
+        for name in ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"] {
+            let source = component.appending(path: name)
+            let destination = directory.appending(path: name)
+            guard manager.fileExists(atPath: source.path), !manager.fileExists(atPath: destination.path) else { continue }
+            try manager.copyItem(at: source, to: destination)
+            placed.append(name)
+        }
+        if !placed.isEmpty {
+            try placed.joined(separator: "\n").write(to: directory.appending(path: localMarkerName), atomically: true, encoding: .utf8)
+        }
+    }
+
+    /// Removes the DLLs `prepareLocal` placed, and only those.
+    public static func clearLocal(in directory: URL) throws {
+        let marker = directory.appending(path: localMarkerName)
+        guard let list = try? String(contentsOf: marker, encoding: .utf8) else { return }
+        for name in list.split(separator: "\n") where !name.contains("/") {
+            try? FileManager.default.removeItem(at: directory.appending(path: String(name)))
+        }
+        try FileManager.default.removeItem(at: marker)
+    }
+}

@@ -33,7 +33,7 @@ step "Checking Rosetta"
 arch -x86_64 /usr/bin/true || softwareupdate --install-rosetta --agree-to-license
 
 step "Native tools (mingw-w64 for the Windows half)"
-brew install mingw-w64 ccache bison flex >/dev/null
+brew install mingw-w64 ccache bison flex freetype pkgconf >/dev/null
 
 step "Intel Homebrew and x86_64 libraries"
 if [ ! -x "$X86_BREW" ]; then
@@ -54,7 +54,7 @@ export PATH="$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$PATH"
 step "Build tools (native, so they do not run thousands of times under Rosetta)"
 mkdir -p build-tools
 ( cd build-tools && ../winecx/configure --enable-archs=i386,x86_64 --without-x --without-wayland \
-    --without-gstreamer --without-freetype --without-gnutls --disable-tests >/dev/null && make -j"$JOBS" __tooldeps__ )
+    --without-gstreamer --without-gnutls --disable-tests >/dev/null && make -j"$JOBS" __tooldeps__ )
 # wrc looks for nls/locale.nls beside its own build tree, which an
 # out-of-tree build does not have ("Error: unable to load locale.nls").
 ( cd build-tools && { make nls/locale.nls >/dev/null 2>&1 || true; } )

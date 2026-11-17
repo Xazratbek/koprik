@@ -38,7 +38,7 @@ public struct GraphicsDecision: Sendable, Equatable {
 /// a bottle holds one of them at a time; `prepare` swaps them before a launch.
 public enum Graphics {
     /// Every file name a backend may place in the bottle.
-    static let managedNames = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll", "winemetal.dll", "nvapi64.dll", "nvngx.dll"]
+    static let managedNames = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll", "d3d10.dll", "winemetal.dll", "nvapi64.dll", "nvngx.dll"]
 
     private static func componentDirectory(_ name: String, in engine: Engine) -> URL {
         engine.wineRoot.deletingLastPathComponent().appending(path: name, directoryHint: .isDirectory)
@@ -140,7 +140,7 @@ public enum Graphics {
             for name in managedNames {
                 let destination = target.destination.appending(path: name)
                 let fromBackend = component?.appending(path: "\(target.payload)/\(name)")
-                let fromEngine = engine.wineRoot.appending(path: "lib/wine/\(target.builtin)/\(name)")
+                let fromEngine = builtinDLL(name, architecture: target.builtin, engine: engine, backend: backend)
 
                 if let fromBackend, manager.fileExists(atPath: fromBackend.path) {
                     try install(fromBackend, at: destination)
@@ -154,13 +154,51 @@ public enum Graphics {
         }
     }
 
+    /// Wine's own copy of a DLL. Importing the Game Porting Toolkit replaces
+    /// several builtin Direct3D DLLs with Apple's (the originals are kept in
+    /// `wine-originals`). Only D3DMetal may use Apple's: DXVK paired with
+    /// Apple's dxgi.dll crashed Steam's web helper (B24 in docs/SINOV.md).
+    static func builtinDLL(_ name: String, architecture: String, engine: Engine, backend: GraphicsBackend) -> URL {
+        let original = engine.directory.appending(path: "\(GPTKImporter.backupFolderName)/\(name)")
+        if backend != .d3dmetal, architecture == "x86_64-windows", FileManager.default.fileExists(atPath: original.path) {
+            return original
+        }
+        return engine.wineRoot.appending(path: "lib/wine/\(architecture)/\(name)")
+    }
+
+    /// The text Wine puts at offset 0x40 of its own DLLs. Wine loads a file
+    /// that carries it from the engine's folder instead, whatever copy is in
+    /// system32, so Wine's originals have to lose it to be used as placed.
+    static let builtinMarker = Data("Wine builtin DLL".utf8)
+
     private static func install(_ source: URL, at destination: URL) throws {
         let manager = FileManager.default
+        var data = try Data(contentsOf: source)
+        let fromOriginals = source.deletingLastPathComponent().lastPathComponent == GPTKImporter.backupFolderName
+        if fromOriginals, data.count > 0x50, data.subdata(in: 0x40..<0x50) == builtinMarker {
+            data.replaceSubrange(0x40..<0x50, with: Data(count: 16))
+        }
         if manager.fileExists(atPath: destination.path) {
-            if manager.contentsEqual(atPath: source.path, andPath: destination.path) { return }
+            if (try? Data(contentsOf: destination)) == data { return }
             try manager.removeItem(at: destination)
         }
-        try manager.copyItem(at: source, to: destination)
+        try data.write(to: destination)
+    }
+
+    /// DLL overrides for a backend on an engine where Apple's D3DMetal has
+    /// replaced Wine's own Direct3D DLLs. Other backends must not touch
+    /// Apple's: Chromium (Steam, Electron apps) probes d3d12 and crashed its
+    /// GPU process when Apple's d3d12/dxgi met DXVK (B24 in docs/SINOV.md).
+    /// d3d12 is disabled and Wine's own dxgi/d3d11 are loaded from the bottle,
+    /// as Whisky does.
+    public static func overridesAvoidingD3DMetal(for backend: GraphicsBackend, engine: Engine) -> [String: String] {
+        guard backend != .d3dmetal, capabilities(of: engine).d3dmetal else { return [:] }
+        var overrides = ["d3d12": "d", "d3d12core": "d", "dxgi": "n,b"]
+        if backend == .wined3d || backend == .auto {
+            overrides["d3d11"] = "n,b"
+            overrides["d3d10core"] = "n,b"
+        }
+        return overrides
     }
 }
 
@@ -190,7 +228,11 @@ extension Graphics {
         case .dxmt: engine.wineRoot.deletingLastPathComponent().appending(path: "DXMT/x64", directoryHint: .isDirectory)
         case .dxvk: engine.wineRoot.deletingLastPathComponent().appending(path: "DXVK/x64", directoryHint: .isDirectory)
         // The engine's own DLLs are what Wine falls back to anyway.
-        case .wined3d, .d3dmetal, .auto: engine.wineRoot.appending(path: "lib/wine/x86_64-windows", directoryHint: .isDirectory)
+        case .d3dmetal, .auto: engine.wineRoot.appending(path: "lib/wine/x86_64-windows", directoryHint: .isDirectory)
+        case .wined3d:
+            FileManager.default.fileExists(atPath: engine.directory.appending(path: GPTKImporter.backupFolderName).path)
+                ? engine.directory.appending(path: GPTKImporter.backupFolderName, directoryHint: .isDirectory)
+                : engine.wineRoot.appending(path: "lib/wine/x86_64-windows", directoryHint: .isDirectory)
         }
         guard let component else { return }
         let manager = FileManager.default

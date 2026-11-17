@@ -69,6 +69,13 @@ public enum GameBundle {
             }
             try manager.createSymbolicLink(atPath: staging.appending(path: "share").path, withDestinationPath: "../share")
             try infoPlist(version: engine.manifest.wineVersion ?? "1.0").write(to: contents.appending(path: "Info.plist"))
+            // Ko'prik's icon for Windows programs in the Dock, when Ko'prik is installed.
+            let icon = URL(fileURLWithPath: "/Applications/Koprik.app/Contents/Resources/AppIcon.icns")
+            if manager.fileExists(atPath: icon.path) {
+                let resources = contents.appending(path: "Resources", directoryHint: .isDirectory)
+                try manager.createDirectory(at: resources, withIntermediateDirectories: true)
+                try manager.copyItem(at: icon, to: resources.appending(path: "AppIcon.icns"))
+            }
 
             // The cloned loader keeps its original ad hoc signature, which is
             // valid for its unchanged contents. Re-signing in place fails
@@ -105,6 +112,12 @@ public enum GameBundle {
             "CFBundleInfoDictionaryVersion": "6.0",
             // Wine's mac driver subclasses NSApplication under this name.
             "NSPrincipalClass": "WineApplication",
+            // Without this every background Wine process (services.exe,
+            // winedevice.exe, explorer.exe ...) appears in the Dock as a blank
+            // app. Wine's Mac driver turns a process into a regular app only
+            // when it shows a window, as CrossOver's own loader plist does.
+            "LSUIElement": true,
+            "CFBundleIconFile": "AppIcon",
             "LSApplicationCategoryType": "public.app-category.games",
             "LSSupportsGameMode": true,
             "NSHighResolutionCapable": true,

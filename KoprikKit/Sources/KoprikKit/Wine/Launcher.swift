@@ -103,6 +103,9 @@ public struct Launcher: Sendable {
         var settings = resolvedSettings(for: target, overrides: overrides)
         let decision = decide(for: target, settings: settings)
         settings.backend = decision.backend
+        // The user's own overrides still win over these.
+        settings.dllOverrides = Graphics.overridesAvoidingD3DMetal(for: decision.backend, engine: engine)
+            .merging(settings.dllOverrides ?? [:]) { _, user in user }
 
         // Engines installed before the Game Mode bundle existed get it now.
         if GameBundle.loader(for: engine) == nil, engine.manifest.d3dmetalCapable {

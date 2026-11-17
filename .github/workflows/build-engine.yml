@@ -15,13 +15,17 @@ on:
         description: dappermint/winecx commit to build
         required: true
         default: 9f3f6447844add700bc0dde650e4f398fd5f69ab
+      runner:
+        description: Runner image. Wine is built for x86_64, so Intel runners need no Rosetta; Apple silicon ones are often unavailable.
+        required: true
+        default: macos-15-intel
 
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: ${{ inputs.runner }}
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4

@@ -263,3 +263,9 @@ Wine is not a sandbox: without isolation a Windows program can read and change y
 Isolated	Izolyatsiyalangan	Изолирована
 Isolated: programs here cannot read or change your Mac's files or start Mac programs.	Izolyatsiyalangan: bu yerdagi dasturlar Mac fayllaringizni o'qiy, o'zgartira yoki Mac dasturlarini ishga tushira olmaydi.	Изолирована: программы здесь не могут читать или менять файлы Mac и запускать программы Mac.
 Sharp text at the display's full resolution. Heavier on the GPU in games. Takes effect the next time the bottle starts.	Ekranning to'liq aniqligida tiniq matn. O'yinlarda GPU'ga og'irroq. Bottle keyingi ishga tushganda kuchga kiradi.	Чёткий текст в полном разрешении экрана. В играх нагружает GPU сильнее. Вступает в силу при следующем запуске бутылки.
+Language	Til	Язык
+Mac's language	Mac tili	Язык Mac
+The language and character set the program sees. Change it if text shows as garbage such as "Ïðîâåðêà".	Dastur ko'radigan til va belgilar to'plami. Matn "Ïðîâåðêà" kabi buzuq ko'rinsa, o'zgartiring.	Язык и кодировка, которые видит программа. Измените, если текст выглядит как "Ïðîâåðêà".
+Automatic	Avtomatik	Автоматически
+On	Yoqiq	Вкл.
+Sharp text at the display's full resolution. Automatic turns it on for programs and off for games, whose full screen breaks with it.	Ekranning to'liq aniqligida tiniq matn. Avtomatik rejim dasturlar uchun yoqadi, o'yinlar uchun o'chiradi, chunki u o'yinlarning to'liq ekranini buzadi.	Чёткий текст в полном разрешении экрана. «Автоматически» включает для программ и выключает для игр: у них ломается полноэкранный режим.

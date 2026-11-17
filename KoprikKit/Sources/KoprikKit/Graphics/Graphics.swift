@@ -44,6 +44,12 @@ public enum Graphics {
         engine.wineRoot.deletingLastPathComponent().appending(path: name, directoryHint: .isDirectory)
     }
 
+    /// Whether a program draws with Direct3D or OpenGL, which is what games do.
+    public static func drawsWith3D(_ executables: [URL]) -> Bool {
+        let libraries: Set<String> = ["d3d8.dll", "d3d9.dll", "d3d10.dll", "d3d10_1.dll", "d3d11.dll", "d3d12.dll", "dxgi.dll", "ddraw.dll", "opengl32.dll", "vulkan-1.dll"]
+        return executables.contains { !libraries.isDisjoint(with: PEFile(url: $0)?.importedLibraries ?? []) }
+    }
+
     public static func capabilities(of engine: Engine) -> GraphicsCapabilities {
         let manager = FileManager.default
         func has(_ component: String) -> Bool {
@@ -69,7 +75,15 @@ public enum Graphics {
         executables: [URL]
     ) -> GraphicsDecision {
         let capabilities = capabilities(of: engine)
+        let files = executables.compactMap { PEFile(url: $0) }
+        // D3DMetal runs 64-bit programs only; a 32-bit game on it stops with
+        // "A DirectX 10 or better graphics card is required" (docs/SINOV.md, B27).
+        let only32Bit = !files.isEmpty && files.allSatisfy { !$0.is64Bit }
         if let requested, requested != .auto {
+            if requested == .d3dmetal, only32Bit {
+                let fallback = decide(requested: .auto, engine: engine, executables: executables)
+                return GraphicsDecision(backend: fallback.backend, reason: "D3DMetal runs 64-bit programs only and this one is 32-bit. \(fallback.reason)")
+            }
             if capabilities.supports(requested) {
                 return GraphicsDecision(backend: requested, reason: "Chosen in settings.")
             }
@@ -81,15 +95,13 @@ public enum Graphics {
         }
 
         var imports: Set<String> = []
-        for executable in executables {
-            imports.formUnion(PEFile(url: executable)?.importedLibraries ?? [])
-        }
+        for file in files { imports.formUnion(file.importedLibraries) }
         let usesD3D12 = imports.contains("d3d12.dll")
         let usesD3D11 = !imports.isDisjoint(with: ["d3d11.dll", "d3d10.dll", "d3d10_1.dll", "dxgi.dll"])
         let usesOld = !imports.isDisjoint(with: ["d3d9.dll", "d3d8.dll", "ddraw.dll", "opengl32.dll"])
 
         if usesD3D12 {
-            if capabilities.d3dmetal {
+            if capabilities.d3dmetal, !only32Bit {
                 return GraphicsDecision(backend: .d3dmetal, reason: "The program uses Direct3D 12, which D3DMetal handles.")
             }
             if capabilities.dxmt, usesD3D11 {
@@ -101,7 +113,7 @@ public enum Graphics {
             if capabilities.dxmt {
                 return GraphicsDecision(backend: .dxmt, reason: "The program uses Direct3D 10/11, which DXMT translates to Metal.")
             }
-            if capabilities.d3dmetal {
+            if capabilities.d3dmetal, !only32Bit {
                 return GraphicsDecision(backend: .d3dmetal, reason: "The program uses Direct3D 10/11.")
             }
             if capabilities.dxvk {

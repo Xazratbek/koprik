@@ -223,6 +223,15 @@ struct LaunchSettingsRows: View {
         }
         .help("DXMT only. Renders at a lower resolution and lets Apple's MetalFX upscale it. More frames in demanding games.")
 
+        Picker("Language", selection: $settings.language) {
+            Text(inheritLabel(inherited?.language.flatMap { Self.languages[$0] } ?? String(localized: "Mac's language"))).tag(String?.none)
+            Divider()
+            ForEach(Self.languages.sorted { $0.value < $1.value }, id: \.key) { code, name in
+                Text(verbatim: name).tag(String?.some(code))
+            }
+        }
+        .help("The language and character set the program sees. Change it if text shows as garbage such as \"Ïðîâåðêà\".")
+
         OptionalToggle("Metal performance HUD", value: $settings.metalHUD)
         Picker("DXVK HUD", selection: $settings.dxvkHUD) {
             Text(inheritLabel(inherited?.dxvkHUD?.rawValue.capitalized ?? "Off")).tag(DXVKHud?.none)
@@ -240,6 +249,23 @@ struct LaunchSettingsRows: View {
     private func inheritLabel(_ value: String) -> String {
         inherited == nil ? String(localized: "Default (\(value))") : String(localized: "Inherit (\(value))")
     }
+
+    /// Locales offered for programs, by the name of the language in that language.
+    static let languages: [String: String] = [
+        "en_US": "English",
+        "ru_RU": "Русский",
+        "uz_UZ": "Oʻzbekcha",
+        "tr_TR": "Türkçe",
+        "de_DE": "Deutsch",
+        "fr_FR": "Français",
+        "es_ES": "Español",
+        "pl_PL": "Polski",
+        "uk_UA": "Українська",
+        "ja_JP": "日本語",
+        "zh_CN": "简体中文",
+        "zh_TW": "繁體中文",
+        "ko_KR": "한국어",
+    ]
 }
 
 /// A switch over an optional setting: off means "not set here", so the layer below decides.

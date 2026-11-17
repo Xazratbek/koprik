@@ -454,3 +454,15 @@ import Testing
         #expect(Launcher.chromiumArguments(for: exe, ["-windowed"]) == ["-windowed"])
     }
 }
+
+@Suite struct ImportFolderTests {
+    @Test func aProgramsOwnFolderIsCopiedWholeButCatchAllFoldersAreNot() {
+        let home = URL(fileURLWithPath: "/Users/someone")
+        #expect(Launcher.isOwnFolder(URL(fileURLWithPath: "/Users/someone/Downloads/Game [Repack]"), home: home))
+        #expect(Launcher.isOwnFolder(URL(fileURLWithPath: "/Volumes/GameDisc"), home: home))
+        #expect(!Launcher.isOwnFolder(URL(fileURLWithPath: "/Users/someone/Downloads"), home: home))
+        #expect(!Launcher.isOwnFolder(URL(fileURLWithPath: "/Users/someone/Desktop/"), home: home))
+        #expect(!Launcher.isOwnFolder(URL(fileURLWithPath: "/Users/someone"), home: home))
+        #expect(!Launcher.isOwnFolder(URL(fileURLWithPath: "/Volumes"), home: home))
+    }
+}

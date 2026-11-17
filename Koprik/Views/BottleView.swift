@@ -194,10 +194,14 @@ struct BottleSettingsSheet: View {
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }
-                    Toggle(isOn: Binding(get: { config.highResolution ?? true }, set: { config.highResolution = $0 })) {
+                    Picker(selection: $config.highResolution) {
+                        Text("Automatic").tag(Bool?.none)
+                        Text("On").tag(Bool?.some(true))
+                        Text("Off").tag(Bool?.some(false))
+                    } label: {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("High resolution (Retina) mode")
-                            Text("Sharp text at the display's full resolution. Heavier on the GPU in games. Takes effect the next time the bottle starts.")
+                            Text("Sharp text at the display's full resolution. Automatic turns it on for programs and off for games, whose full screen breaks with it.")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }

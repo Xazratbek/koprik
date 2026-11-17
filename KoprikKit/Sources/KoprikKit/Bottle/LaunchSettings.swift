@@ -68,6 +68,11 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
     /// DXMT only: render at 1/factor of the window size and let MetalFX
     /// upscale, for example 1.5 or 2. Raises frame rate in GPU-bound games.
     public var metalFXUpscale: Double?
+    /// Locale the program sees, such as "ru_RU" or "ja_JP". It sets the
+    /// Windows ANSI code page, so programs that are not Unicode (many older
+    /// installers and games) show Cyrillic or Japanese text instead of
+    /// garbage like "Ïðîâåðêà". `nil` uses the Mac's language.
+    public var language: String?
 
     public init(
         backend: GraphicsBackend? = nil,
@@ -80,7 +85,8 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
         environment: [String: String]? = nil,
         dllOverrides: [String: String]? = nil,
         maxFrameRate: Int? = nil,
-        metalFXUpscale: Double? = nil
+        metalFXUpscale: Double? = nil,
+        language: String? = nil
     ) {
         self.backend = backend
         self.sync = sync
@@ -93,6 +99,7 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
         self.dllOverrides = dllOverrides
         self.maxFrameRate = maxFrameRate
         self.metalFXUpscale = metalFXUpscale
+        self.language = language
     }
 
     /// Returns these settings with `other` laid on top. Scalar fields are
@@ -109,7 +116,8 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
             environment: Self.merge(environment, other.environment),
             dllOverrides: Self.merge(dllOverrides, other.dllOverrides),
             maxFrameRate: other.maxFrameRate ?? maxFrameRate,
-            metalFXUpscale: other.metalFXUpscale ?? metalFXUpscale
+            metalFXUpscale: other.metalFXUpscale ?? metalFXUpscale,
+            language: other.language ?? language
         )
     }
 

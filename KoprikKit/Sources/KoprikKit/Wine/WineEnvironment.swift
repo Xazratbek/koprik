@@ -86,6 +86,11 @@ public enum WineEnvironment {
         if settings.dxvkAsync == true { environment["DXVK_ASYNC"] = "1" }
         if settings.advertiseAVX == true { environment["ROSETTA_ADVERTISE_AVX"] = "1" }
         if settings.raytracing == true { environment["D3DM_SUPPORT_DXR"] = "1" }
+        // Wine takes the Windows locale, and with it the ANSI code page, from the Unix locale.
+        if let language = settings.language, !language.isEmpty {
+            environment["LANG"] = "\(language).UTF-8"
+            environment["LC_ALL"] = "\(language).UTF-8"
+        }
 
         // The user's own variables come last so they can override any rule above.
         environment.merge(settings.environment ?? [:]) { _, user in user }

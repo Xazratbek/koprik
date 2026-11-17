@@ -25,6 +25,16 @@ import Testing
         }
     }
 
+    @Test func aLanguageSetsTheLocaleWineTakesTheCodePageFrom() {
+        let environment = build(LaunchSettings(language: "ru_RU"))
+        #expect(environment["LANG"] == "ru_RU.UTF-8")
+        #expect(environment["LC_ALL"] == "ru_RU.UTF-8")
+        #expect(build(LaunchSettings())["LC_ALL"] == nil)
+        // A program's own choice wins over the bottle's.
+        let layered = LaunchSettings.resolve([LaunchSettings(language: "ja_JP"), LaunchSettings(language: "ru_RU")])
+        #expect(layered.language == "ru_RU")
+    }
+
     @Test func msyncAlsoSetsEsyncBecauseD3DMetalChecksIt() {
         let environment = build(LaunchSettings(sync: .msync))
         #expect(environment["WINEMSYNC"] == "1")

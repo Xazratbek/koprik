@@ -337,6 +337,22 @@
         }
       }
     },
+    "Automatic": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avtomatik"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автоматически"
+          }
+        }
+      }
+    },
     "Backend": {
       "localizations": {
         "uz": {
@@ -2113,6 +2129,22 @@
         }
       }
     },
+    "Mac's language": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac tili"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык Mac"
+          }
+        }
+      }
+    },
     "Manual snapshot": {
       "localizations": {
         "uz": {
@@ -2541,6 +2573,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Выкл.: полный доступ, для доверенных программ"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoqiq"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вкл."
           }
         }
       }
@@ -3377,6 +3425,22 @@
         }
       }
     },
+    "Sharp text at the display's full resolution. Automatic turns it on for programs and off for games, whose full screen breaks with it.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekranning to'liq aniqligida tiniq matn. Avtomatik rejim dasturlar uchun yoqadi, o'yinlar uchun o'chiradi, chunki u o'yinlarning to'liq ekranini buzadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чёткий текст в полном разрешении экрана. «Автоматически» включает для программ и выключает для игр: у них ломается полноэкранный режим."
+          }
+        }
+      }
+    },
     "Sharp text at the display's full resolution. Heavier on the GPU in games. Takes effect the next time the bottle starts.": {
       "localizations": {
         "uz": {
@@ -3741,6 +3805,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Первая бутылка создаётся около минуты."
+          }
+        }
+      }
+    },
+    "The language and character set the program sees. Change it if text shows as garbage such as \"Ïðîâåðêà\".": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur ko'radigan til va belgilar to'plami. Matn \"Ïðîâåðêà\" kabi buzuq ko'rinsa, o'zgartiring."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык и кодировка, которые видит программа. Измените, если текст выглядит как \"Ïðîâåðêà\"."
           }
         }
       }

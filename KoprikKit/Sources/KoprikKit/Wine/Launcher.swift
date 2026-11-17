@@ -111,7 +111,13 @@ public struct Launcher: Sendable {
         if GameBundle.loader(for: engine) == nil, engine.manifest.d3dmetalCapable {
             _ = try? await GameBundle.build(for: engine)
         }
-        await applyDisplayMode()
+        // Retina by default for ordinary programs (sharp text), but not for
+        // games: they pick the panel's pixel size (3024x1964 on a 14" MacBook
+        // Pro) for full screen, and Wine then opens a window twice the size of
+        // the screen that takes the keyboard away (docs/SINOV.md, B28).
+        let executables = executables(of: target)
+        let isGame = Graphics.drawsWith3D(executables) && !executables.contains(where: Self.isChromiumApp)
+        await applyDisplayMode(retinaByDefault: !isGame)
 
         let runner = WineRunner.forBottle(bottle, engine: engine)
         var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: settings)
@@ -230,18 +236,49 @@ public struct Launcher: Sendable {
         return Launch(process: process, graphics: decision, settings: settings, environment: environment, arguments: arguments)
     }
 
-    /// Copies a file from the Mac into the bottle's Public Downloads folder (C:\\users\\Public\\Downloads\\Koprik).
+    /// Copies a file from the Mac into the bottle's Public Downloads folder
+    /// (C:\\users\\Public\\Downloads\\Koprik) and returns the copy.
+    ///
+    /// Installers often need the files beside them (a repack's data archives,
+    /// a game folder's DLLs), so when the file sits in a folder of its own the
+    /// whole folder is copied. Not when that folder is a catch-all such as
+    /// Downloads, Desktop or Documents: only the file then. On APFS the copy
+    /// is a clone and takes no extra space.
     func importIntoBottle(_ url: URL) throws -> URL {
         let folder = bottle.driveC.appending(path: "users/Public/Downloads/Koprik", directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        let destination = folder.appending(path: url.lastPathComponent)
         let manager = FileManager.default
+        let parent = url.deletingLastPathComponent()
+        if Self.isOwnFolder(parent) {
+            let destination = folder.appending(path: parent.lastPathComponent, directoryHint: .isDirectory)
+            let copied = destination.appending(path: url.lastPathComponent)
+            if !manager.fileExists(atPath: copied.path) || !manager.contentsEqual(atPath: url.path, andPath: copied.path) {
+                if manager.fileExists(atPath: destination.path) { try manager.removeItem(at: destination) }
+                try manager.copyItem(at: parent, to: destination)
+            }
+            return copied
+        }
+        let destination = folder.appending(path: url.lastPathComponent)
         if manager.fileExists(atPath: destination.path) {
             if manager.contentsEqual(atPath: url.path, andPath: destination.path) { return destination }
             try manager.removeItem(at: destination)
         }
         try manager.copyItem(at: url, to: destination)
         return destination
+    }
+
+    /// Whether a folder belongs to one program rather than being a general
+    /// place files collect in (home, Downloads, Desktop, Documents, a volume root).
+    static func isOwnFolder(_ folder: URL, home: URL = FileManager.default.homeDirectoryForCurrentUser) -> Bool {
+        let path = folder.standardizedFileURL.path
+        let home = home.standardizedFileURL.path
+        let general = [home, "/", "/Volumes", "/Applications", "/tmp", "/private/tmp"]
+            + ["Downloads", "Desktop", "Documents", "Movies", "Music", "Pictures", "Public"].map { home + "/" + $0 }
+        if general.contains(path) { return false }
+        // A mounted volume's root (an installer disc image) is the program's own folder.
+        let components = folder.standardizedFileURL.pathComponents
+        if components.count == 3, components[1] == "Volumes" { return true }
+        return components.count > 2
     }
 
     /// Removes the drive letters and folder links that point out of an
@@ -260,9 +297,9 @@ public struct Launcher: Sendable {
 
     /// Writes the bottle's full-screen mode into Wine's Mac driver settings,
     /// once per change. The driver reads it when each program starts.
-    private func applyDisplayMode() async {
+    private func applyDisplayMode(retinaByDefault: Bool) async {
         let capture = (bottle.config.exclusiveFullscreen ?? true) ? "Y" : "N"
-        let retina = (bottle.config.highResolution ?? true) ? "Y" : "N"
+        let retina = (bottle.config.highResolution ?? retinaByDefault) ? "Y" : "N"
         let wanted = "capture=\(capture);retina=\(retina)"
         let marker = bottle.directory.appending(path: ".display-mode")
         if (try? String(contentsOf: marker, encoding: .utf8)) == wanted { return }

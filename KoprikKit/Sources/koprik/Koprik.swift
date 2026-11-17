@@ -345,6 +345,7 @@ struct LaunchOptions: ParsableArguments {
     @Flag(help: "Advertise AVX support under Rosetta.") var avx = false
     @Flag(help: "Enable DirectX Raytracing in D3DMetal.") var raytracing = false
     @Option(name: .customLong("env"), help: "Extra environment variable as KEY=VALUE. Repeatable.") var environment: [String] = []
+    @Option(help: "Locale the program sees, such as ru_RU or ja_JP (fixes garbled text in non-Unicode programs).") var language: String?
 
     func settings() throws -> LaunchSettings {
         var variables: [String: String] = [:]
@@ -361,7 +362,8 @@ struct LaunchOptions: ParsableArguments {
             dxvkHUD: dxvkHud,
             advertiseAVX: avx ? true : nil,
             raytracing: raytracing ? true : nil,
-            environment: variables.isEmpty ? nil : variables
+            environment: variables.isEmpty ? nil : variables,
+            language: language
         )
     }
 }

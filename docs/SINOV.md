@@ -164,6 +164,20 @@ Kechikish ScreenCaptureKit o'lchagichi bilan o'lchandi: sichqoncha yon paneldagi
 | `--in-process-gpu` | **12/12** | **38 ms** (20-61) |
 | `--in-process-gpu` + Retina | **12/12** | **38 ms** (26-56) |
 
+**Need for Speed: Most Wanted (2012), repack, izolyatsiyalangan bottle (2026-11-18).** Litsenziyasiz repack, shuning uchun avval tekshirildi: ClamAV (3.6 mln imzo) va o'z YARA qoidalarimiz (mayner, stealer, RAT, avtoyuklash) bilan o'rnatuvchi, uning ichidagi 29 fayl (`innoextract`) va o'rnatilgan 2791 fayl. Bitta fayl topildi: `EA.Game.RegFix.exe` (UPX + AutoIt, ClamAV `Win.Dropper.DarkKomet-9986221-0`). U o'rnatish paytida ishga tushmagan (EA registr kalitlarini Inno Setup o'zi yozgan), karantinga olindi. O'rnatish internetsiz (`--isolation full`) bajarildi: o'yin papkasidan tashqarida faqat ikkita yorliq yozildi, Run/RunOnce/xizmat/vazifa kalitlari yo'q, Wine jarayonlari uchun sandbox to'sig'i qayd etilmadi.
+
+| O'lchov (1512x982, DXMT, Direct, Game Mode) | Natija |
+|---|---|
+| Menyu va videolar | 60.0 FPS (o'yinning o'z chegarasi), GPU 0.7 ms |
+| Ochiq shahar, yuqori sozlamalar | 44.5-45.6 FPS, GPU 10.4 ms, asosiy oqim 97% (CPU, Rosetta) |
+| Ochiq shahar, SSAO/motion blur/aks ettirish/LOD/VFX past, soya 1 | 56.1-56.6 FPS, GPU 7.5 ms |
+| D3DMetal | ishlamaydi: o'yin 32-bit ("DirectX 10 or better graphics card is required") |
+| DXVK | Vulkan istisnosi bilan yopiladi (32-bit, wow64) |
+
+120 FPS bu o'yinda erishib bo'lmaydi: o'yin 60 da qulflangan (`VsyncInterval=0` ham o'zgartirmaydi), qulfni ochuvchi plagin faqat asl v1.5 `NFS13.exe` (13 684 056 bayt) bilan ishlaydi, repack'dagisi 14 544 896 bayt; ustiga ochiq shaharda protsessor ~56 FPS bilan chegaralaydi.
+
+Topilgan va tuzatilgan: B25 Unicode bo'lmagan dasturlar matni buzilgan ("Ïðîâåðêà"): dastur/bottle uchun `language` (LANG/LC_ALL, ANSI kod sahifasi). B26 izolyatsiyalangan bottle tashqaridagi o'rnatuvchining faqat o'zini ko'chirardi, yonidagi arxivlarsiz repack ishlamasdi: endi dasturning o'z papkasi butunlay (APFS klon) ko'chiriladi. B27 D3DMetal 32-bit dasturlarni ishlata olmaydi: Auto ham, qo'lda tanlash ham 32-bitda DXMT'ga o'tadi. B28 Retina yoqiq bottle'da o'yin to'liq ekran uchun 3024x1964 ni tanladi, Wine ekrandan ikki baravar katta oyna ochdi va klaviatura o'yinga yetmadi: Retina endi "Automatic" (dasturlarda yoqiq, Direct3D/OpenGL o'yinlarida o'chiq). Sinov vositasi eslatmasi: DirectInput o'yinlari System Events tugmalarini emas, faqat HID darajasidagi `CGEvent` larni qabul qiladi.
+
 B24: Chromium GPU jarayoni bilan pipe orqali gaplashadi, Wine'da har xabar wineserver orqali o'tadi va ba'zilari bir soniyadan ko'p kutadi. Ko'prik endi Chromium/Electron dasturlariga `--in-process-gpu` beradi (`Launcher.chromiumArguments`). Foydalanuvchining o'z Notion'ida: 12/12, median 38 ms.
 
 ### Unumdorlik o'lchovlari

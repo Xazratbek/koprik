@@ -144,9 +144,13 @@ public struct Launcher: Sendable {
         // programs run (Steam, typically, which needs DXVK), they stay as they
         // are and this program gets its backend from its own folder instead:
         // Windows looks for DLLs next to the executable first.
-        let localDirectory = steamGame?.executable.deletingLastPathComponent()
+        // Only folders inside the bottle: Ko'prik never writes DLLs next to a
+        // program that lives elsewhere on the Mac (B23 in docs/SINOV.md).
+        let bottleRoot = bottle.directory.standardizedFileURL.path
+        let localDirectory = (steamGame?.executable.deletingLastPathComponent()
             ?? storeLaunch?.executable.deletingLastPathComponent()
-            ?? executableDirectory(of: target)
+            ?? executableDirectory(of: target))
+            .flatMap { $0.standardizedFileURL.path.hasPrefix(bottleRoot) ? $0 : nil }
         if !BottleActivity.isRunning(bottle) {
             try Graphics.prepare(decision.backend, engine: engine, prefix: bottle.prefix)
             BottleActivity.setActiveBackend(decision.backend, of: bottle)

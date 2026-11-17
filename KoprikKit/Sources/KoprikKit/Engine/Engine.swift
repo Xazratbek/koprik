@@ -146,6 +146,8 @@ public struct Engine: Sendable, Equatable, Identifiable {
 
     /// `bin/wine64` when present, otherwise `bin/wine`. Newer builds ship only `wine`.
     public var wineBinary: URL {
+        // The Game Mode bundle's loader when it exists (see GameBundle).
+        if let loader = GameBundle.loader(for: self) { return loader }
         let wine64 = binDirectory.appending(path: "wine64")
         return FileManager.default.isExecutableFile(atPath: wine64.path) ? wine64 : binDirectory.appending(path: "wine")
     }

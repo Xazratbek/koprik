@@ -63,6 +63,11 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
     public var environment: [String: String]?
     /// DLL load order, for example `["d3dcompiler_47": "n,b"]`.
     public var dllOverrides: [String: String]?
+    /// Frame rate cap for DXMT and DXVK. 0 removes a cap set lower down.
+    public var maxFrameRate: Int?
+    /// DXMT only: render at 1/factor of the window size and let MetalFX
+    /// upscale, for example 1.5 or 2. Raises frame rate in GPU-bound games.
+    public var metalFXUpscale: Double?
 
     public init(
         backend: GraphicsBackend? = nil,
@@ -73,7 +78,9 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
         advertiseAVX: Bool? = nil,
         raytracing: Bool? = nil,
         environment: [String: String]? = nil,
-        dllOverrides: [String: String]? = nil
+        dllOverrides: [String: String]? = nil,
+        maxFrameRate: Int? = nil,
+        metalFXUpscale: Double? = nil
     ) {
         self.backend = backend
         self.sync = sync
@@ -84,6 +91,8 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
         self.raytracing = raytracing
         self.environment = environment
         self.dllOverrides = dllOverrides
+        self.maxFrameRate = maxFrameRate
+        self.metalFXUpscale = metalFXUpscale
     }
 
     /// Returns these settings with `other` laid on top. Scalar fields are
@@ -98,7 +107,9 @@ public struct LaunchSettings: Codable, Sendable, Equatable {
             advertiseAVX: other.advertiseAVX ?? advertiseAVX,
             raytracing: other.raytracing ?? raytracing,
             environment: Self.merge(environment, other.environment),
-            dllOverrides: Self.merge(dllOverrides, other.dllOverrides)
+            dllOverrides: Self.merge(dllOverrides, other.dllOverrides),
+            maxFrameRate: other.maxFrameRate ?? maxFrameRate,
+            metalFXUpscale: other.metalFXUpscale ?? metalFXUpscale
         )
     }
 

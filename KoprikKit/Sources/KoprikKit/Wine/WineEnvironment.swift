@@ -10,7 +10,7 @@ public enum WineEnvironment {
         "WINEPREFIX", "WINEARCH", "WINELOADER", "WINESERVER", "WINEDLLPATH",
         "WINEDLLOVERRIDES", "WINEDEBUG", "WINEESYNC", "WINEMSYNC", "WINEFSYNC",
         "DXVK_HUD", "DXVK_ASYNC", "MTL_HUD_ENABLED", "ROSETTA_ADVERTISE_AVX", "D3DM_SUPPORT_DXR",
-        "WINED3DMETAL", "MTL_DEBUG_LAYER",
+        "WINED3DMETAL", "MTL_DEBUG_LAYER", "DXMT_CONFIG", "DXMT_METALFX_SPATIAL_SWAPCHAIN", "DXVK_CONFIG_FILE",
     ]
 
     public static func build(
@@ -47,6 +47,13 @@ public enum WineEnvironment {
         }
 
         var overrides = backendOverrides(for: settings.backend ?? .auto)
+        // Wine's powershell.exe is a stub that does nothing and exits 0. The
+        // installers electron-builder makes (Notion, Discord, Slack, ...) ask
+        // PowerShell whether the app is running; the stub's 0 means "yes", so
+        // they stop with "<App> is running" and never install. Disabled, the
+        // call fails the way it would on a PC without PowerShell. A user
+        // override for powershell.exe still wins.
+        overrides["powershell.exe"] = "d"
         overrides.merge(settings.dllOverrides ?? [:]) { _, user in user }
         if !overrides.isEmpty {
             environment["WINEDLLOVERRIDES"] = dllOverridesString(overrides)
@@ -62,6 +69,17 @@ public enum WineEnvironment {
         case .auto, .d3dmetal, .dxmt:
             break
         }
+
+        // DXMT reads `key = value` pairs separated by ";" from DXMT_CONFIG.
+        var dxmtConfig: [String] = []
+        if let rate = settings.maxFrameRate, rate > 0 {
+            dxmtConfig.append("d3d11.preferredMaxFrameRate = \(rate)")
+        }
+        if let factor = settings.metalFXUpscale, factor > 1 {
+            dxmtConfig.append("d3d11.metalSpatialUpscaleFactor = \(factor)")
+            environment["DXMT_METALFX_SPATIAL_SWAPCHAIN"] = "1"
+        }
+        if !dxmtConfig.isEmpty { environment["DXMT_CONFIG"] = dxmtConfig.joined(separator: ";") }
 
         if settings.metalHUD == true { environment["MTL_HUD_ENABLED"] = "1" }
         if let hud = settings.dxvkHUD?.environmentValue { environment["DXVK_HUD"] = hud }

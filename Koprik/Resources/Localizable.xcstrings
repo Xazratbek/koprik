@@ -449,6 +449,22 @@
         }
       }
     },
+    "Built on Chromium or Electron, which draws a blank window on DXMT and correctly on DXVK.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chromium yoki Electron asosida: DXMT'da bo'sh oyna, DXVK'da to'g'ri chiziladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основано на Chromium или Electron: в DXMT окно пустое, в DXVK рисуется правильно."
+          }
+        }
+      }
+    },
     "C: Drive": {
       "localizations": {
         "uz": {
@@ -477,6 +493,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отмена"
+          }
+        }
+      }
+    },
+    "Caps the frame rate in DXMT and DXVK. A cap at the display's refresh rate gives the smoothest motion.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DXMT va DXVK'da kadrlar tezligini cheklaydi. Ekran chastotasiga teng chegara eng silliq harakatni beradi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ограничивает частоту кадров в DXMT и DXVK. Предел, равный частоте экрана, даёт самое плавное движение."
           }
         }
       }
@@ -797,6 +829,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Переопределения DLL"
+          }
+        }
+      }
+    },
+    "DXMT only. Renders at a lower resolution and lets Apple's MetalFX upscale it. More frames in demanding games.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faqat DXMT. Pastroq aniqlikda chizadi, Apple MetalFX esa kattalashtiradi. Og'ir o'yinlarda ko'proq kadr."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только DXMT. Рендерит в меньшем разрешении, а MetalFX от Apple увеличивает изображение. Больше кадров в тяжёлых играх."
           }
         }
       }
@@ -1217,6 +1265,22 @@
         }
       }
     },
+    "Exclusive full screen": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eksklyuziv to'liq ekran"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эксклюзивный полноэкранный режим"
+          }
+        }
+      }
+    },
     "Favorite": {
       "localizations": {
         "uz": {
@@ -1313,6 +1377,22 @@
         }
       }
     },
+    "Frame rate limit": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FPS chegarasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ограничение FPS"
+          }
+        }
+      }
+    },
     "Full": {
       "localizations": {
         "uz": {
@@ -1325,6 +1405,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Полный"
+          }
+        }
+      }
+    },
+    "Full-screen games get the display to themselves: less input lag and a higher frame rate. Turn off for programs you switch away from often.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To'liq ekranli o'yinlar displeyni to'liq oladi: klaviatura kechikishi kamroq, FPS yuqoriroq. Tez-tez almashtiriladigan dasturlar uchun o'chiring."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Полноэкранные игры получают дисплей целиком: меньше задержка ввода и выше FPS. Отключите для программ, между которыми часто переключаетесь."
           }
         }
       }
@@ -2045,6 +2141,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "HUD производительности Metal"
+          }
+        }
+      }
+    },
+    "MetalFX upscaling": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MetalFX kattalashtirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Масштабирование MetalFX"
           }
         }
       }

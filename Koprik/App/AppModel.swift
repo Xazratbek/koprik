@@ -52,6 +52,7 @@ enum SidebarItem: Hashable {
     case install
     case activity
     case settings
+    case store(StoreGame.Store)
 }
 
 /// Something long-running the user started: a download or an installation.
@@ -118,7 +119,98 @@ final class AppModel {
     var selectionShowsPrograms: Bool {
         switch sidebarSelection {
         case .library, .bottle, nil: true
-        case .install, .activity, .settings: false
+        case .install, .activity, .settings, .store: false
+        }
+    }
+
+    // MARK: Stores
+
+    struct StoreState {
+        var loggedIn = false
+        var loading = false
+        var games: [StoreGame] = []
+        var error: String?
+    }
+
+    var storeStates: [StoreGame.Store: StoreState] = [:]
+    var installingStoreGames: Set<String> = []
+    @ObservationIgnored let epicStore = EpicStore()
+    @ObservationIgnored let gogStore = GOGStore()
+
+    func refreshStore(_ store: StoreGame.Store) async {
+        var state = storeStates[store] ?? StoreState()
+        state.loggedIn = store == .epic ? await epicStore.isLoggedIn : await gogStore.isLoggedIn
+        guard state.loggedIn else {
+            storeStates[store] = state
+            return
+        }
+        state.loading = true
+        storeStates[store] = state
+        do {
+            state.games = store == .epic ? try await epicStore.library() : try await gogStore.library(installedIn: bottles)
+            state.error = nil
+        } catch {
+            state.error = error.localizedDescription
+        }
+        state.loading = false
+        storeStates[store] = state
+    }
+
+    func signIn(to store: StoreGame.Store, code: String) async {
+        do {
+            if store == .epic {
+                try await epicStore.login(code: code)
+            } else {
+                try await gogStore.login(code: code)
+            }
+            await refreshStore(store)
+        } catch {
+            present(error)
+        }
+    }
+
+    func signOut(of store: StoreGame.Store) async {
+        if store == .epic { await epicStore.logout() } else { await gogStore.logout() }
+        storeStates[store] = StoreState()
+    }
+
+    /// The library entry of an installed store game, if Ko'prik has found it.
+    func libraryItem(for game: StoreGame) -> LibraryItem? {
+        guard game.isInstalled else { return nil }
+        return allItems.first { $0.program.storeID == game.storeID && $0.program.kind.rawValue == game.store.rawValue }
+    }
+
+    func installStoreGame(_ game: StoreGame, into bottleID: UUID?) {
+        installingStoreGames.insert(game.id)
+        Task {
+            var bottle = bottleID.flatMap(bottle(id:))
+            if bottle == nil, let engine = preferredEngine {
+                let name = game.store == .epic ? "Epic Games" : "GOG"
+                if let existing = bottles.first(where: { $0.name == name }) {
+                    bottle = existing
+                } else {
+                    bottle = await createBottle(name: name, windowsVersion: .win10, engine: engine)
+                }
+            }
+            guard let bottle else {
+                installingStoreGames.remove(game.id)
+                return
+            }
+            let taskID = addTask(title: String(localized: "Installing \(game.title)"), detail: bottle.name)
+            do {
+                if game.store == .epic {
+                    try await epicStore.install(game, into: bottle)
+                } else {
+                    try await gogStore.install(game, into: bottle)
+                }
+                finishTask(taskID)
+            } catch {
+                failTask(taskID, error)
+                present(error)
+            }
+            installingStoreGames.remove(game.id)
+            await reloadPrograms(of: bottle)
+            await refreshStore(game.store)
         }
     }
 
@@ -290,6 +382,9 @@ final class AppModel {
         case .steam:
             let folder = URL(fileURLWithPath: item.program.location).lastPathComponent
             return "\\steamapps\\common\\\(folder)\\".lowercased()
+        case .epic, .gog:
+            let folder = URL(fileURLWithPath: item.program.location).lastPathComponent
+            return "\\\(folder)\\".lowercased()
         case .executable:
             if item.program.location.hasPrefix("/") {
                 return URL(fileURLWithPath: item.program.location).lastPathComponent.lowercased()
@@ -431,11 +526,7 @@ final class AppModel {
     /// Closes one program, leaving the rest of its bottle (Steam, say) running.
     func stop(_ item: LibraryItem) async {
         guard let engine = engine(for: item.bottle) else { return }
-        let executable: URL? = switch item.program.kind {
-        case .executable: item.program.executableURL(in: item.bottle)
-        case .steam: Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: item.program.location))
-        }
-        guard let name = executable?.lastPathComponent else {
+        guard let name = item.program.mainExecutable(in: item.bottle)?.lastPathComponent else {
             await stopAll(in: item.bottle)
             return
         }

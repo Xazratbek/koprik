@@ -20,7 +20,7 @@ import Testing
 
     @Test func plainSettingsAddNoTuningVariables() {
         let environment = build(LaunchSettings())
-        for key in ["WINEESYNC", "WINEMSYNC", "WINEDLLOVERRIDES", "MTL_HUD_ENABLED", "DXVK_HUD", "D3DM_SUPPORT_DXR"] {
+        for key in ["WINEESYNC", "WINEMSYNC", "MTL_HUD_ENABLED", "DXVK_HUD", "D3DM_SUPPORT_DXR"] {
             #expect(environment[key] == nil, "\(key) should be unset")
         }
     }
@@ -38,14 +38,14 @@ import Testing
     }
 
     @Test func dxvkAndDxmtRouteDirect3DThroughDllOverrides() {
-        #expect(build(LaunchSettings(backend: .dxvk))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,d3d9,dxgi=n,b")
-        #expect(build(LaunchSettings(backend: .dxmt))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,dxgi=n,b;winemetal=b")
-        #expect(build(LaunchSettings(backend: .d3dmetal))["WINEDLLOVERRIDES"] == nil)
+        #expect(build(LaunchSettings(backend: .dxvk))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,d3d9,dxgi=n,b;powershell.exe=d")
+        #expect(build(LaunchSettings(backend: .dxmt))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,dxgi=n,b;powershell.exe=d;winemetal=b")
+        #expect(build(LaunchSettings(backend: .d3dmetal))["WINEDLLOVERRIDES"] == "powershell.exe=d")
     }
 
     @Test func userDllOverridesWinAndAreGroupedByLoadOrder() {
         let settings = LaunchSettings(backend: .dxmt, dllOverrides: ["dxgi": "b", "mscoree": "d"])
-        #expect(build(settings)["WINEDLLOVERRIDES"] == "d3d10core,d3d11=n,b;dxgi,winemetal=b;mscoree=d")
+        #expect(build(settings)["WINEDLLOVERRIDES"] == "d3d10core,d3d11=n,b;dxgi,winemetal=b;mscoree,powershell.exe=d")
     }
 
     @Test func togglesMapToTheirVariables() {
@@ -78,7 +78,7 @@ import Testing
         let polluted = host.merging(["WINEPREFIX": "/elsewhere", "WINEDLLOVERRIDES": "x=n", "WINEESYNC": "1", "DXVK_HUD": "full"]) { $1 }
         let environment = build(LaunchSettings(), host: polluted)
         #expect(environment["WINEPREFIX"] == "/bottles/b/prefix")
-        #expect(environment["WINEDLLOVERRIDES"] == nil)
+        #expect(environment["WINEDLLOVERRIDES"] == "powershell.exe=d")
         #expect(environment["WINEESYNC"] == nil)
         #expect(environment["DXVK_HUD"] == nil)
     }
@@ -123,5 +123,32 @@ import Testing
         let original = LaunchSettings(backend: .dxvk, sync: .esync, dxvkHUD: .fps, environment: ["K": "V"])
         let decoded = try JSONDecoder().decode(LaunchSettings.self, from: JSONEncoder().encode(original))
         #expect(decoded == original)
+    }
+}
+
+@Suite struct FrameRateAndUpscalingTests {
+    private let engine = sampleEngine()
+
+    @Test func dxmtGetsItsSettingsThroughOneVariable() {
+        let environment = WineEnvironment.build(
+            engine: engine, prefix: URL(fileURLWithPath: "/p"),
+            settings: LaunchSettings(maxFrameRate: 120, metalFXUpscale: 1.5), host: [:]
+        )
+        #expect(environment["DXMT_CONFIG"] == "d3d11.preferredMaxFrameRate = 120;d3d11.metalSpatialUpscaleFactor = 1.5")
+        #expect(environment["DXMT_METALFX_SPATIAL_SWAPCHAIN"] == "1")
+    }
+
+    @Test func zeroAndOneMeanOff() {
+        let environment = WineEnvironment.build(
+            engine: engine, prefix: URL(fileURLWithPath: "/p"),
+            settings: LaunchSettings(maxFrameRate: 0, metalFXUpscale: 1), host: [:]
+        )
+        #expect(environment["DXMT_CONFIG"] == nil)
+        #expect(environment["DXMT_METALFX_SPATIAL_SWAPCHAIN"] == nil)
+    }
+
+    @Test func aProgramCapOverridesTheBottle() {
+        let resolved = LaunchSettings.resolve([LaunchSettings(maxFrameRate: 60), LaunchSettings(maxFrameRate: 0)])
+        #expect(resolved.maxFrameRate == 0)
     }
 }

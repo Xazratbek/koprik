@@ -21,10 +21,7 @@ final class IconProvider {
         if let cached = icons[item.id] { return cached }
         if missing.contains(item.id) { return nil }
 
-        let executable: URL? = switch item.program.kind {
-        case .executable: item.program.executableURL(in: item.bottle)
-        case .steam: Launcher.gameExecutables(in: URL(fileURLWithPath: item.program.location), limit: 1).first
-        }
+        let executable = item.program.mainExecutable(in: item.bottle)
         guard let executable else {
             missing.insert(item.id)
             return nil

@@ -11,6 +11,11 @@ public struct BottleConfig: Codable, Sendable, Equatable, Identifiable {
     public var notes: String
     public var settings: LaunchSettings
     public var createdAt: Date
+    /// Full-screen games take over the display ("Direct" in the Metal HUD)
+    /// instead of drawing into a window the compositor redraws. Saves a
+    /// frame of input latency and was worth 30-55 to 90-115 FPS in
+    /// Brawlhalla. `nil` means on. Off suits programs that switch away often.
+    public var exclusiveFullscreen: Bool?
 
     public init(
         id: UUID = UUID(),

@@ -204,6 +204,25 @@ struct LaunchSettingsRows: View {
         }
         .help("MSync is fastest. Switch to ESync or None if a game hangs.")
 
+        Picker("Frame rate limit", selection: $settings.maxFrameRate) {
+            Text(inheritLabel(inherited?.maxFrameRate.map { $0 == 0 ? String(localized: "None") : "\($0)" } ?? String(localized: "None"))).tag(Int?.none)
+            Divider()
+            Text("None").tag(Int?.some(0))
+            ForEach([30, 60, 90, 120, 144], id: \.self) { rate in
+                Text(verbatim: "\(rate) FPS").tag(Int?.some(rate))
+            }
+        }
+        .help("Caps the frame rate in DXMT and DXVK. A cap at the display's refresh rate gives the smoothest motion.")
+
+        Picker("MetalFX upscaling", selection: $settings.metalFXUpscale) {
+            Text(inheritLabel(inherited?.metalFXUpscale.map { $0 > 1 ? "\($0)×" : String(localized: "Off") } ?? String(localized: "Off"))).tag(Double?.none)
+            Divider()
+            Text("Off").tag(Double?.some(1))
+            Text(verbatim: "1.5× (quality)").tag(Double?.some(1.5))
+            Text(verbatim: "2× (performance)").tag(Double?.some(2))
+        }
+        .help("DXMT only. Renders at a lower resolution and lets Apple's MetalFX upscale it. More frames in demanding games.")
+
         OptionalToggle("Metal performance HUD", value: $settings.metalHUD)
         Picker("DXVK HUD", selection: $settings.dxvkHUD) {
             Text(inheritLabel(inherited?.dxvkHUD?.rawValue.capitalized ?? "Off")).tag(DXVKHud?.none)

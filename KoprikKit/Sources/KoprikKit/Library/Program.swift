@@ -7,6 +7,10 @@ public struct Program: Codable, Sendable, Equatable, Identifiable {
     public enum Kind: String, Codable, Sendable {
         case executable
         case steam
+        /// Installed with legendary; started with Epic's sign-in arguments.
+        case epic
+        /// Installed with gogdl; started from its goggame-<id>.info.
+        case gog
     }
 
     /// Stable across scans, so settings and play time stay attached.
@@ -17,6 +21,8 @@ public struct Program: Codable, Sendable, Equatable, Identifiable {
     /// absolute path on the Mac. For Steam games: the install folder on the Mac.
     public var location: String
     public var steamAppID: Int?
+    /// Epic's app name or GOG's product id.
+    public var storeID: String?
     public var arguments: [String]
     /// Overrides laid on top of the bottle's settings for this program only.
     public var settings: LaunchSettings
@@ -34,6 +40,7 @@ public struct Program: Codable, Sendable, Equatable, Identifiable {
         kind: Kind = .executable,
         location: String,
         steamAppID: Int? = nil,
+        storeID: String? = nil,
         arguments: [String] = [],
         settings: LaunchSettings = LaunchSettings(),
         favorite: Bool = false,
@@ -48,6 +55,7 @@ public struct Program: Codable, Sendable, Equatable, Identifiable {
         self.kind = kind
         self.location = location
         self.steamAppID = steamAppID
+        self.storeID = storeID
         self.arguments = arguments
         self.settings = settings
         self.favorite = favorite
@@ -176,7 +184,7 @@ public actor ProgramStore {
 
     private static func stillExists(_ program: Program, in bottle: Bottle) -> Bool {
         switch program.kind {
-        case .steam:
+        case .steam, .epic, .gog:
             FileManager.default.fileExists(atPath: program.location)
         case .executable:
             program.executableURL(in: bottle).map { FileManager.default.fileExists(atPath: $0.path) } ?? false
@@ -206,6 +214,22 @@ public actor ProgramStore {
             guard found[id] == nil else { continue }
             let arguments = link.arguments.map(splitArguments) ?? []
             found[id] = Program(id: id, name: name, location: target, arguments: arguments)
+        }
+
+        // Epic games legendary installed into this bottle.
+        let epicRecord = AppPaths.default.root.appending(path: "Stores/legendary/installed.json")
+        if let data = try? Data(contentsOf: epicRecord),
+           let installed = try? JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] {
+            let prefix = bottle.prefix.standardizedFileURL.path
+            for (appName, entry) in installed {
+                guard let path = entry["install_path"] as? String, URL(fileURLWithPath: path).standardizedFileURL.path.hasPrefix(prefix) else { continue }
+                let id = "epic-\(appName)"
+                found[id] = Program(id: id, name: entry["title"] as? String ?? appName, kind: .epic, location: path, storeID: appName)
+            }
+        }
+        for (gogID, folder) in GOGStore.installedGames(in: [bottle]) {
+            let id = "gog-\(gogID)"
+            found[id] = Program(id: id, name: folder.lastPathComponent, kind: .gog, location: folder.path, storeID: gogID)
         }
 
         for app in SteamLibrary.apps(in: bottle) {

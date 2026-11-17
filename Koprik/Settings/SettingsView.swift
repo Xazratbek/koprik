@@ -233,8 +233,10 @@ struct GraphicsSettingsPane: View {
                         Spacer()
                         if capabilities.d3dmetal {
                             Button("Remove") {
-                                try? GPTKImporter.remove(from: engine)
-                                Task { await model.reload() }
+                                Task {
+                                    try? await GPTKImporter.remove(from: engine)
+                                    await model.reload()
+                                }
                             }
                         } else if engine.manifest.d3dmetalCapable {
                             Button("Import…") { importToolkit(into: engine) }

@@ -69,11 +69,19 @@ public struct Launcher: Sendable {
     /// link Chromium's shaders, so both leave the window black. DXVK works.
     /// Measured with the Steam client on winecx-gptk 4.8.3; see docs/SINOV.md.
     private func decide(for target: LaunchTarget, settings: LaunchSettings) -> GraphicsDecision {
-        if (settings.backend ?? .auto) == .auto, isStoreLauncher(target), Graphics.capabilities(of: engine).dxvk {
-            return GraphicsDecision(
-                backend: .dxvk,
-                reason: "Store launchers draw with Chromium, which only renders correctly on DXVK."
-            )
+        if (settings.backend ?? .auto) == .auto, Graphics.capabilities(of: engine).dxvk {
+            if isStoreLauncher(target) {
+                return GraphicsDecision(
+                    backend: .dxvk,
+                    reason: "Store launchers draw with Chromium, which only renders correctly on DXVK."
+                )
+            }
+            if executables(of: target).contains(where: Self.isChromiumApp) {
+                return GraphicsDecision(
+                    backend: .dxvk,
+                    reason: "Built on Chromium or Electron, which draws a blank window on DXMT and correctly on DXVK."
+                )
+            }
         }
         return Graphics.decide(requested: settings.backend, engine: engine, executables: executables(of: target))
     }
@@ -86,6 +94,12 @@ public struct Launcher: Sendable {
         var settings = resolvedSettings(for: target, overrides: overrides)
         let decision = decide(for: target, settings: settings)
         settings.backend = decision.backend
+
+        // Engines installed before the Game Mode bundle existed get it now.
+        if GameBundle.loader(for: engine) == nil, engine.manifest.d3dmetalCapable {
+            _ = try? await GameBundle.build(for: engine)
+        }
+        await applyDisplayMode()
 
         let runner = WineRunner(engine: engine)
         var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: settings)
@@ -104,11 +118,26 @@ public struct Launcher: Sendable {
             environment["SteamOverlayGameId"] = String(appID)
         }
 
+        // Epic and GOG games are started directly too, with what their store tool reports.
+        var storeLaunch: StoreLaunch?
+        if case .program(let program) = target, let storeID = program.storeID {
+            switch program.kind {
+            case .epic:
+                storeLaunch = try await EpicStore().launch(storeID, engine: engine, bottle: bottle)
+            case .gog:
+                storeLaunch = GOGStore.launch(installedAt: URL(fileURLWithPath: program.location), id: storeID)
+            case .executable, .steam:
+                break
+            }
+        }
+
         // The DLLs in system32 serve every program in the bottle. While other
         // programs run (Steam, typically, which needs DXVK), they stay as they
         // are and this program gets its backend from its own folder instead:
         // Windows looks for DLLs next to the executable first.
-        let localDirectory = steamGame?.executable.deletingLastPathComponent() ?? executableDirectory(of: target)
+        let localDirectory = steamGame?.executable.deletingLastPathComponent()
+            ?? storeLaunch?.executable.deletingLastPathComponent()
+            ?? executableDirectory(of: target)
         if !BottleActivity.isRunning(bottle) {
             try Graphics.prepare(decision.backend, engine: engine, prefix: bottle.prefix)
             BottleActivity.setActiveBackend(decision.backend, of: bottle)
@@ -140,6 +169,12 @@ public struct Launcher: Sendable {
                 }
                 arguments = WineRunner.startArguments(for: url, programArguments: program.arguments, wait: wait)
                 workingDirectory = url.deletingLastPathComponent()
+            case .epic, .gog:
+                guard let storeLaunch else {
+                    throw KoprikError.invalidArgument("Cannot find how to start \(program.name). Reinstall it from the store page.")
+                }
+                arguments = WineRunner.startArguments(for: storeLaunch.executable, programArguments: storeLaunch.arguments + program.arguments, wait: wait)
+                workingDirectory = storeLaunch.workingDirectory
             case .steam:
                 if let steamGame {
                     arguments = WineRunner.startArguments(for: steamGame.executable, programArguments: program.arguments, wait: wait)
@@ -155,6 +190,15 @@ public struct Launcher: Sendable {
             }
         }
 
+        // DXVK 1.10.3 takes a frame cap only from a config file.
+        if decision.backend == .dxvk, let rate = settings.maxFrameRate, rate > 0 {
+            let file = bottle.directory.appending(path: "dxvk-\(rate).conf")
+            if !FileManager.default.fileExists(atPath: file.path) {
+                try? "dxgi.maxFrameRate = \(rate)\nd3d9.maxFrameRate = \(rate)\n".write(to: file, atomically: true, encoding: .utf8)
+            }
+            environment["DXVK_CONFIG_FILE"] = file.path
+        }
+
         if isSteamClient(target) {
             // Steam's own interface is a Chromium view; async shader compilation keeps it responsive.
             environment["DXVK_ASYNC"] = environment["DXVK_ASYNC"] ?? "1"
@@ -168,6 +212,20 @@ public struct Launcher: Sendable {
             logURL: bottle.newLogURL(label: target.label)
         )
         return Launch(process: process, graphics: decision, settings: settings, environment: environment, arguments: arguments)
+    }
+
+    /// Writes the bottle's full-screen mode into Wine's Mac driver settings,
+    /// once per change. The driver reads it when each program starts.
+    private func applyDisplayMode() async {
+        let wanted = (bottle.config.exclusiveFullscreen ?? true) ? "Y" : "N"
+        let marker = bottle.directory.appending(path: ".display-mode")
+        if (try? String(contentsOf: marker, encoding: .utf8)) == wanted { return }
+        let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Self.baseSettings(engine: engine, bottle: bottle))
+        let status = try? await WineRunner(engine: engine).run(
+            ["reg", "add", "HKCU\\Software\\Wine\\Mac Driver", "/v", "CaptureDisplaysForFullscreen", "/t", "REG_SZ", "/d", wanted, "/f"],
+            environment: environment, logURL: bottle.newLogURL(label: "display-mode")
+        )
+        if status == 0 { try? wanted.write(to: marker, atomically: true, encoding: .utf8) }
     }
 
     /// Starts the Windows Steam client in the background if it is not running,
@@ -287,6 +345,16 @@ public struct Launcher: Sendable {
 
     // MARK: Helpers
 
+    /// Whether an executable is a Chromium or Electron app (Notion, Discord,
+    /// Slack, Spotify, Teams, VS Code ...). They ship Chromium's resource
+    /// packs and ANGLE beside the executable.
+    static func isChromiumApp(_ executable: URL) -> Bool {
+        let folder = executable.deletingLastPathComponent()
+        let manager = FileManager.default
+        let markers = ["chrome_100_percent.pak", "resources.pak", "libEGL.dll", "resources/app.asar", "snapshot_blob.bin"]
+        return markers.filter { manager.fileExists(atPath: folder.appending(path: $0).path) }.count >= 2
+    }
+
     /// Executables of launchers whose interface is a Chromium view.
     private static let storeLauncherNames: Set<String> = [
         "steam.exe", "steamwebhelper.exe", "epicgameslauncher.exe", "galaxyclient.exe", "battle.net.exe",
@@ -333,8 +401,14 @@ public struct Launcher: Sendable {
             switch program.kind {
             case .executable:
                 return program.executableURL(in: bottle).map { [$0] } ?? []
-            case .steam:
+            case .steam, .epic:
                 return Self.gameExecutables(in: URL(fileURLWithPath: program.location))
+            case .gog:
+                let folder = URL(fileURLWithPath: program.location)
+                if let storeID = program.storeID, let launch = GOGStore.launch(installedAt: folder, id: storeID) {
+                    return [launch.executable]
+                }
+                return Self.gameExecutables(in: folder)
             }
         }
     }
@@ -486,4 +560,19 @@ public struct WindowsProcess: Sendable, Equatable, Identifiable {
     public var elapsed: String
 
     public var id: Int32 { pid }
+}
+
+extension Program {
+    /// The executable that runs when this program plays, whatever its kind.
+    public func mainExecutable(in bottle: Bottle) -> URL? {
+        switch kind {
+        case .executable:
+            executableURL(in: bottle)
+        case .steam, .epic:
+            Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: location))
+        case .gog:
+            storeID.flatMap { GOGStore.launch(installedAt: URL(fileURLWithPath: location), id: $0)?.executable }
+                ?? Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: location))
+        }
+    }
 }

@@ -46,7 +46,7 @@ struct EngineCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "engine",
         abstract: "Manage Wine builds.",
-        subcommands: [List.self, Install.self, Import.self, Remove.self]
+        subcommands: [List.self, Install.self, Import.self, Remove.self, GameMode.self]
     )
 
     struct List: AsyncParsableCommand {
@@ -110,6 +110,35 @@ struct EngineCommand: AsyncParsableCommand {
             let url = URL(fileURLWithPath: (path as NSString).expandingTildeInPath)
             let engine = try await EngineStore().importLocal(at: url, id: id, name: name)
             print("Imported \(engine.id) (\(engine.manifest.wineVersion ?? "version unknown"))")
+        }
+    }
+
+    struct GameMode: AsyncParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "game-mode",
+            abstract: "Build the app bundle that lets macOS give Windows games Game Mode."
+        )
+
+        @Argument(help: "Engine id. Defaults to every installed engine.") var id: String?
+        @Flag(help: "Remove the bundle instead.") var remove = false
+
+        func run() async throws {
+            let store = EngineStore()
+            let engines: [Engine]
+            if let id {
+                engines = [try await store.engine(id: id)]
+            } else {
+                engines = try await store.installed()
+            }
+            for engine in engines {
+                if remove {
+                    await GameBundle.remove(from: engine)
+                    print("Removed the Game Mode bundle from \(engine.id)")
+                } else {
+                    let bundle = try await GameBundle.build(for: engine)
+                    print("\(engine.id): \(bundle.path)")
+                }
+            }
         }
     }
 
@@ -401,11 +430,7 @@ struct Stop: AsyncParsableCommand {
         var executable = program
         if let match = await ProgramStore().programs(in: bottle, includeHidden: true)
             .first(where: { $0.name.compare(program, options: .caseInsensitive) == .orderedSame }) {
-            let url: URL? = switch match.kind {
-            case .executable: match.executableURL(in: bottle)
-            case .steam: Launcher.mainExecutable(ofSteamGameAt: URL(fileURLWithPath: match.location))
-            }
-            executable = url?.lastPathComponent ?? program
+            executable = match.mainExecutable(in: bottle)?.lastPathComponent ?? program
         }
         await Launcher(bottle: bottle, engine: engine).stop(programNamed: executable)
         let stillRunning = await BottleActivity.isProcessRunning(named: executable)

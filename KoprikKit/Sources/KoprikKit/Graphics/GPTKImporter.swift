@@ -111,11 +111,13 @@ public enum GPTKImporter {
             try manager.createSymbolicLink(atPath: link.path, withDestinationPath: "../../external/libd3dshared.dylib")
         }
         await Archive.removeQuarantine(at: external)
+        // The bundle holds a copy of the unix directory, which just changed.
+        _ = try? await GameBundle.build(for: engine)
         return version(in: engine)
     }
 
     /// Undoes an import, putting Wine's own Direct3D DLLs back.
-    public static func remove(from engine: Engine) throws {
+    public static func remove(from engine: Engine) async throws {
         let manager = FileManager.default
         let lib = engine.wineRoot.appending(path: "lib", directoryHint: .isDirectory)
         let windows = lib.appending(path: "wine/x86_64-windows", directoryHint: .isDirectory)
@@ -132,6 +134,7 @@ public enum GPTKImporter {
         for name in ["libd3dshared.dylib", "D3DMetal.framework"] {
             try? manager.removeItem(at: lib.appending(path: "external/\(name)"))
         }
+        _ = try? await GameBundle.build(for: engine)
     }
 
     /// The imported toolkit's version, from the framework's `Info.plist`.

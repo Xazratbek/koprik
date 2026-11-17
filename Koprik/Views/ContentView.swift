@@ -110,6 +110,13 @@ struct SidebarView: View {
                 .foregroundStyle(.secondary)
             }
 
+            Section("Stores") {
+                Label("Epic Games", systemImage: "e.square")
+                    .tag(SidebarItem.store(.epic))
+                Label { Text(verbatim: "GOG") } icon: { Image(systemName: "g.square") }
+                    .tag(SidebarItem.store(.gog))
+            }
+
             Section("Tools") {
                 Label("Install Software", systemImage: "square.and.arrow.down")
                     .tag(SidebarItem.install)
@@ -165,6 +172,8 @@ struct DetailView: View {
             ActivityView()
         case .settings:
             SettingsPage()
+        case .store(let store):
+            StoreView(store: store)
         }
     }
 

@@ -136,6 +136,8 @@ public actor EngineStore {
                 manifest.wineVersion = version.stdout
                 engine.manifest = try JSONFile.write(manifest, to: destination.appending(path: Engine.manifestName))
             }
+            // Lets macOS give Windows games Game Mode; a failure only costs that.
+            _ = try? await GameBundle.build(for: engine)
             return engine
         } catch {
             try? manager.removeItem(at: staging)

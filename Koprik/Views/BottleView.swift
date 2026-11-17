@@ -169,6 +169,16 @@ struct BottleSettingsSheet: View {
                 }
 
                 Section("Display and keyboard") {
+                    Toggle(isOn: Binding(
+                        get: { config.exclusiveFullscreen ?? true },
+                        set: { config.exclusiveFullscreen = $0 }
+                    )) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Exclusive full screen")
+                            Text("Full-screen games get the display to themselves: less input lag and a higher frame rate. Turn off for programs you switch away from often.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
                     Toggle(isOn: $retina) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("High resolution (Retina) mode")

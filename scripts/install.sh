@@ -29,7 +29,9 @@ test -d "$BUILT/Contents/Frameworks/Sparkle.framework" || { echo "Sparkle.framew
 
 echo "==> Installing to $TARGET"
 osascript -e 'quit app "Koprik"' >/dev/null 2>&1 || true
-sleep 1
+# A copy left running keeps the old code in memory and goes on answering links.
+for _ in 1 2 3 4 5; do pgrep -x Koprik >/dev/null || break; sleep 1; done
+pkill -x Koprik 2>/dev/null || true
 rm -rf "$TARGET"
 ditto "$BUILT" "$TARGET"
 # Sign inside out. --deep would re-sign the Quick Look extension without its

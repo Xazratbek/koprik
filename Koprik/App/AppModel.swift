@@ -369,6 +369,7 @@ final class AppModel {
         bottles = (try? await bottleStore.all()) ?? []
         for bottle in bottles {
             programsByBottle[bottle.id] = await programStore.programs(in: bottle)
+            _ = try? await LinkBridge.update(for: bottle)
         }
         programsByBottle = programsByBottle.filter { id, _ in bottles.contains { $0.id == id } }
         isLoaded = true
@@ -376,6 +377,8 @@ final class AppModel {
 
     func reloadPrograms(of bottle: Bottle) async {
         programsByBottle[bottle.id] = await programStore.programs(in: bottle)
+        // New programs may have registered links (notion://, zoommtg://) for sign-in to come back through.
+        _ = try? await LinkBridge.update(for: bottle)
     }
 
     /// Watches which bottles and programs are running, and books play time
@@ -715,19 +718,46 @@ final class AppModel {
     // MARK: Opening things from outside
 
     /// Handles a file dropped on the app or opened from Finder.
+    /// Opens a Windows file from the Mac. Files from outside are untrusted, so
+    /// unless the user is inside a specific bottle they go to the isolated
+    /// "Sandbox" bottle, which cannot touch the Mac's files or programs.
     func open(file: URL) {
         let type = file.pathExtension.lowercased()
         guard ["exe", "msi", "bat", "lnk"].contains(type) else { return }
-        if let bottle = currentBottle ?? bottles.first {
+        if case .bottle(let id) = sidebarSelection, let bottle = bottle(id: id) {
             run(file: file, in: bottle)
-        } else {
-            present(String(localized: "No bottle yet"), String(localized: "Create a bottle first, then open the file again."))
+            return
         }
+        Task {
+            if let sandbox = await sandboxBottle() { run(file: file, in: sandbox) }
+        }
+    }
+
+    static let sandboxBottleName = "Sandbox"
+
+    /// The isolated bottle for untrusted programs, created on first use.
+    func sandboxBottle() async -> Bottle? {
+        if let existing = bottles.first(where: { ($0.config.isolation ?? .off).isOn && $0.name == Self.sandboxBottleName }) {
+            return existing
+        }
+        guard let engine = preferredEngine,
+              var bottle = await createBottle(name: Self.sandboxBottleName, windowsVersion: .win10, engine: engine) else { return nil }
+        bottle.config.isolation = .files
+        bottle.config.notes = String(localized: "Isolated: programs here cannot read or change your Mac's files or start Mac programs.")
+        await update(bottle)
+        return self.bottle(id: bottle.id)
     }
 
     func open(url: URL) {
         if url.isFileURL {
             open(file: url)
+        } else if let forwarded = LinkBridge.parseForwarded(url), let bottle = bottle(id: forwarded.bottleID) {
+            // A link a Windows program registered, passed on by the bottle's link helper.
+            if let handler = LinkBridge.handlerCommand(for: forwarded.link, in: bottle) {
+                run(command: handler.program, arguments: handler.arguments, in: bottle)
+            } else {
+                run(command: "start", arguments: [forwarded.link], in: bottle)
+            }
         } else if url.scheme?.lowercased() == "koprik", url.host()?.lowercased() == "show" {
             show(section: url.pathComponents.filter { $0 != "/" })
         } else if let target = AppLauncherBuilder.parse(url),

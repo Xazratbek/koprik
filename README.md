@@ -19,9 +19,11 @@ It is not affiliated with CodeWeavers. It contains no CrossOver code: the engine
 - **Bottles.** Separate Windows environments, each with its own C: drive and registry. A new bottle takes under a second (cloned from a ready-made prefix on APFS). Duplicate, rename, move to the Trash, snapshot and roll back.
 - **Library.** Programs are found automatically from Start Menu shortcuts and Steam's manifests, with real icons from the `.exe` and Steam cover art. Favourites, recently played and play time.
 - **Per-program settings.** Graphics backend, sync mode, HUDs, AVX, ray tracing, environment variables, DLL overrides and arguments can be set for each program, not just each bottle. Settings stack: engine defaults, then the bottle, then the program, then a one-off "Play With".
+- **Sign-in links come back.** Links that Windows programs register (`notion://`, `zoommtg://`, ...) are taken over on the Mac side and handed to the program in its bottle, so "Continue in browser" sign-ins work.
 - **Graphics.** DXMT (Direct3D 10/11 to Metal), DXVK (Direct3D to Vulkan over MoltenVK), wined3d, and Apple's D3DMetal once you import the Game Porting Toolkit. "Auto" reads the program's import table to pick one and shows why.
 - **Smooth, low-latency games.** Wine runs inside an app bundle that macOS recognises as a game, so Game Mode turns on in full screen, and full-screen games get the display to themselves instead of going through the compositor. On an M2 Pro, Brawlhalla went from 30-55 to 90-115 FPS in a four-player match, with less input lag. Per-program frame rate caps and MetalFX upscaling (DXMT) are one click away.
 - **Steam that works.** Steam's interface is drawn on DXVK, the only backend it renders correctly with. Games are started directly with their own backend placed in the game folder, so a game can use DXMT while Steam keeps running. The Steam overlay, which crashes under Wine and takes the client down with it, is switched off.
+- **Untrusted programs can't touch your Mac.** Wine itself is not a sandbox: a Windows program can read and change your files (tested: a plain `cmd` command wrote to the Mac desktop). Ko'prik runs any `.exe` you open from outside Steam and the stores in an isolated bottle, inside macOS's own kernel sandbox: no access to your home folder, no Mac programs can be started, no Apple Events to other apps, and optionally no internet. The Windows program cannot switch it off. The same write attempt is refused with "Access denied".
 - **Any Windows program.** Drop an `.exe`, `.msi` or installer on the window. Electron apps (Notion, Discord, Slack, ...) install and run: Ko'prik works around Wine's PowerShell stub that makes their installers stop with "app is running", and draws them on DXVK, where they render. Tested with Notion and Zoom.
 - **Epic Games and GOG without their launchers.** Sign in, browse your library, install into a bottle and play, through [legendary](https://github.com/derrod/legendary) and [heroic-gogdl](https://github.com/Heroic-Games-Launcher/heroic-gogdl).
 - **Installing software.** Unattended recipes for Steam, Epic Games Launcher, GOG Galaxy, Battle.net, EA app, Ubisoft Connect, Rockstar and 7-Zip; a winetricks picker for runtimes and fonts. A snapshot is taken first, so an install that goes wrong can be undone.
@@ -44,6 +46,7 @@ It is not affiliated with CodeWeavers. It contains no CrossOver code: the engine
 | Epic and GOG games without their launchers | No | Yes |
 | Frame rate cap and MetalFX upscaling per program | No | Yes |
 | Shortcuts, Quick Look, controller tester, save backups | No | Yes |
+| Untrusted programs sandboxed away from your files | No | Yes, by default |
 | Anti-cheat warning before download | No | Yes |
 | Install recipes | Thousands, tested by staff | A handful, plus winetricks |
 | Support | Paid staff | None |
@@ -109,7 +112,7 @@ Run the tests with `cd KoprikKit && swift test`.
 
 ## Status
 
-Ko'prik is young and was built for one person's Mac first. Tested so far on an M2 Pro with macOS 27: Notepad, silent 7-Zip install, the Steam client (sign-in, store, library, downloads), Brawlhalla on DXMT, DXVK and wined3d with Game Mode on, Notion and Zoom. See [docs/SINOV.md](docs/SINOV.md) for results and measurements. DirectX 12 through D3DMetal has not been tested yet.
+Ko'prik is young and was built for one person's Mac first. Tested so far on an M2 Pro with macOS 27: Notepad, silent 7-Zip install, the Steam client (sign-in, store, library, downloads), Brawlhalla on DXMT, DXVK and wined3d with Game Mode on, Notion and Zoom. See [docs/SINOV.md](docs/SINOV.md) for results and measurements. DirectX 12 through D3DMetal (Game Porting Toolkit 4.0 beta 3) was tested with a small Direct3D 12 program in `scripts/dx12-test`: feature level 12_2, a steady 120 FPS on a 120 Hz display.
 
 ## Credits and licences
 

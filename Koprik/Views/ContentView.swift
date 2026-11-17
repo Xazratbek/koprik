@@ -95,7 +95,7 @@ struct SidebarView: View {
                     Label {
                         Text(verbatim: bottle.name)
                     } icon: {
-                        Image(systemName: model.runningBottles.contains(bottle.id) ? "cylinder.split.1x2.fill" : "cylinder.split.1x2")
+                        Image(systemName: (bottle.config.isolation ?? .off).isOn ? "lock.shield" : (model.runningBottles.contains(bottle.id) ? "cylinder.split.1x2.fill" : "cylinder.split.1x2"))
                             .foregroundStyle(model.runningBottles.contains(bottle.id) ? Color.green : Color.accentColor)
                     }
                     .tag(SidebarItem.bottle(bottle.id))

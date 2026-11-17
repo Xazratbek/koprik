@@ -19,7 +19,7 @@ public struct BottleTools: Sendable {
     }
 
     private func wine(_ arguments: [String], label: String) async throws -> Int32 {
-        try await WineRunner(engine: engine).run(arguments, environment: environment, logURL: bottle.newLogURL(label: label))
+        try await WineRunner.forBottle(bottle, engine: engine).run(arguments, environment: environment, logURL: bottle.newLogURL(label: label))
     }
 
     // MARK: Registry

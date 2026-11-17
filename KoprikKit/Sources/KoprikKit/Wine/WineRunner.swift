@@ -91,9 +91,12 @@ public final class WineProcess: @unchecked Sendable {
 /// Starts Wine from a particular engine.
 public struct WineRunner: Sendable {
     public let engine: Engine
+    /// A Seatbelt profile; when set, every process starts inside it (see Isolation).
+    public let sandboxProfile: String?
 
-    public init(engine: Engine) {
+    public init(engine: Engine, sandboxProfile: String? = nil) {
         self.engine = engine
+        self.sandboxProfile = sandboxProfile
     }
 
     /// Starts `wine <arguments>` and returns immediately.
@@ -182,7 +185,14 @@ public struct WineRunner: Sendable {
             posix_spawn_file_actions_addchdir_np(&actions, workingDirectory.path)
         }
 
-        let argv = ([executable.path] + arguments).map { strdup($0) } + [nil]
+        // In an isolated bottle the process starts inside the sandbox, and so does everything it starts.
+        var program = executable
+        var commandLine = [executable.path] + arguments
+        if let sandboxProfile {
+            program = Sandbox.executable
+            commandLine = [Sandbox.executable.path, "-p", sandboxProfile, executable.path] + arguments
+        }
+        let argv = commandLine.map { strdup($0) } + [nil]
         let envp = environment.map { strdup("\($0.key)=\($0.value)") } + [nil]
         defer {
             argv.forEach { free($0) }
@@ -190,7 +200,7 @@ public struct WineRunner: Sendable {
         }
 
         var pid: pid_t = 0
-        let result = posix_spawn(&pid, executable.path, &actions, &attributes, argv, envp)
+        let result = posix_spawn(&pid, program.path, &actions, &attributes, argv, envp)
         guard result == 0 else {
             throw KoprikError.commandFailed(
                 command: executable.lastPathComponent, status: result,

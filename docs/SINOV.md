@@ -126,6 +126,31 @@ Topilgan qo'shimcha buglar: B16 Wine `find.exe` hech qachon moslik topmaydi (bu 
 
 **Quick Look:** kengaytma ro'yxatdan o'tdi, `qlmanage -t` `.exe` uchun ikonka chizadi.
 
+### 2026-11-17 kechqurun: DX12, havolalar, izolyatsiya
+
+**DX12 / D3DMetal.** Foydalanuvchi Apple'dan "Evaluation environment for Windows games 4.0 beta 3" (26.6 MB) ni yukladi; `koprik engine import-gptk` 4 s da import qildi (Apple imzosi tekshirildi), "Koprik Game.app" qayta qurildi. Kichik bepul DX12 o'yin topilmagani uchun `scripts/dx12-test/dx12test.cpp` (mingw-w64 bilan yig'ilgan, qurilma + swapchain + har kadr tozalash) ishlatildi:
+
+| Natija | |
+|---|---|
+| Adapter | "AMD Compatibility Mode" (D3DMetal), 12 GB |
+| Maksimal daraja | Direct3D 12_2 |
+| FPS (15 s) | o'rtacha 120.0, min 119.9, max 120.1 (120 Hz ekran) |
+| Auto backend | D3DMetal ("The program uses Direct3D 12") |
+
+**Havolalar (Notion login).** Wine'ning `start notion://...` buyrug'i HKCU'da ro'yxatdan o'tgan protokollarni topmaydi ("no application associated", B19). Ko'prik endi protokollarni registrdan o'qiydi, har bottle uchun `~/Applications/Koprik/Links/<bottle> Links.app` (AppleScript applet) yaratadi va ishlovchi buyruqni o'zi ishga tushiradi. Mac'da `open "notion://www.notion.so/koprik-link-test"` 13 s da `Notion.exe notion://www.notion.so/koprik-link-test` ni ochdi. Haqiqiy login foydalanuvchi akkaunti bilan sinalmagan.
+
+**Izolyatsiya.** Oddiy bottle'da `cmd /c echo ... > Z:\Users\<u>\Desktop\...` Mac ish stoliga **yozdi** (xavf isbotlandi). Izolyatsiyalangan bottle (`sandbox-exec` + Seatbelt profili):
+
+| Hujum | Natija |
+|---|---|
+| Ish stoliga yozish (Z: olib tashlangan) | yo'q |
+| Ish stoliga yozish (Z: ataylab qaytarilgan) | **Access denied** |
+| `Documents` dagi faylni o'qish | **Access denied** |
+| Notepad, o'rnatuvchilar | ishlaydi |
+| `Downloads` dan ochilgan `.exe` | bottle ichiga nusxalanib, "Sandbox" bottle'da ishladi |
+
+Topilgan: B20 Seatbelt `/var` emas `/private/var` ni solishtiradi (profil yo'llari `realpath` dan o'tkaziladi); B21 sandbox'da yo'llar uchun metama'lumot o'qish ruxsati kerak, aks holda `could not load ntdll.so`; B22 `install.sh` ishlab turgan ilovani yopolmagan, eski kod havolalarga javob bergan.
+
 ### Unumdorlik o'lchovlari
 
 | O'lchov | Qiymat |

@@ -91,6 +91,15 @@ public struct Launcher: Sendable {
         overrides: LaunchSettings = LaunchSettings(),
         wait: Bool = true
     ) async throws -> Launch {
+        // An isolated bottle cannot read the Mac's folders, so a file from
+        // outside (an installer in Downloads, say) is copied in and run from there.
+        var target = target
+        if (bottle.config.isolation ?? .off).isOn, case .file(let url, let extra) = target,
+           !url.standardizedFileURL.path.hasPrefix(bottle.directory.standardizedFileURL.path) {
+            target = .file(try importIntoBottle(url), arguments: extra)
+        }
+        if (bottle.config.isolation ?? .off).isOn { await sealBottle() }
+
         var settings = resolvedSettings(for: target, overrides: overrides)
         let decision = decide(for: target, settings: settings)
         settings.backend = decision.backend
@@ -101,7 +110,7 @@ public struct Launcher: Sendable {
         }
         await applyDisplayMode()
 
-        let runner = WineRunner(engine: engine)
+        let runner = WineRunner.forBottle(bottle, engine: engine)
         var environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: settings)
 
         // Steam games are started directly rather than through `steam.exe
@@ -214,6 +223,34 @@ public struct Launcher: Sendable {
         return Launch(process: process, graphics: decision, settings: settings, environment: environment, arguments: arguments)
     }
 
+    /// Copies a file from the Mac into the bottle's Public Downloads folder (C:\\users\\Public\\Downloads\\Koprik).
+    func importIntoBottle(_ url: URL) throws -> URL {
+        let folder = bottle.driveC.appending(path: "users/Public/Downloads/Koprik", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let destination = folder.appending(path: url.lastPathComponent)
+        let manager = FileManager.default
+        if manager.fileExists(atPath: destination.path) {
+            if manager.contentsEqual(atPath: url.path, andPath: destination.path) { return destination }
+            try manager.removeItem(at: destination)
+        }
+        try manager.copyItem(at: url, to: destination)
+        return destination
+    }
+
+    /// Removes the drive letters and folder links that point out of an
+    /// isolated bottle, once. The sandbox already blocks them; this keeps
+    /// Windows programs from even seeing the Mac's disk.
+    private func sealBottle() async {
+        let marker = bottle.directory.appending(path: ".sealed")
+        guard !FileManager.default.fileExists(atPath: marker.path) else { return }
+        do {
+            try BottleTools(bottle: bottle, engine: engine).restrictFileAccess()
+            FileManager.default.createFile(atPath: marker.path, contents: nil)
+        } catch {
+            // The sandbox still protects the Mac if this fails.
+        }
+    }
+
     /// Writes the bottle's full-screen mode into Wine's Mac driver settings,
     /// once per change. The driver reads it when each program starts.
     private func applyDisplayMode() async {
@@ -221,7 +258,7 @@ public struct Launcher: Sendable {
         let marker = bottle.directory.appending(path: ".display-mode")
         if (try? String(contentsOf: marker, encoding: .utf8)) == wanted { return }
         let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Self.baseSettings(engine: engine, bottle: bottle))
-        let status = try? await WineRunner(engine: engine).run(
+        let status = try? await WineRunner.forBottle(bottle, engine: engine).run(
             ["reg", "add", "HKCU\\Software\\Wine\\Mac Driver", "/v", "CaptureDisplaysForFullscreen", "/t", "REG_SZ", "/d", wanted, "/f"],
             environment: environment, logURL: bottle.newLogURL(label: "display-mode")
         )
@@ -244,7 +281,7 @@ public struct Launcher: Sendable {
             try Graphics.prepare(.dxvk, engine: engine, prefix: bottle.prefix)
             BottleActivity.setActiveBackend(.dxvk, of: bottle)
         }
-        _ = try WineRunner(engine: engine).launch(
+        _ = try WineRunner.forBottle(bottle, engine: engine).launch(
             [steamClientPath(steam), "-silent"],
             environment: WineEnvironment.build(
                 engine: engine, prefix: bottle.prefix,
@@ -290,7 +327,7 @@ public struct Launcher: Sendable {
     /// termination), leaving the rest of the bottle running.
     public func stop(programNamed executableName: String) async {
         let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Launcher.baseSettings(engine: engine, bottle: bottle))
-        let runner = WineRunner(engine: engine)
+        let runner = WineRunner.forBottle(bottle, engine: engine)
         let log = bottle.newLogURL(label: "stop")
         _ = try? await runner.run(["taskkill", "/IM", executableName], environment: environment, logURL: log)
         await BottleActivity.waitForProcess(named: executableName, toExitWithin: .seconds(10))
@@ -338,7 +375,7 @@ public struct Launcher: Sendable {
     public func stopAll() async {
         let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Launcher.baseSettings(engine: engine, bottle: bottle))
         // `wineserver -k` exits non-zero when nothing was running, which is fine here.
-        _ = try? await WineRunner(engine: engine)
+        _ = try? await WineRunner.forBottle(bottle, engine: engine)
             .wineserver(["-k"], environment: environment, logURL: bottle.newLogURL(label: "kill"))
         await BottleActivity.killOrphans(of: bottle)
     }

@@ -1873,6 +1873,38 @@
         }
       }
     },
+    "Isolated": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izolyatsiyalangan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изолирована"
+          }
+        }
+      }
+    },
+    "Isolated: programs here cannot read or change your Mac's files or start Mac programs.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izolyatsiyalangan: bu yerdagi dasturlar Mac fayllaringizni o'qiy, o'zgartira yoki Mac dasturlarini ishga tushira olmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изолирована: программы здесь не могут читать или менять файлы Mac и запускать программы Mac."
+          }
+        }
+      }
+    },
     "Isolation": {
       "localizations": {
         "uz": {
@@ -2493,6 +2525,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Выкл."
+          }
+        }
+      }
+    },
+    "Off: full access, for trusted software": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'chiq: to'liq kirish, ishonchli dasturlar uchun"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выкл.: полный доступ, для доверенных программ"
+          }
+        }
+      }
+    },
+    "On: no access to your files or Mac programs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yoqiq: fayllaringiz va Mac dasturlariga kirish yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вкл.: нет доступа к вашим файлам и программам Mac"
           }
         }
       }
@@ -3249,6 +3313,22 @@
         }
       }
     },
+    "Security": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xavfsizlik"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Безопасность"
+          }
+        }
+      }
+    },
     "Select a program to see and change how it runs.": {
       "localizations": {
         "uz": {
@@ -3549,6 +3629,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Хранилище"
+          }
+        }
+      }
+    },
+    "Strict: also no internet": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qat'iy: internet ham yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Строго: ещё и без интернета"
           }
         }
       }
@@ -4029,6 +4125,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Движок Wine"
+          }
+        }
+      }
+    },
+    "Wine is not a sandbox: without isolation a Windows program can read and change your files. Isolated bottles run inside macOS's own sandbox, which a Windows program cannot switch off. Files you open from outside are copied in. Takes effect the next time the bottle starts.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine qum qutisi emas: izolyatsiyasiz Windows dasturi fayllaringizni o'qiy va o'zgartira oladi. Izolyatsiyalangan bottle'lar macOS'ning o'z sandbox'i ichida ishlaydi, Windows dasturi uni o'chira olmaydi. Tashqaridan ochilgan fayllar ichkariga nusxalanadi. Bottle keyingi ishga tushganda kuchga kiradi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine — не песочница: без изоляции программа Windows может читать и менять ваши файлы. Изолированные бутылки работают в собственной песочнице macOS, которую программа Windows не может отключить. Открываемые снаружи файлы копируются внутрь. Вступает в силу при следующем запуске бутылки."
           }
         }
       }

@@ -69,6 +69,10 @@ struct BottleView: View {
                             Text(verbatim: "·")
                             Text("Running").foregroundStyle(.green)
                         }
+                        if (bottle.config.isolation ?? .off).isOn {
+                            Text(verbatim: "·")
+                            Label("Isolated", systemImage: "lock.shield.fill").foregroundStyle(.blue)
+                        }
                     }
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -162,6 +166,18 @@ struct BottleSettingsSheet: View {
                     }
                     TextField("Notes", text: $config.notes, axis: .vertical)
                         .lineLimit(2...4)
+                }
+
+                Section {
+                    Picker("Isolation", selection: Binding(get: { config.isolation ?? .off }, set: { config.isolation = $0 })) {
+                        Text("Off: full access, for trusted software").tag(Isolation.off)
+                        Text("On: no access to your files or Mac programs").tag(Isolation.files)
+                        Text("Strict: also no internet").tag(Isolation.full)
+                    }
+                } header: {
+                    Text("Security")
+                } footer: {
+                    Text("Wine is not a sandbox: without isolation a Windows program can read and change your files. Isolated bottles run inside macOS's own sandbox, which a Windows program cannot switch off. Files you open from outside are copied in. Takes effect the next time the bottle starts.")
                 }
 
                 Section("Graphics and performance") {

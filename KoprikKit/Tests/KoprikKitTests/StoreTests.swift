@@ -107,3 +107,84 @@ import Testing
         #expect(try String(contentsOf: user.appending(path: "Saved Games/Game/slot1.sav"), encoding: .utf8) == "save")
     }
 }
+
+@Suite struct LinkBridgeTests {
+    private let registry = #"""
+    [Software\\Classes\\notion] 1794922810
+    @="URL:notion"
+    "URL Protocol"=""
+
+    [Software\\Classes\\notion\\shell\\open\\command] 1794922810
+    @="\"C:\\users\\crossover\\AppData\\Local\\Programs\\Notion\\Notion.exe\" \"%1\""
+
+    [Software\\Classes\\https] 1
+    "URL Protocol"=""
+
+    [Software\\Classes\\.txt] 1
+    @="txtfile"
+    """#
+
+    @Test func findsRegisteredSchemesButNotWebOnes() {
+        #expect(LinkBridge.schemes(inRegistry: registry) == ["notion", "https"])
+    }
+
+    @Test func readsTheHandlerCommand() {
+        #expect(LinkBridge.command(for: "notion", inRegistry: registry)
+            == #""C:\users\crossover\AppData\Local\Programs\Notion\Notion.exe" "%1""#)
+    }
+
+    @Test func forwardedLinksKeepTheirOwnSlashes() throws {
+        let id = UUID()
+        let url = try #require(URL(string: "koprik://open-url/\(id.uuidString)/notion://www.notion.so/login?code=a%2Fb"))
+        let parsed = LinkBridge.parseForwarded(url)
+        #expect(parsed?.bottleID == id)
+        #expect(parsed?.link == "notion://www.notion.so/login?code=a%2Fb")
+        #expect(LinkBridge.parseForwarded(try #require(URL(string: "koprik://open-url/\(id.uuidString)/https://evil.example"))) == nil)
+    }
+}
+
+@Suite struct IsolationTests {
+    private let home = URL(fileURLWithPath: "/Users/someone", isDirectory: true)
+    private var bottle: Bottle {
+        Bottle(config: BottleConfig(name: "Sandbox", engineID: "e"), directory: URL(fileURLWithPath: "/Users/someone/Library/Application Support/Koprik/Bottles/X", isDirectory: true))
+    }
+
+    @Test func blocksTheHomeFolderAndForeignProgramsButKeepsTheBottle() {
+        let profile = Sandbox.profile(for: bottle, engine: sampleEngine(), isolation: .files, home: home)
+        #expect(profile.contains(#"(deny file-read* file-write* (subpath "/Users/someone"))"#))
+        #expect(profile.contains(#"(allow file-write* (subpath "/Users/someone/Library/Application Support/Koprik/Bottles/X")"#))
+        #expect(profile.contains("(deny process-exec*)"))
+        #expect(profile.contains(#"(allow process-exec* (subpath "/engines/sample"))"#))
+        #expect(profile.contains("(deny appleevent-send)"))
+        #expect(!profile.contains("network"))
+        // Documents is not on the allowlist.
+        #expect(!profile.contains("Documents"))
+    }
+
+    @Test func strictIsolationAlsoCutsTheNetwork() {
+        let profile = Sandbox.profile(for: bottle, engine: sampleEngine(), isolation: .full, home: home)
+        #expect(profile.contains("(deny network-outbound (remote ip))"))
+    }
+
+    @Test func onlyIsolatedBottlesGetASandboxedRunner() {
+        var config = BottleConfig(name: "B", engineID: "e")
+        #expect(WineRunner.forBottle(Bottle(config: config, directory: home), engine: sampleEngine()).sandboxProfile == nil)
+        config.isolation = .files
+        #expect(WineRunner.forBottle(Bottle(config: config, directory: home), engine: sampleEngine()).sandboxProfile != nil)
+    }
+
+    @Test func aSandboxedProcessCannotWriteOutsideItsBottle() async throws {
+        let scratch = try Scratch()
+        let bottle = Bottle(config: BottleConfig(name: "B", engineID: "e"), directory: scratch.root.appending(path: "bottle", directoryHint: .isDirectory))
+        try FileManager.default.createDirectory(at: bottle.directory, withIntermediateDirectories: true)
+        let outside = scratch.root.appending(path: "outside.txt")
+        let inside = bottle.directory.appending(path: "inside.txt")
+        // The "home" is the scratch root, so everything outside the bottle in it is off limits.
+        let profile = Sandbox.profile(for: bottle, engine: sampleEngine(), isolation: .files, home: scratch.root)
+            .replacingOccurrences(of: "(deny process-exec*)", with: "")
+        let script = "echo x > '\(outside.path)'; echo x > '\(inside.path)'"
+        _ = try await ProcessRunner.run(Sandbox.executable, arguments: ["-p", profile, "/bin/sh", "-c", script])
+        #expect(!FileManager.default.fileExists(atPath: outside.path))
+        #expect(FileManager.default.fileExists(atPath: inside.path))
+    }
+}

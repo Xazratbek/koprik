@@ -16,3 +16,5 @@ xcuserdata/
 *.dmg
 *.app
 build/
+scripts/dx12-test/*.exe
+scripts/dx12-test/*.log

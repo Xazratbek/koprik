@@ -16,6 +16,8 @@ public struct BottleConfig: Codable, Sendable, Equatable, Identifiable {
     /// frame of input latency and was worth 30-55 to 90-115 FPS in
     /// Brawlhalla. `nil` means on. Off suits programs that switch away often.
     public var exclusiveFullscreen: Bool?
+    /// Walls the bottle off from the Mac. `nil` means off.
+    public var isolation: Isolation?
 
     public init(
         id: UUID = UUID(),

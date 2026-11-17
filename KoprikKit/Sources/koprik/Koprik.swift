@@ -7,7 +7,7 @@ struct Koprik: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "koprik",
         abstract: "Run Windows programs on macOS through Wine.",
-        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Stop.self, Programs.self, Processes.self, Kill.self, Env.self]
+        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Stop.self, Programs.self, Processes.self, Kill.self, Env.self, Links.self]
     )
 }
 
@@ -46,7 +46,7 @@ struct EngineCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "engine",
         abstract: "Manage Wine builds.",
-        subcommands: [List.self, Install.self, Import.self, Remove.self, GameMode.self]
+        subcommands: [List.self, Install.self, Import.self, Remove.self, GameMode.self, ImportGPTK.self]
     )
 
     struct List: AsyncParsableCommand {
@@ -116,6 +116,31 @@ struct EngineCommand: AsyncParsableCommand {
         }
     }
 
+    struct ImportGPTK: AsyncParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "import-gptk",
+            abstract: "Install Apple's Game Porting Toolkit (D3DMetal) into an engine, for DirectX 12 games."
+        )
+
+        @Argument(help: "The toolkit's .dmg or a folder containing its redist/lib.") var path: String
+        @Option(help: "Engine id. Defaults to the newest D3DMetal-capable engine.") var engine: String?
+
+        func run() async throws {
+            let store = EngineStore()
+            let target: Engine
+            if let engine {
+                target = try await store.engine(id: engine)
+            } else if let preferred = try await store.preferred(), preferred.manifest.d3dmetalCapable {
+                target = preferred
+            } else {
+                throw ValidationError("No D3DMetal-capable engine installed. Run: koprik engine install gaming")
+            }
+            let url = URL(fileURLWithPath: (path as NSString).expandingTildeInPath)
+            let version = try await GPTKImporter.importToolkit(from: url, into: target)
+            print("Imported D3DMetal \(version ?? "(version unknown)") into \(target.id)")
+        }
+    }
+
     struct GameMode: AsyncParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "game-mode",
@@ -166,6 +191,7 @@ extension WindowsVersion: ExpressibleByArgument {}
 extension GraphicsBackend: ExpressibleByArgument {}
 extension SyncMode: ExpressibleByArgument {}
 extension DXVKHud: ExpressibleByArgument {}
+extension Isolation: ExpressibleByArgument {}
 
 // MARK: - bottle
 
@@ -196,6 +222,7 @@ struct BottleCommand: AsyncParsableCommand {
         @Argument var name: String
         @Option(help: "Engine id. Defaults to the newest D3DMetal-capable engine.") var engine: String?
         @Option(name: .customLong("windows"), help: "win7, win8, win81, win10 or win11.") var windowsVersion: WindowsVersion = .win10
+        @Option(help: "off, files (no access to your files or Mac programs) or full (also no internet).") var isolation: Isolation = .off
 
         func run() async throws {
             guard await Rosetta.isAvailable() else { throw KoprikError.rosettaMissing }
@@ -209,7 +236,12 @@ struct BottleCommand: AsyncParsableCommand {
                 throw ValidationError("No engine installed. Run: koprik engine install gaming")
             }
             print("Creating \"\(name)\" on \(chosen.id) (this takes up to a minute)...")
-            let bottle = try await BottleStore().create(name: name, engine: chosen, windowsVersion: windowsVersion)
+            let store = BottleStore()
+            var bottle = try await store.create(name: name, engine: chosen, windowsVersion: windowsVersion)
+            if isolation.isOn {
+                bottle.config.isolation = isolation
+                bottle = try await store.save(bottle)
+            }
             print("Created \(bottle.name) at \(bottle.directory.path)")
         }
     }
@@ -439,6 +471,20 @@ struct Stop: AsyncParsableCommand {
         let stillRunning = await BottleActivity.isProcessRunning(named: executable)
         print(stillRunning ? "\(executable) is still running" : "Closed \(executable)")
         if stillRunning { throw ExitCode.failure }
+    }
+}
+
+struct Links: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        abstract: "Make links that Windows programs registered (notion://, zoommtg://) open them from the Mac."
+    )
+
+    @Argument var bottle: String
+
+    func run() async throws {
+        let (bottle, _) = try await resolve(bottleNamed: bottle)
+        let schemes = try await LinkBridge.update(for: bottle)
+        print(schemes.isEmpty ? "No links registered in \(bottle.name)." : "\(bottle.name) now handles: \(schemes.map { $0 + "://" }.joined(separator: ", "))")
     }
 }
 

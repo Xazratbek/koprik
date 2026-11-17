@@ -30,7 +30,7 @@ jobs:
         env:
           WINECX_COMMIT: ${{ inputs.winecx_commit }}
           RUNTIME_VERSION: ${{ inputs.version }}
-        run: scripts/build-engine.sh "$RUNNER_TEMP/engine"
+        run: bash scripts/build-engine.sh "$RUNNER_TEMP/engine"
 
       - name: Keep the build log on failure
         if: failure()

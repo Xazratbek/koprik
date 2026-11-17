@@ -261,15 +261,30 @@ public struct Launcher: Sendable {
     /// Writes the bottle's full-screen mode into Wine's Mac driver settings,
     /// once per change. The driver reads it when each program starts.
     private func applyDisplayMode() async {
-        let wanted = (bottle.config.exclusiveFullscreen ?? true) ? "Y" : "N"
+        let capture = (bottle.config.exclusiveFullscreen ?? true) ? "Y" : "N"
+        let retina = (bottle.config.highResolution ?? true) ? "Y" : "N"
+        let wanted = "capture=\(capture);retina=\(retina)"
         let marker = bottle.directory.appending(path: ".display-mode")
         if (try? String(contentsOf: marker, encoding: .utf8)) == wanted { return }
         let environment = WineEnvironment.build(engine: engine, prefix: bottle.prefix, settings: Self.baseSettings(engine: engine, bottle: bottle))
-        let status = try? await WineRunner.forBottle(bottle, engine: engine).run(
-            ["reg", "add", "HKCU\\Software\\Wine\\Mac Driver", "/v", "CaptureDisplaysForFullscreen", "/t", "REG_SZ", "/d", wanted, "/f"],
-            environment: environment, logURL: bottle.newLogURL(label: "display-mode")
-        )
-        if status == 0 { try? wanted.write(to: marker, atomically: true, encoding: .utf8) }
+        let runner = WineRunner.forBottle(bottle, engine: engine)
+        let log = bottle.newLogURL(label: "display-mode")
+        let macDriver = "HKCU\\Software\\Wine\\Mac Driver"
+        let commands: [[String]] = [
+            ["reg", "add", macDriver, "/v", "CaptureDisplaysForFullscreen", "/t", "REG_SZ", "/d", capture, "/f"],
+            // Retina: Wine draws at the panel's pixel resolution, and Windows
+            // scales its interface to 200% (192 DPI) so it keeps its size.
+            ["reg", "add", macDriver, "/v", "RetinaMode", "/t", "REG_SZ", "/d", retina, "/f"],
+            ["reg", "add", "HKCU\\Control Panel\\Desktop", "/v", "LogPixels", "/t", "REG_DWORD", "/d", retina == "Y" ? "192" : "96", "/f"],
+            ["reg", "add", "HKCU\\Control Panel\\Desktop", "/v", "FontSmoothing", "/t", "REG_SZ", "/d", "2", "/f"],
+            ["reg", "add", "HKCU\\Control Panel\\Desktop", "/v", "FontSmoothingType", "/t", "REG_DWORD", "/d", "2", "/f"],
+        ]
+        var succeeded = true
+        for command in commands {
+            let status = try? await runner.run(command, environment: environment, logURL: log)
+            if status != 0 { succeeded = false }
+        }
+        if succeeded { try? wanted.write(to: marker, atomically: true, encoding: .utf8) }
     }
 
     /// Starts the Windows Steam client in the background if it is not running,

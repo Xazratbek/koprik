@@ -3377,6 +3377,22 @@
         }
       }
     },
+    "Sharp text at the display's full resolution. Heavier on the GPU in games. Takes effect the next time the bottle starts.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekranning to'liq aniqligida tiniq matn. O'yinlarda GPU'ga og'irroq. Bottle keyingi ishga tushganda kuchga kiradi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чёткий текст в полном разрешении экрана. В играх нагружает GPU сильнее. Вступает в силу при следующем запуске бутылки."
+          }
+        }
+      }
+    },
     "Sharper picture, heavier on the GPU. Applied when you press Save.": {
       "localizations": {
         "uz": {

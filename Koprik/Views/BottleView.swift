@@ -141,7 +141,6 @@ struct BottleSettingsSheet: View {
     let bottle: Bottle
 
     @State private var config: BottleConfig
-    @State private var retina = false
     @State private var commandIsControl = false
     @State private var busy = false
 
@@ -195,10 +194,10 @@ struct BottleSettingsSheet: View {
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }
-                    Toggle(isOn: $retina) {
+                    Toggle(isOn: Binding(get: { config.highResolution ?? true }, set: { config.highResolution = $0 })) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("High resolution (Retina) mode")
-                            Text("Sharper picture, heavier on the GPU. Applied when you press Save.")
+                            Text("Sharp text at the display's full resolution. Heavier on the GPU in games. Takes effect the next time the bottle starts.")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }
@@ -245,7 +244,6 @@ struct BottleSettingsSheet: View {
                     if config.windowsVersion != bottle.config.windowsVersion {
                         try await tools.setWindowsVersion(config.windowsVersion)
                     }
-                    if retina { try await tools.setRetinaMode(true) }
                     if commandIsControl { try await tools.setMacKeyboardMapping(commandIsControl: true, optionIsAlt: true) }
                 } catch {
                     model.present(error)

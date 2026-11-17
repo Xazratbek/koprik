@@ -18,6 +18,9 @@ public struct BottleConfig: Codable, Sendable, Equatable, Identifiable {
     public var exclusiveFullscreen: Bool?
     /// Walls the bottle off from the Mac. `nil` means off.
     public var isolation: Isolation?
+    /// Draw at the display's full Retina resolution with 200% Windows scaling,
+    /// so text is sharp instead of a 1x image stretched 2x. `nil` means on.
+    public var highResolution: Bool?
 
     public init(
         id: UUID = UUID(),

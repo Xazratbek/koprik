@@ -4,5 +4,14 @@
     <title>Ko'prik</title>
     <description>Most recent changes for Ko'prik.</description>
     <language>en</language>
+    <item>
+      <title>Version 0.2.0</title>
+      <pubDate>Tue, 17 Nov 2026 19:43:49 +0500</pubDate>
+      <sparkle:version>2</sparkle:version>
+      <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li>Game Mode and exclusive full screen for Windows games: 30-55 to 90-115 FPS in Brawlhalla on an M2 Pro, less input lag.</li><li>Epic Games and GOG without their launchers.</li><li>Electron installers (Notion, Discord, Slack) now install and run.</li><li>Frame rate cap and MetalFX upscaling per program.</li><li>Quick Look icons for .exe files, Shortcuts actions, controller tester, Whisky import, save backups.</li></ul>]]></description>
+      <enclosure url="https://github.com/Xazratbek/koprik/releases/download/v0.2.0/Koprik-0.2.0.dmg" type="application/octet-stream" sparkle:edSignature="vQMO+jShyOwYvlipmhAArB7knoKAhc6BipaDm2wPVuPpLdtSCTFmPtc+w2UOxzpgFuvcbZLFK+9HsH1NyVj+Bw==" length="3636283" />
+    </item>
   </channel>
 </rss>

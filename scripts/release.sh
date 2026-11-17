@@ -90,7 +90,12 @@ ITEM="    <item>
       <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
       <enclosure url=\"$URL_BASE/Koprik-$VERSION.dmg\" type=\"application/octet-stream\" $SIGNATURE />
     </item>"
-# Newest entry goes first, right after the channel description.
-awk -v item="$ITEM" '{ print } /<\/language>/ && !done { print item; done = 1 }' appcast.xml > "$OUT/appcast.xml"
+# Newest entry goes first, right after the channel description. The entry
+# spans several lines, which awk -v cannot take, so it is read from a file.
+printf '%s\n' "$ITEM" > "$OUT/item.xml"
+awk 'FNR == NR { item = item $0 "\n"; next } { print } /<\/language>/ && !done { printf "%s", item; done = 1 }' \
+  "$OUT/item.xml" appcast.xml > "$OUT/appcast.xml"
+test -s "$OUT/appcast.xml" || { echo "    failed to write the appcast"; exit 1; }
 mv "$OUT/appcast.xml" appcast.xml
+rm -f "$OUT/item.xml"
 echo "    appcast.xml updated. Review it, then publish the .dmg and the appcast."

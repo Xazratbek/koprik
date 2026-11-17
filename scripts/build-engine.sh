@@ -18,6 +18,8 @@ WINECX_COMMIT=${WINECX_COMMIT:-9f3f6447844add700bc0dde650e4f398fd5f69ab}
 DXMT_VERSION=0.80
 DXVK_TAG=v1.10.3-20230507-repack
 MOLTENVK_VERSION=1.4.2
+MONO_VERSION=11.3.0
+GECKO_VERSION=2.47.4
 RUNTIME_VERSION=${RUNTIME_VERSION:-0.1.0}
 JOBS=${JOBS:-$(( $(sysctl -n hw.ncpu) + 2 ))}
 X86_BREW=/usr/local/bin/brew
@@ -99,6 +101,16 @@ for lib in libMoltenVK.dylib libSDL2-2.0.0.dylib libfreetype.6.dylib libgnutls.3
   found=$(find "$X86_PREFIX/lib" "$X86_PREFIX/opt"/*/lib -maxdepth 1 -name "$lib" 2>/dev/null | head -1)
   [ -n "$found" ] && cp -L "$found" "$PKG/Wine/lib/"
 done
+step "Wine Mono $MONO_VERSION and Wine Gecko $GECKO_VERSION"
+# Without them every new bottle stops at a "Wine Mono Installer" dialog
+# while it is created (and .NET programs and HTML views do not work).
+mkdir -p "$PKG/Wine/share/wine/mono" "$PKG/Wine/share/wine/gecko"
+curl -fsSL "https://dl.winehq.org/wine/wine-mono/$MONO_VERSION/wine-mono-$MONO_VERSION-x86.tar.xz" | tar -xJ -C "$PKG/Wine/share/wine/mono"
+for arch in x86 x86_64; do
+  curl -fsSL "https://dl.winehq.org/wine/wine-gecko/$GECKO_VERSION/wine-gecko-$GECKO_VERSION-$arch.tar.xz" | tar -xJ -C "$PKG/Wine/share/wine/gecko"
+done
+ls "$PKG/Wine/share/wine/mono" "$PKG/Wine/share/wine/gecko"
+
 mkdir -p "$PKG/Wine/lib/external"
 printf 'Apple Game Porting Toolkit files are imported here by Ko'"'"'prik (Settings > Graphics).\n' > "$PKG/Wine/lib/external/README"
 

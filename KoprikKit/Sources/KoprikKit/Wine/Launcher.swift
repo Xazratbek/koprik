@@ -183,6 +183,9 @@ public struct Launcher: Sendable {
             workingDirectory = url.deletingLastPathComponent()
         case .command(let name, let extra):
             arguments = [name] + extra
+            // Inside the bottle, so stopAll finds it among the bottle's processes
+            // (it looks for leftovers by their working directory).
+            workingDirectory = bottle.driveC
         case .program(let program):
             switch program.kind {
             case .executable:

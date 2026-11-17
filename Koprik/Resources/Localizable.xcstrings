@@ -1,0 +1,3974 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld bottles": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ta bottle"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылок: %lld"
+          }
+        }
+      }
+    },
+    "%lld lines, %lld errors": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld qator, %lld xato"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Строк: %lld, ошибок: %lld"
+          }
+        }
+      }
+    },
+    "%lld reports": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ta hisobot"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отчётов: %lld"
+          }
+        }
+      }
+    },
+    "A bottle is a separate Windows environment with its own C: drive. Keeping unrelated software in separate bottles stops one from breaking another.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle o'z C: diskiga ega alohida Windows muhiti. Bir-biriga aloqasi yo'q dasturlarni alohida bottle'larda saqlasangiz, biri ikkinchisini buzmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылка — это отдельная среда Windows со своим диском C:. Если держать несвязанные программы в разных бутылках, одна не сломает другую."
+          }
+        }
+      }
+    },
+    "A language change takes effect the next time Ko'prik starts.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Til o'zgarishi Ko'prik keyingi safar ochilganda kuchga kiradi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смена языка вступит в силу при следующем запуске Ko'prik."
+          }
+        }
+      }
+    },
+    "A new bottle": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangi bottle"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая бутылка"
+          }
+        }
+      }
+    },
+    "A snapshot is a full copy of the bottle's C: drive and registry. Copies share disk space with the original until files change. Programs in the bottle are stopped first.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot bottle'ning C: diski va registrining to'liq nusxasi. Fayllar o'zgarmaguncha nusxa asl bilan bir joyni bo'lishadi. Avval bottle'dagi dasturlar to'xtatiladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимок — полная копия диска C: и реестра бутылки. Пока файлы не изменятся, копия делит место на диске с оригиналом. Сначала программы в бутылке останавливаются."
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur haqida"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "О программе"
+          }
+        }
+      }
+    },
+    "Activity": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faoliyat"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Активность"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo'shish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить"
+          }
+        }
+      }
+    },
+    "Add to Favorites": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sevimlilarga qo'shish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить в избранное"
+          }
+        }
+      }
+    },
+    "Advertise AVX": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AVX borligini bildirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сообщать о поддержке AVX"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hammasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все"
+          }
+        }
+      }
+    },
+    "Anti-cheat allows Wine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anti-cheat Wine'ga ruxsat beradi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Античит разрешает Wine"
+          }
+        }
+      }
+    },
+    "Anti-cheat blocks this game under Wine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anti-cheat bu o'yinni Wine'da bloklaydi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Античит блокирует эту игру в Wine"
+          }
+        }
+      }
+    },
+    "App launchers": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ilova yorliqlari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ярлыки приложений"
+          }
+        }
+      }
+    },
+    "Apple does not allow the toolkit to be redistributed, so Ko'prik cannot download it for you. Sign in with a free Apple developer account, download the disk image, then choose it with Import.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple bu to'plamni tarqatishga ruxsat bermaydi, shuning uchun Ko'prik uni o'zi yuklab ololmaydi. Bepul Apple dasturchi akkaunti bilan kiring, disk tasvirini yuklab oling va \"Import\" orqali ko'rsating."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple не разрешает распространять этот набор, поэтому Ko'prik не может скачать его сам. Войдите с бесплатной учётной записью разработчика Apple, скачайте образ диска и выберите его через «Импорт»."
+          }
+        }
+      }
+    },
+    "Apple's Direct3D 11/12 layer from the Game Porting Toolkit. Needed for DirectX 12 games.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple'ning Game Porting Toolkit'dagi Direct3D 11/12 qatlami. DirectX 12 o'yinlari uchun kerak."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Слой Direct3D 11/12 от Apple из Game Porting Toolkit. Нужен для игр на DirectX 12."
+          }
+        }
+      }
+    },
+    "Apps": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasturlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Программы"
+          }
+        }
+      }
+    },
+    "Arguments": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Argumentlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аргументы"
+          }
+        }
+      }
+    },
+    "Auto picks by the Direct3D version the program uses.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto dastur ishlatadigan Direct3D versiyasiga qarab tanlaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Авто» выбирает по версии Direct3D, которую использует программа."
+          }
+        }
+      }
+    },
+    "Backend": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backend"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бэкенд"
+          }
+        }
+      }
+    },
+    "Before installing mods": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modlarni o'rnatishdan oldin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перед установкой модов"
+          }
+        }
+      }
+    },
+    "Blocked by anti-cheat": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anti-cheat bloklagan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заблокировано античитом"
+          }
+        }
+      }
+    },
+    "Bottle": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылка"
+          }
+        }
+      }
+    },
+    "Bottle Actions": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle amallari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Действия с бутылкой"
+          }
+        }
+      }
+    },
+    "Bottle not found": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle topilmadi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылка не найдена"
+          }
+        }
+      }
+    },
+    "Bottles": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle'lar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылки"
+          }
+        }
+      }
+    },
+    "C: Drive": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C: disk"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Диск C:"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bekor qilish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
+        }
+      }
+    },
+    "Check Again": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qayta tekshirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверить снова"
+          }
+        }
+      }
+    },
+    "Check for Updates…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangilanishlarni tekshirish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверить обновления…"
+          }
+        }
+      }
+    },
+    "Check for updates automatically": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangilanishlarni avtomatik tekshirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверять обновления автоматически"
+          }
+        }
+      }
+    },
+    "Choose File…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fayl tanlash…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать файл…"
+          }
+        }
+      }
+    },
+    "Choose a Windows program or installer": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows dasturi yoki o'rnatuvchisini tanlang"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите программу или установщик Windows"
+          }
+        }
+      }
+    },
+    "Choose a Wine folder or archive": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine papkasi yoki arxivini tanlang"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите папку или архив Wine"
+          }
+        }
+      }
+    },
+    "Choose the Game Porting Toolkit disk image or folder": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Porting Toolkit disk tasviri yoki papkasini tanlang"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите образ диска или папку Game Porting Toolkit"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tozalash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Очистить"
+          }
+        }
+      }
+    },
+    "Clear Finished": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tugaganlarni tozalash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Убрать завершённые"
+          }
+        }
+      }
+    },
+    "Command": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buyruq"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Команда"
+          }
+        }
+      }
+    },
+    "Command acts as Ctrl": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command Ctrl vazifasini bajaradi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command работает как Ctrl"
+          }
+        }
+      }
+    },
+    "Compatibility": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moslik"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Совместимость"
+          }
+        }
+      }
+    },
+    "Components": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komponentlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Компоненты"
+          }
+        }
+      }
+    },
+    "Control Panel": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqaruv paneli"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Панель управления"
+          }
+        }
+      }
+    },
+    "Create": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yaratish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать"
+          }
+        }
+      }
+    },
+    "Create App Launcher": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ilova yorlig'ini yaratish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать ярлык приложения"
+          }
+        }
+      }
+    },
+    "Create a bottle first, then open the file again.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avval bottle yarating, keyin faylni qayta oching."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сначала создайте бутылку, затем откройте файл снова."
+          }
+        }
+      }
+    },
+    "Create a bottle, run a file or install software": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle yaratish, fayl ishga tushirish yoki dastur o'rnatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать бутылку, запустить файл или установить программу"
+          }
+        }
+      }
+    },
+    "Creating bottle": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle yaratilmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создание бутылки"
+          }
+        }
+      }
+    },
+    "DLL Overrides": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DLL override'lar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переопределения DLL"
+          }
+        }
+      }
+    },
+    "DXVK Frame Rate HUD": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DXVK kadr tezligi HUD"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HUD частоты кадров DXVK"
+          }
+        }
+      }
+    },
+    "DXVK async shaders": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DXVK asinxron sheyderlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Асинхронные шейдеры DXVK"
+          }
+        }
+      }
+    },
+    "Data folder": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma'lumotlar papkasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Папка данных"
+          }
+        }
+      }
+    },
+    "Default (%@)": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sukut (%@)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По умолчанию (%@)"
+          }
+        }
+      }
+    },
+    "Direct3D 10/11 to Metal. The default for most games.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct3D 10/11 ni Metal'ga o'giradi. Ko'p o'yinlar uchun sukut."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct3D 10/11 в Metal. По умолчанию для большинства игр."
+          }
+        }
+      }
+    },
+    "Direct3D 10/11 to Vulkan over MoltenVK. Used for store launchers.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct3D 10/11 ni MoltenVK orqali Vulkan'ga o'giradi. Do'kon launcherlari uchun ishlatiladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct3D 10/11 в Vulkan через MoltenVK. Используется для лаунчеров магазинов."
+          }
+        }
+      }
+    },
+    "DirectX Raytracing. Needs the Game Porting Toolkit and an M3 or newer for good results.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DirectX Raytracing. Game Porting Toolkit va yaxshi natija uchun M3 yoki yangiroq chip kerak."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DirectX Raytracing. Нужен Game Porting Toolkit, а для хорошего результата — M3 или новее."
+          }
+        }
+      }
+    },
+    "Display and keyboard": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekran va klaviatura"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экран и клавиатура"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tayyor"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklab olish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скачать"
+          }
+        }
+      }
+    },
+    "Download Engine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatelni yuklab olish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скачать движок"
+          }
+        }
+      }
+    },
+    "Download cache": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklab olish keshi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кэш загрузок"
+          }
+        }
+      }
+    },
+    "Download the Game Porting Toolkit from Apple": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Porting Toolkit'ni Apple'dan yuklab olish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скачать Game Porting Toolkit у Apple"
+          }
+        }
+      }
+    },
+    "Downloading": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklab olinmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загрузка"
+          }
+        }
+      }
+    },
+    "Downloads and installations will appear here.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklab olish va o'rnatishlar shu yerda ko'rinadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Здесь появятся загрузки и установки."
+          }
+        }
+      }
+    },
+    "Drop a Windows .exe anywhere in this window, or install software from the sidebar.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows .exe faylini shu oynaning istalgan joyiga tashlang yoki yon paneldan dastur o'rnating."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перетащите .exe в любое место окна или установите программу из боковой панели."
+          }
+        }
+      }
+    },
+    "Drop it anywhere in this window, or choose the file. A snapshot is saved first, so an install that goes wrong can be undone.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uni shu oynaga tashlang yoki faylni tanlang. Avval snapshot saqlanadi, shuning uchun xato ketgan o'rnatishni ortga qaytarsa bo'ladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перетащите его в окно или выберите файл. Сначала сохраняется снимок, так что неудачную установку можно отменить."
+          }
+        }
+      }
+    },
+    "Duplicate": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nusxa olish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дублировать"
+          }
+        }
+      }
+    },
+    "Each bottle stays on the engine it was created with, so trying a new engine never breaks bottles that work.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Har bir bottle o'zi yaratilgan dvigatelda qoladi, shuning uchun yangi dvigatelni sinash ishlab turgan bottle'larni buzmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Каждая бутылка остаётся на движке, с которым создана, поэтому новый движок не сломает работающие бутылки."
+          }
+        }
+      }
+    },
+    "Engine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatel"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движок"
+          }
+        }
+      }
+    },
+    "Engine in use": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatel ishlatilmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движок используется"
+          }
+        }
+      }
+    },
+    "Engine missing": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatel yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движок отсутствует"
+          }
+        }
+      }
+    },
+    "Engines": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatellar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движки"
+          }
+        }
+      }
+    },
+    "Environment": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muhit o'zgaruvchilari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переменные среды"
+          }
+        }
+      }
+    },
+    "Errors only": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faqat xatolar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только ошибки"
+          }
+        }
+      }
+    },
+    "Everything in the bottle changed since the snapshot will be lost. This cannot be undone.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot'dan keyin bottle'da o'zgargan hamma narsa yo'qoladi. Buni ortga qaytarib bo'lmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всё, что изменилось в бутылке после снимка, будет потеряно. Это нельзя отменить."
+          }
+        }
+      }
+    },
+    "Favorite": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sevimli"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Избранное"
+          }
+        }
+      }
+    },
+    "Favorites": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sevimlilar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Избранное"
+          }
+        }
+      }
+    },
+    "File access restricted": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fayllarga kirish cheklandi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступ к файлам ограничен"
+          }
+        }
+      }
+    },
+    "For games that refuse to start without AVX. Rosetta translates AVX and AVX2.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AVX'siz ishga tushmaydigan o'yinlar uchun. Rosetta AVX va AVX2 ni tarjima qiladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для игр, которые не запускаются без AVX. Rosetta транслирует AVX и AVX2."
+          }
+        }
+      }
+    },
+    "Force quit this process": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu jarayonni majburan to'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Принудительно завершить процесс"
+          }
+        }
+      }
+    },
+    "Frame rate": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kadr tezligi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Частота кадров"
+          }
+        }
+      }
+    },
+    "Full": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To'liq"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Полный"
+          }
+        }
+      }
+    },
+    "Game stores": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'yin do'konlari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игровые магазины"
+          }
+        }
+      }
+    },
+    "Games": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'yinlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игры"
+          }
+        }
+      }
+    },
+    "Games, Office, …": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'yinlar, Ofis, …"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игры, Офис, …"
+          }
+        }
+      }
+    },
+    "Gaming engine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'yin dvigateli"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игровой движок"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umumiy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основные"
+          }
+        }
+      }
+    },
+    "Graphics": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafika"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Графика"
+          }
+        }
+      }
+    },
+    "Graphics and performance": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafika va unumdorlik"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Графика и производительность"
+          }
+        }
+      }
+    },
+    "Have an installer or a portable .exe?": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'rnatuvchi yoki portativ .exe bormi?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Есть установщик или портативный .exe?"
+          }
+        }
+      }
+    },
+    "Hide from Library": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kutubxonadan yashirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть из библиотеки"
+          }
+        }
+      }
+    },
+    "High resolution (Retina) mode": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuqori aniqlik (Retina) rejimi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Режим высокого разрешения (Retina)"
+          }
+        }
+      }
+    },
+    "Import from Disk…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diskdan import qilish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импорт с диска…"
+          }
+        }
+      }
+    },
+    "Importing Game Porting Toolkit": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Porting Toolkit import qilinmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импорт Game Porting Toolkit"
+          }
+        }
+      }
+    },
+    "Import…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импорт…"
+          }
+        }
+      }
+    },
+    "Inherit (%@)": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meros (%@)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наследовать (%@)"
+          }
+        }
+      }
+    },
+    "Inspector": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektor"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Инспектор"
+          }
+        }
+      }
+    },
+    "Install": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'rnatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить"
+          }
+        }
+      }
+    },
+    "Install %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ni o'rnatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить %@"
+          }
+        }
+      }
+    },
+    "Install Components…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komponentlarni o'rnatish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить компоненты…"
+          }
+        }
+      }
+    },
+    "Install Software": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur o'rnatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установка программ"
+          }
+        }
+      }
+    },
+    "Install Software…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur o'rnatish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить программу…"
+          }
+        }
+      }
+    },
+    "Install Steam from Install Software, then your games appear here.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"Dastur o'rnatish\" bo'limidan Steam'ni o'rnating, shunda o'yinlaringiz shu yerda chiqadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установите Steam в разделе «Установка программ», и ваши игры появятся здесь."
+          }
+        }
+      }
+    },
+    "Install into": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qayerga o'rnatiladi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить в"
+          }
+        }
+      }
+    },
+    "Installed": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'rnatilgan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установлено"
+          }
+        }
+      }
+    },
+    "Installed. It lets Intel code, including Wine, run on Apple silicon.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'rnatilgan. U Intel kodini, shu jumladan Wine'ni Apple silicon'da ishlatadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установлена. Она позволяет коду Intel, включая Wine, работать на Apple silicon."
+          }
+        }
+      }
+    },
+    "Installing %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ o'rnatilmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установка %@"
+          }
+        }
+      }
+    },
+    "Installing engine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatel o'rnatilmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установка движка"
+          }
+        }
+      }
+    },
+    "Installs into %@.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ichiga o'rnatiladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Устанавливается в %@."
+          }
+        }
+      }
+    },
+    "Interface": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interfeys"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Интерфейс"
+          }
+        }
+      }
+    },
+    "Isolation": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izolyatsiya"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изоляция"
+          }
+        }
+      }
+    },
+    "Ko'prik runs Windows software through Wine, which is free software under the LGPL. DXMT, DXVK and MoltenVK are open source. Ko'prik contains no code from CrossOver. Kernel-level anti-cheat does not work under Wine.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko'prik Windows dasturlarini LGPL litsenziyasidagi erkin dastur — Wine orqali ishlatadi. DXMT, DXVK va MoltenVK ochiq kodli. Ko'prik'da CrossOver kodi yo'q. Yadro darajasidagi anti-cheat Wine'da ishlamaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko'prik запускает программы Windows через Wine — свободное ПО под лицензией LGPL. DXMT, DXVK и MoltenVK имеют открытый код. В Ko'prik нет кода CrossOver. Античит уровня ядра в Wine не работает."
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belgi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метка"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Til"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык"
+          }
+        }
+      }
+    },
+    "Last played": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oxirgi marta"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Последний запуск"
+          }
+        }
+      }
+    },
+    "Launch": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishga tushirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запуск"
+          }
+        }
+      }
+    },
+    "Launch a program…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasturni ishga tushirish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустить программу…"
+          }
+        }
+      }
+    },
+    "Launches": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishga tushirishlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запусков"
+          }
+        }
+      }
+    },
+    "Less stutter while shaders compile, at the cost of objects popping in.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheyderlar kompilyatsiyasi paytida kamroq qotadi, lekin obyektlar kechikib paydo bo'lishi mumkin."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Меньше рывков при компиляции шейдеров, но объекты могут появляться с задержкой."
+          }
+        }
+      }
+    },
+    "Less than a minute": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir daqiqadan kam"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Меньше минуты"
+          }
+        }
+      }
+    },
+    "Library": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kutubxona"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Библиотека"
+          }
+        }
+      }
+    },
+    "Logs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loglar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журналы"
+          }
+        }
+      }
+    },
+    "MSync is fastest. Switch to ESync or None if a game hangs.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MSync eng tezi. O'yin qotib qolsa, ESync yoki \"Yo'q\" ga o'ting."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MSync быстрее всего. Если игра зависает, переключитесь на ESync или «Нет»."
+          }
+        }
+      }
+    },
+    "Manual snapshot": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo'lda olingan snapshot"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимок вручную"
+          }
+        }
+      }
+    },
+    "Mark a program with the star to keep it here.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasturni shu yerda saqlash uchun yulduzcha bilan belgilang."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметьте программу звёздочкой, чтобы она была здесь."
+          }
+        }
+      }
+    },
+    "Metal Performance HUD": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metal unumdorlik HUD"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HUD производительности Metal"
+          }
+        }
+      }
+    },
+    "Metal performance HUD": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metal unumdorlik HUD"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HUD производительности Metal"
+          }
+        }
+      }
+    },
+    "Move to Trash": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Savatga o'tkazish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переместить в Корзину"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имя"
+          }
+        }
+      }
+    },
+    "Needed to run Wine. Install it in Terminal with: softwareupdate --install-rosetta --agree-to-license": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine ishlashi uchun kerak. Terminal'da o'rnating: softwareupdate --install-rosetta --agree-to-license"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нужна для работы Wine. Установите в Терминале: softwareupdate --install-rosetta --agree-to-license"
+          }
+        }
+      }
+    },
+    "Needs %@. Install it in Terminal with: brew install %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kerak. Terminal'da o'rnating: brew install %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нужно: %@. Установите в Терминале: brew install %@"
+          }
+        }
+      }
+    },
+    "New Bottle": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangi bottle"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая бутылка"
+          }
+        }
+      }
+    },
+    "New Bottle…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangi bottle…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая бутылка…"
+          }
+        }
+      }
+    },
+    "No Selection": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hech narsa tanlanmagan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ничего не выбрано"
+          }
+        }
+      }
+    },
+    "No bottle yet": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali bottle yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бутылок пока нет"
+          }
+        }
+      }
+    },
+    "No engine installed.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvigatel o'rnatilmagan."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движок не установлен."
+          }
+        }
+      }
+    },
+    "No log yet": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali log yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнала пока нет"
+          }
+        }
+      }
+    },
+    "No matches": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mos keladigani yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Совпадений нет"
+          }
+        }
+      }
+    },
+    "No programs found": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur topilmadi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Программы не найдены"
+          }
+        }
+      }
+    },
+    "No snapshots yet.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali snapshot yo'q."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимков пока нет."
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yo'q"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет"
+          }
+        }
+      }
+    },
+    "Not supported": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo'llab-quvvatlanmaydi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не поддерживается"
+          }
+        }
+      }
+    },
+    "Notes": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izohlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметки"
+          }
+        }
+      }
+    },
+    "Nothing here yet": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hozircha bo'sh"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Здесь пока пусто"
+          }
+        }
+      }
+    },
+    "Nothing is running.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hech narsa ishlamayapti."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ничего не запущено."
+          }
+        }
+      }
+    },
+    "Nothing played yet": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali hech narsa ishga tushirilmagan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока ничего не запускалось"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'chiq"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выкл."
+          }
+        }
+      }
+    },
+    "Open C: Drive": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C: diskni ochish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть диск C:"
+          }
+        }
+      }
+    },
+    "Open Ko'prik": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko'prik'ni ochish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть Ko'prik"
+          }
+        }
+      }
+    },
+    "Open-source components": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ochiq kodli komponentlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Компоненты с открытым кодом"
+          }
+        }
+      }
+    },
+    "Other winetricks verbs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqa winetricks verblari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другие команды winetricks"
+          }
+        }
+      }
+    },
+    "Partial": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qisman"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Частичный"
+          }
+        }
+      }
+    },
+    "Plain Wine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oddiy Wine"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обычный Wine"
+          }
+        }
+      }
+    },
+    "Play": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'ynash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играть"
+          }
+        }
+      }
+    },
+    "Play With": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqacha ishga tushirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустить с"
+          }
+        }
+      }
+    },
+    "Play time": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'yin vaqti"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время в игре"
+          }
+        }
+      }
+    },
+    "Productivity": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ish dasturlari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Работа"
+          }
+        }
+      }
+    },
+    "Programs you run will show up here.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishga tushirgan dasturlaringiz shu yerda chiqadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Здесь появятся запущенные вами программы."
+          }
+        }
+      }
+    },
+    "Quick Launch…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tezkor ishga tushirish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Быстрый запуск…"
+          }
+        }
+      }
+    },
+    "Quick access to recent programs, and a way to stop everything.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oxirgi dasturlarga tezkor kirish va hammasini to'xtatish imkoni."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Быстрый доступ к недавним программам и способ остановить всё."
+          }
+        }
+      }
+    },
+    "Ratings come from Linux players. Expect similar, not identical, results on a Mac.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baholar Linux o'yinchilaridan. Mac'da o'xshash, lekin aynan bir xil bo'lmagan natija kuting."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оценки от игроков на Linux. На Mac результат будет похожим, но не таким же."
+          }
+        }
+      }
+    },
+    "Ray tracing (D3DMetal)": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ray tracing (D3DMetal)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трассировка лучей (D3DMetal)"
+          }
+        }
+      }
+    },
+    "Recently Played": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yaqinda o'ynalgan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недавно запущенные"
+          }
+        }
+      }
+    },
+    "Refresh Library": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kutubxonani yangilash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновить библиотеку"
+          }
+        }
+      }
+    },
+    "Registry": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registr"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Реестр"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olib tashlash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить"
+          }
+        }
+      }
+    },
+    "Remove from Favorites": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sevimlilardan olib tashlash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Убрать из избранного"
+          }
+        }
+      }
+    },
+    "Removes the bottle's access to your home folder and other drives. Programs then only see the bottle's own C: drive.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle'ning uy papkangiz va boshqa disklarga kirishini olib tashlaydi. Shundan so'ng dasturlar faqat bottle'ning o'z C: diskini ko'radi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Убирает доступ бутылки к вашей домашней папке и другим дискам. После этого программы видят только диск C: самой бутылки."
+          }
+        }
+      }
+    },
+    "Rename": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nomini o'zgartirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переименовать"
+          }
+        }
+      }
+    },
+    "Rename Bottle": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottle nomini o'zgartirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переименовать бутылку"
+          }
+        }
+      }
+    },
+    "Reset Settings": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sozlamalarni tiklash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сбросить настройки"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiklash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Восстановить"
+          }
+        }
+      }
+    },
+    "Restore this snapshot?": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu snapshot tiklansinmi?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Восстановить этот снимок?"
+          }
+        }
+      }
+    },
+    "Restrict File Access…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fayllarga kirishni cheklash…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ограничить доступ к файлам…"
+          }
+        }
+      }
+    },
+    "Run": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishga tushirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустить"
+          }
+        }
+      }
+    },
+    "Run Command": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buyruq bajarish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выполнить команду"
+          }
+        }
+      }
+    },
+    "Run Command in %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ichida buyruq bajarish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выполнить команду в %@"
+          }
+        }
+      }
+    },
+    "Run Command…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buyruq bajarish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выполнить команду…"
+          }
+        }
+      }
+    },
+    "Run File": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fayl ishga tushirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустить файл"
+          }
+        }
+      }
+    },
+    "Run Windows programs and games on your Mac.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows dasturlari va o'yinlarini Mac'da ishlating."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запускайте программы и игры Windows на Mac."
+          }
+        }
+      }
+    },
+    "Run a Windows File…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows faylini ishga tushirish…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустить файл Windows…"
+          }
+        }
+      }
+    },
+    "Run an installer here, or drop a Windows .exe on the window.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shu yerda o'rnatuvchini ishga tushiring yoki Windows .exe faylini oynaga tashlang."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустите здесь установщик или перетащите .exe в окно."
+          }
+        }
+      }
+    },
+    "Run the program once and its log will be here.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasturni bir marta ishga tushiring, logi shu yerda bo'ladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запустите программу один раз, и её журнал появится здесь."
+          }
+        }
+      }
+    },
+    "Running": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishlayapti"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запущено"
+          }
+        }
+      }
+    },
+    "Running the installer": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'rnatuvchi ishlamoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Работает установщик"
+          }
+        }
+      }
+    },
+    "Runtimes and fonts": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime'lar va shriftlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Библиотеки и шрифты"
+          }
+        }
+      }
+    },
+    "Same as macOS": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS bilan bir xil"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как в macOS"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saqlash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранить"
+          }
+        }
+      }
+    },
+    "Save Snapshot": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot saqlash"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранить снимок"
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saqlanganlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранённые"
+          }
+        }
+      }
+    },
+    "Saving a snapshot first": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avval snapshot saqlanmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сначала сохраняется снимок"
+          }
+        }
+      }
+    },
+    "Saving snapshot": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot saqlanmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранение снимка"
+          }
+        }
+      }
+    },
+    "Search programs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dasturlarni qidirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поиск программ"
+          }
+        }
+      }
+    },
+    "Section": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bo'lim"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Раздел"
+          }
+        }
+      }
+    },
+    "Select a program to see and change how it runs.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qanday ishlashini ko'rish va o'zgartirish uchun dasturni tanlang."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите программу, чтобы посмотреть и изменить параметры запуска."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sozlamalar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sozlamalar…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки…"
+          }
+        }
+      }
+    },
+    "Sharper picture, heavier on the GPU. Applied when you press Save.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasvir aniqroq, lekin GPU'ga og'irroq. \"Saqlash\" bosilganda qo'llanadi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Картинка чётче, но нагрузка на GPU выше. Применяется по нажатию «Сохранить»."
+          }
+        }
+      }
+    },
+    "Show Latest Log": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oxirgi logni ko'rsatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать последний журнал"
+          }
+        }
+      }
+    },
+    "Show in Finder": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finder'da ko'rsatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать в Finder"
+          }
+        }
+      }
+    },
+    "Show in the menu bar": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menyu satrida ko'rsatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать в строке меню"
+          }
+        }
+      }
+    },
+    "Show or hide settings for the selection": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanlangan narsa sozlamalarini ko'rsatish yoki yashirish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать или скрыть настройки выбранного"
+          }
+        }
+      }
+    },
+    "Snapshots": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot'lar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимки"
+          }
+        }
+      }
+    },
+    "Snapshots…": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapshot'lar…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снимки…"
+          }
+        }
+      }
+    },
+    "So that ⌘C and ⌘V work inside Windows programs.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows dasturlari ichida ⌘C va ⌘V ishlashi uchun."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чтобы ⌘C и ⌘V работали в программах Windows."
+          }
+        }
+      }
+    },
+    "Something went wrong": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xatolik yuz berdi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что-то пошло не так"
+          }
+        }
+      }
+    },
+    "Statistics": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistika"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Статистика"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остановить"
+          }
+        }
+      }
+    },
+    "Stop All": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hammasini to'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остановить всё"
+          }
+        }
+      }
+    },
+    "Stop All Programs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barcha dasturlarni to'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остановить все программы"
+          }
+        }
+      }
+    },
+    "Stop Everything": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hammasini to'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остановить всё"
+          }
+        }
+      }
+    },
+    "Stop every running Windows program": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishlayotgan barcha Windows dasturlarini to'xtatish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Остановить все запущенные программы Windows"
+          }
+        }
+      }
+    },
+    "Storage": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xotira"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Хранилище"
+          }
+        }
+      }
+    },
+    "Synchronisation": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinxronizatsiya"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синхронизация"
+          }
+        }
+      }
+    },
+    "Task Manager": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vazifalar dispetcheri"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Диспетчер задач"
+          }
+        }
+      }
+    },
+    "Tasks": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vazifalar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Задачи"
+          }
+        }
+      }
+    },
+    "Tested on this project's Mac": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shu loyihaning Mac'ida sinalgan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверено на Mac этого проекта"
+          }
+        }
+      }
+    },
+    "The first bottle takes about a minute.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birinchi bottle taxminan bir daqiqa oladi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первая бутылка создаётся около минуты."
+          }
+        }
+      }
+    },
+    "The log is empty.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log bo'sh."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал пуст."
+          }
+        }
+      }
+    },
+    "These bottles still use it: %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uni hali shu bottle'lar ishlatyapti: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Его ещё используют бутылки: %@"
+          }
+        }
+      }
+    },
+    "This bottle can no longer reach files outside its own C: drive.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bottle endi o'z C: diskidan tashqaridagi fayllarga kira olmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эта бутылка больше не имеет доступа к файлам вне своего диска C:."
+          }
+        }
+      }
+    },
+    "This bottle is empty": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bottle bo'sh"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эта бутылка пуста"
+          }
+        }
+      }
+    },
+    "This bottle uses the engine %@, which is not installed.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bottle %@ dvigatelini ishlatadi, u esa o'rnatilmagan."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эта бутылка использует движок %@, который не установлен."
+          }
+        }
+      }
+    },
+    "This game cannot be played online under Wine. No setting changes that.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu o'yinni Wine'da onlayn o'ynab bo'lmaydi. Hech qaysi sozlama buni o'zgartirmaydi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В эту игру нельзя играть онлайн в Wine. Никакая настройка этого не изменит."
+          }
+        }
+      }
+    },
+    "Toggle Inspector": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektorni ochish/yopish"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать или скрыть инспектор"
+          }
+        }
+      }
+    },
+    "Tools": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asboblar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Инструменты"
+          }
+        }
+      }
+    },
+    "Try another search.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqa so'z bilan qidirib ko'ring."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попробуйте другой запрос."
+          }
+        }
+      }
+    },
+    "Uninstaller": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O'chirish vositasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удаление программ"
+          }
+        }
+      }
+    },
+    "Updates": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangilanishlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновления"
+          }
+        }
+      }
+    },
+    "Updates are not set up in this build: no update feed and signing key were configured. See docs/RELIZ.md.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu build'da yangilanish sozlanmagan: yangilanish manbai va imzo kaliti ko'rsatilmagan. docs/RELIZ.md ga qarang."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В этой сборке обновления не настроены: не заданы источник обновлений и ключ подписи. См. docs/RELIZ.md."
+          }
+        }
+      }
+    },
+    "Upstream Wine from the Gcenx builds. A fallback for ordinary applications.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gcenx build'laridagi asl Wine. Oddiy dasturlar uchun zaxira variant."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оригинальный Wine из сборок Gcenx. Запасной вариант для обычных программ."
+          }
+        }
+      }
+    },
+    "Utilities": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yordamchi dasturlar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утилиты"
+          }
+        }
+      }
+    },
+    "Verbs": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verblar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Команды"
+          }
+        }
+      }
+    },
+    "Verifying the download": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklangan fayl tekshirilmoqda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверка загрузки"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versiya"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Версия"
+          }
+        }
+      }
+    },
+    "Version %@": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versiya %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Версия %@"
+          }
+        }
+      }
+    },
+    "Welcome to Ko'prik": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko'prik'ka xush kelibsiz"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добро пожаловать в Ko'prik"
+          }
+        }
+      }
+    },
+    "Where the software goes": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dastur qayerga o'rnatiladi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Куда устанавливается программа"
+          }
+        }
+      }
+    },
+    "Will use": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishlatiladi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Будет использован"
+          }
+        }
+      }
+    },
+    "Windows processes": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows jarayonlari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Процессы Windows"
+          }
+        }
+      }
+    },
+    "Windows version": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windows versiyasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Версия Windows"
+          }
+        }
+      }
+    },
+    "Wine Config": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine sozlamasi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройка Wine"
+          }
+        }
+      }
+    },
+    "Wine engine": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine dvigateli"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Движок Wine"
+          }
+        }
+      }
+    },
+    "Wine with CrossOver's open-source patches, DXMT and DXVK. About 480 MB to download, 1.3 GB on disk.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CrossOver'ning ochiq kodli yamoqlari, DXMT va DXVK qo'shilgan Wine. Yuklab olish taxminan 480 MB, diskda 1.3 GB."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine с открытыми патчами CrossOver, DXMT и DXVK. Около 480 МБ загрузки, 1,3 ГБ на диске."
+          }
+        }
+      }
+    },
+    "Wine with CrossOver's patches, DXMT, DXVK and MoltenVK. The only kind that can host D3DMetal. 480 MB.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CrossOver yamoqlari, DXMT, DXVK va MoltenVK qo'shilgan Wine. D3DMetal ishlay oladigan yagona tur. 480 MB."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wine с патчами CrossOver, DXMT, DXVK и MoltenVK. Единственный вариант, на котором работает D3DMetal. 480 МБ."
+          }
+        }
+      }
+    },
+    "winecx-gptk engine builds": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "winecx-gptk dvigatel build'lari"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сборки движка winecx-gptk"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -7,7 +7,7 @@ struct Koprik: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "koprik",
         abstract: "Run Windows programs on macOS through Wine.",
-        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Kill.self, Env.self]
+        subcommands: [Doctor.self, EngineCommand.self, BottleCommand.self, Run.self, Programs.self, Processes.self, Kill.self, Env.self]
     )
 }
 
@@ -321,33 +321,69 @@ struct Run: AsyncParsableCommand {
     func run() async throws {
         guard await Rosetta.isAvailable() else { throw KoprikError.rosettaMissing }
         let (bottle, engine) = try await resolve(bottleNamed: bottle)
-        let environment = WineEnvironment.build(
-            engine: engine,
-            prefix: bottle.prefix,
-            settings: LaunchSettings.resolve([engine.defaultSettings, bottle.config.settings, try launch.settings()])
-        )
+        let launcher = Launcher(bottle: bottle, engine: engine)
 
         let file = URL(fileURLWithPath: (target as NSString).expandingTildeInPath)
-        let isFile = FileManager.default.fileExists(atPath: file.path)
-        let wineArguments = isFile
-            ? WineRunner.startArguments(for: file, programArguments: arguments, wait: !detach)
-            : [target] + arguments
+        let launchTarget: LaunchTarget
+        if FileManager.default.fileExists(atPath: file.path) {
+            launchTarget = .file(file, arguments: arguments)
+        } else if let program = await ProgramStore().programs(in: bottle, includeHidden: true).first(where: {
+            $0.id == target || $0.name.compare(target, options: .caseInsensitive) == .orderedSame
+        }) {
+            var chosen = program
+            chosen.arguments += arguments
+            launchTarget = .program(chosen)
+        } else {
+            launchTarget = .command(target, arguments: arguments)
+        }
 
-        let log = bottle.newLogURL(label: isFile ? file.lastPathComponent : target)
-        let process = try WineRunner(engine: engine).launch(
-            wineArguments,
-            environment: environment,
-            workingDirectory: isFile ? file.deletingLastPathComponent() : nil,
-            logURL: log
-        )
-        FileHandle.standardError.write(Data("Log: \(log.path)\n".utf8))
+        let started = Date.now
+        let launch = try await launcher.launch(launchTarget, overrides: try self.launch.settings(), wait: !detach)
+        let note = "Log: \(launch.process.logURL.path)\nGraphics: \(launch.graphics.backend.displayName). \(launch.graphics.reason)\n"
+        FileHandle.standardError.write(Data(note.utf8))
         if detach { return }
 
         if verbose {
-            for await line in process.outputLines() { print(line) }
+            for await line in launch.process.outputLines() { print(line) }
         }
-        let status = await process.waitUntilExit()
+        let status = await launch.process.waitUntilExit()
+        if case .program(let program) = launchTarget {
+            _ = try? await ProgramStore().recordSession(
+                programID: program.id, in: bottle, started: started, duration: Date.now.timeIntervalSince(started)
+            )
+        }
         if status != 0 { throw ExitCode(status) }
+    }
+}
+
+struct Programs: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(abstract: "List the programs found in a bottle.")
+
+    @Argument(help: "Bottle name.") var bottle: String
+
+    func run() async throws {
+        let (bottle, engine) = try await resolve(bottleNamed: bottle)
+        let launcher = Launcher(bottle: bottle, engine: engine)
+        let programs = await ProgramStore().programs(in: bottle)
+        if programs.isEmpty { print("No programs found. Install something, or run a file with: koprik run \(bottle.name) <file>") }
+        for program in programs {
+            let decision = launcher.graphicsDecision(for: .program(program))
+            print("\(program.name)  [\(program.id), \(decision.backend.displayName)]")
+            print("  \(program.location)")
+        }
+    }
+}
+
+struct Processes: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(commandName: "ps", abstract: "List running Windows processes.")
+
+    func run() async throws {
+        let processes = await BottleActivity.windowsProcesses()
+        if processes.isEmpty { print("Nothing is running.") }
+        for process in processes {
+            let memory = String(format: "%.0f MB", Double(process.residentBytes) / 1_048_576)
+            print("\(process.pid)\t\(process.cpuPercent)%\t\(memory)\t\(process.elapsed)\t\(process.name)")
+        }
     }
 }
 

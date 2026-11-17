@@ -39,13 +39,13 @@ import Testing
 
     @Test func dxvkAndDxmtRouteDirect3DThroughDllOverrides() {
         #expect(build(LaunchSettings(backend: .dxvk))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,d3d9,dxgi=n,b")
-        #expect(build(LaunchSettings(backend: .dxmt))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,dxgi=n,b")
+        #expect(build(LaunchSettings(backend: .dxmt))["WINEDLLOVERRIDES"] == "d3d10core,d3d11,dxgi=n,b;winemetal=b")
         #expect(build(LaunchSettings(backend: .d3dmetal))["WINEDLLOVERRIDES"] == nil)
     }
 
     @Test func userDllOverridesWinAndAreGroupedByLoadOrder() {
         let settings = LaunchSettings(backend: .dxmt, dllOverrides: ["dxgi": "b", "mscoree": "d"])
-        #expect(build(settings)["WINEDLLOVERRIDES"] == "d3d10core,d3d11=n,b;dxgi=b;mscoree=d")
+        #expect(build(settings)["WINEDLLOVERRIDES"] == "d3d10core,d3d11=n,b;dxgi,winemetal=b;mscoree=d")
     }
 
     @Test func togglesMapToTheirVariables() {

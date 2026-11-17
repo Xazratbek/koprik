@@ -57,12 +57,37 @@ public actor BottleStore {
                 try manager.createDirectory(at: folder, withIntermediateDirectories: true)
             }
             bottle = try save(bottle)
-            try await initializePrefix(of: bottle, engine: engine)
+            // A prefix that Wine already built once for this engine and Windows
+            // version is cloned instead of being built again: on APFS that takes
+            // well under a second, against about a minute for `wineboot`.
+            let template = templatePrefix(engine: engine, windowsVersion: windowsVersion)
+            if manager.fileExists(atPath: template.appending(path: "system.reg").path) {
+                try manager.removeItem(at: bottle.prefix)
+                try manager.copyItem(at: template, to: bottle.prefix)
+            } else {
+                try await initializePrefix(of: bottle, engine: engine)
+                try? manager.createDirectory(at: template.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try? manager.removeItem(at: template)
+                try? manager.copyItem(at: bottle.prefix, to: template)
+            }
             return bottle
         } catch {
             try? manager.removeItem(at: directory)
             throw error
         }
+    }
+
+    /// Where the ready-made prefix for an engine and Windows version is kept.
+    func templatePrefix(engine: Engine, windowsVersion: WindowsVersion) -> URL {
+        paths.templates
+            .appending(path: "\(engine.id)-\(windowsVersion.rawValue)", directoryHint: .isDirectory)
+            .appending(path: "prefix", directoryHint: .isDirectory)
+    }
+
+    /// Discards the ready-made prefixes, for example after an engine was changed in place.
+    public func clearTemplates() {
+        try? FileManager.default.removeItem(at: paths.templates)
+        try? paths.ensureDirectories()
     }
 
     private func initializePrefix(of bottle: Bottle, engine: Engine) async throws {

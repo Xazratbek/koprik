@@ -10,6 +10,7 @@ public enum WineEnvironment {
         "WINEPREFIX", "WINEARCH", "WINELOADER", "WINESERVER", "WINEDLLPATH",
         "WINEDLLOVERRIDES", "WINEDEBUG", "WINEESYNC", "WINEMSYNC", "WINEFSYNC",
         "DXVK_HUD", "DXVK_ASYNC", "MTL_HUD_ENABLED", "ROSETTA_ADVERTISE_AVX", "D3DM_SUPPORT_DXR",
+        "WINED3DMETAL", "MTL_DEBUG_LAYER",
     ]
 
     public static func build(
@@ -23,6 +24,15 @@ public enum WineEnvironment {
         environment["WINEPREFIX"] = prefix.path
         // Wine prints a "fixme" line for every unimplemented call; silencing them keeps logs readable and Wine faster.
         environment["WINEDEBUG"] = "fixme-all"
+        // GStreamer otherwise floods the log with warnings from codecs it probes.
+        environment["GST_DEBUG"] = "1"
+        // Chromium's sandbox cannot work inside Wine; without these the Steam
+        // client's web views (store, library, login) stay blank.
+        environment["STEAM_DISABLE_CEF_SANDBOX"] = "1"
+        environment["CEF_DISABLE_SANDBOX"] = "1"
+        environment["STEAM_RUNTIME"] = "0"
+        // Metal's validation layer costs frame time and is only useful to developers.
+        environment["MTL_DEBUG_LAYER"] = "0"
         environment["PATH"] = engine.binDirectory.path + ":" + (host["PATH"] ?? "/usr/bin:/bin:/usr/sbin:/sbin")
 
         switch settings.sync ?? SyncMode.none {
@@ -42,6 +52,17 @@ public enum WineEnvironment {
             environment["WINEDLLOVERRIDES"] = dllOverridesString(overrides)
         }
 
+        switch settings.backend ?? .auto {
+        case .wined3d:
+            // Keeps a D3DMetal-enabled engine on Wine's own Direct3D.
+            environment["WINED3DMETAL"] = "0"
+        case .dxvk:
+            // Lets MoltenVK compile shaders on all cores, which shortens stutter.
+            environment["MVK_CONFIG_SHOULD_MAXIMIZE_CONCURRENT_COMPILATION"] = "1"
+        case .auto, .d3dmetal, .dxmt:
+            break
+        }
+
         if settings.metalHUD == true { environment["MTL_HUD_ENABLED"] = "1" }
         if let hud = settings.dxvkHUD?.environmentValue { environment["DXVK_HUD"] = hud }
         if settings.dxvkAsync == true { environment["DXVK_ASYNC"] = "1" }
@@ -59,15 +80,14 @@ public enum WineEnvironment {
     /// Wine's builtin". D3DMetal and wined3d need no override because they are
     /// what the engine's builtin DLLs already provide.
     ///
-    /// Provisional: how a winecx-gptk engine chooses between its builtin DXMT and
-    /// an imported D3DMetal still has to be confirmed against a real engine
-    /// (phase 1 go/no-go test 5).
+    /// The DLLs themselves are put in place by `Graphics.prepare`.
     static func backendOverrides(for backend: GraphicsBackend) -> [String: String] {
         switch backend {
         case .dxvk:
             ["dxgi": "n,b", "d3d9": "n,b", "d3d10core": "n,b", "d3d11": "n,b"]
         case .dxmt:
-            ["dxgi": "n,b", "d3d10core": "n,b", "d3d11": "n,b"]
+            // winemetal is DXMT's bridge to Metal and ships inside the engine.
+            ["dxgi": "n,b", "d3d10core": "n,b", "d3d11": "n,b", "winemetal": "b"]
         case .auto, .d3dmetal, .wined3d:
             [:]
         }

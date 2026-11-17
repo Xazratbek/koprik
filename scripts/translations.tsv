@@ -1,0 +1,248 @@
+%lld bottles	%lld ta bottle	Бутылок: %lld
+%lld lines, %lld errors	%lld qator, %lld xato	Строк: %lld, ошибок: %lld
+%lld reports	%lld ta hisobot	Отчётов: %lld
+A bottle is a separate Windows environment with its own C: drive. Keeping unrelated software in separate bottles stops one from breaking another.	Bottle o'z C: diskiga ega alohida Windows muhiti. Bir-biriga aloqasi yo'q dasturlarni alohida bottle'larda saqlasangiz, biri ikkinchisini buzmaydi.	Бутылка — это отдельная среда Windows со своим диском C:. Если держать несвязанные программы в разных бутылках, одна не сломает другую.
+A language change takes effect the next time Ko'prik starts.	Til o'zgarishi Ko'prik keyingi safar ochilganda kuchga kiradi.	Смена языка вступит в силу при следующем запуске Ko'prik.
+A new bottle	Yangi bottle	Новая бутылка
+A snapshot is a full copy of the bottle's C: drive and registry. Copies share disk space with the original until files change. Programs in the bottle are stopped first.	Snapshot bottle'ning C: diski va registrining to'liq nusxasi. Fayllar o'zgarmaguncha nusxa asl bilan bir joyni bo'lishadi. Avval bottle'dagi dasturlar to'xtatiladi.	Снимок — полная копия диска C: и реестра бутылки. Пока файлы не изменятся, копия делит место на диске с оригиналом. Сначала программы в бутылке останавливаются.
+About	Dastur haqida	О программе
+Activity	Faoliyat	Активность
+Add	Qo'shish	Добавить
+Add to Favorites	Sevimlilarga qo'shish	Добавить в избранное
+Advertise AVX	AVX borligini bildirish	Сообщать о поддержке AVX
+All	Hammasi	Все
+Anti-cheat allows Wine	Anti-cheat Wine'ga ruxsat beradi	Античит разрешает Wine
+Anti-cheat blocks this game under Wine	Anti-cheat bu o'yinni Wine'da bloklaydi	Античит блокирует эту игру в Wine
+App launchers	Ilova yorliqlari	Ярлыки приложений
+Apple does not allow the toolkit to be redistributed, so Ko'prik cannot download it for you. Sign in with a free Apple developer account, download the disk image, then choose it with Import.	Apple bu to'plamni tarqatishga ruxsat bermaydi, shuning uchun Ko'prik uni o'zi yuklab ololmaydi. Bepul Apple dasturchi akkaunti bilan kiring, disk tasvirini yuklab oling va "Import" orqali ko'rsating.	Apple не разрешает распространять этот набор, поэтому Ko'prik не может скачать его сам. Войдите с бесплатной учётной записью разработчика Apple, скачайте образ диска и выберите его через «Импорт».
+Apple's Direct3D 11/12 layer from the Game Porting Toolkit. Needed for DirectX 12 games.	Apple'ning Game Porting Toolkit'dagi Direct3D 11/12 qatlami. DirectX 12 o'yinlari uchun kerak.	Слой Direct3D 11/12 от Apple из Game Porting Toolkit. Нужен для игр на DirectX 12.
+Apps	Dasturlar	Программы
+Arguments	Argumentlar	Аргументы
+Auto picks by the Direct3D version the program uses.	Auto dastur ishlatadigan Direct3D versiyasiga qarab tanlaydi.	«Авто» выбирает по версии Direct3D, которую использует программа.
+Backend	Backend	Бэкенд
+Before installing mods	Modlarni o'rnatishdan oldin	Перед установкой модов
+Blocked by anti-cheat	Anti-cheat bloklagan	Заблокировано античитом
+Bottle	Bottle	Бутылка
+Bottle Actions	Bottle amallari	Действия с бутылкой
+Bottle not found	Bottle topilmadi	Бутылка не найдена
+Bottles	Bottle'lar	Бутылки
+C: Drive	C: disk	Диск C:
+Cancel	Bekor qilish	Отмена
+Check Again	Qayta tekshirish	Проверить снова
+Check for Updates…	Yangilanishlarni tekshirish…	Проверить обновления…
+Check for updates automatically	Yangilanishlarni avtomatik tekshirish	Проверять обновления автоматически
+Choose File…	Fayl tanlash…	Выбрать файл…
+Choose a Windows program or installer	Windows dasturi yoki o'rnatuvchisini tanlang	Выберите программу или установщик Windows
+Choose a Wine folder or archive	Wine papkasi yoki arxivini tanlang	Выберите папку или архив Wine
+Choose the Game Porting Toolkit disk image or folder	Game Porting Toolkit disk tasviri yoki papkasini tanlang	Выберите образ диска или папку Game Porting Toolkit
+Clear	Tozalash	Очистить
+Clear Finished	Tugaganlarni tozalash	Убрать завершённые
+Command	Buyruq	Команда
+Command acts as Ctrl	Command Ctrl vazifasini bajaradi	Command работает как Ctrl
+Compatibility	Moslik	Совместимость
+Components	Komponentlar	Компоненты
+Control Panel	Boshqaruv paneli	Панель управления
+Create	Yaratish	Создать
+Create App Launcher	Ilova yorlig'ini yaratish	Создать ярлык приложения
+Create a bottle first, then open the file again.	Avval bottle yarating, keyin faylni qayta oching.	Сначала создайте бутылку, затем откройте файл снова.
+Create a bottle, run a file or install software	Bottle yaratish, fayl ishga tushirish yoki dastur o'rnatish	Создать бутылку, запустить файл или установить программу
+Creating bottle	Bottle yaratilmoqda	Создание бутылки
+DLL Overrides	DLL override'lar	Переопределения DLL
+DXVK Frame Rate HUD	DXVK kadr tezligi HUD	HUD частоты кадров DXVK
+DXVK async shaders	DXVK asinxron sheyderlar	Асинхронные шейдеры DXVK
+Data folder	Ma'lumotlar papkasi	Папка данных
+Default (%@)	Sukut (%@)	По умолчанию (%@)
+Direct3D 10/11 to Metal. The default for most games.	Direct3D 10/11 ni Metal'ga o'giradi. Ko'p o'yinlar uchun sukut.	Direct3D 10/11 в Metal. По умолчанию для большинства игр.
+Direct3D 10/11 to Vulkan over MoltenVK. Used for store launchers.	Direct3D 10/11 ni MoltenVK orqali Vulkan'ga o'giradi. Do'kon launcherlari uchun ishlatiladi.	Direct3D 10/11 в Vulkan через MoltenVK. Используется для лаунчеров магазинов.
+DirectX Raytracing. Needs the Game Porting Toolkit and an M3 or newer for good results.	DirectX Raytracing. Game Porting Toolkit va yaxshi natija uchun M3 yoki yangiroq chip kerak.	DirectX Raytracing. Нужен Game Porting Toolkit, а для хорошего результата — M3 или новее.
+Display and keyboard	Ekran va klaviatura	Экран и клавиатура
+Done	Tayyor	Готово
+Download	Yuklab olish	Скачать
+Download Engine	Dvigatelni yuklab olish	Скачать движок
+Download cache	Yuklab olish keshi	Кэш загрузок
+Download the Game Porting Toolkit from Apple	Game Porting Toolkit'ni Apple'dan yuklab olish	Скачать Game Porting Toolkit у Apple
+Downloading	Yuklab olinmoqda	Загрузка
+Downloads and installations will appear here.	Yuklab olish va o'rnatishlar shu yerda ko'rinadi.	Здесь появятся загрузки и установки.
+Drop a Windows .exe anywhere in this window, or install software from the sidebar.	Windows .exe faylini shu oynaning istalgan joyiga tashlang yoki yon paneldan dastur o'rnating.	Перетащите .exe в любое место окна или установите программу из боковой панели.
+Drop it anywhere in this window, or choose the file. A snapshot is saved first, so an install that goes wrong can be undone.	Uni shu oynaga tashlang yoki faylni tanlang. Avval snapshot saqlanadi, shuning uchun xato ketgan o'rnatishni ortga qaytarsa bo'ladi.	Перетащите его в окно или выберите файл. Сначала сохраняется снимок, так что неудачную установку можно отменить.
+Duplicate	Nusxa olish	Дублировать
+Each bottle stays on the engine it was created with, so trying a new engine never breaks bottles that work.	Har bir bottle o'zi yaratilgan dvigatelda qoladi, shuning uchun yangi dvigatelni sinash ishlab turgan bottle'larni buzmaydi.	Каждая бутылка остаётся на движке, с которым создана, поэтому новый движок не сломает работающие бутылки.
+Engine	Dvigatel	Движок
+Engine in use	Dvigatel ishlatilmoqda	Движок используется
+Engine missing	Dvigatel yo'q	Движок отсутствует
+Engines	Dvigatellar	Движки
+Environment	Muhit o'zgaruvchilari	Переменные среды
+Errors only	Faqat xatolar	Только ошибки
+Everything in the bottle changed since the snapshot will be lost. This cannot be undone.	Snapshot'dan keyin bottle'da o'zgargan hamma narsa yo'qoladi. Buni ortga qaytarib bo'lmaydi.	Всё, что изменилось в бутылке после снимка, будет потеряно. Это нельзя отменить.
+Favorite	Sevimli	Избранное
+Favorites	Sevimlilar	Избранное
+File access restricted	Fayllarga kirish cheklandi	Доступ к файлам ограничен
+For games that refuse to start without AVX. Rosetta translates AVX and AVX2.	AVX'siz ishga tushmaydigan o'yinlar uchun. Rosetta AVX va AVX2 ni tarjima qiladi.	Для игр, которые не запускаются без AVX. Rosetta транслирует AVX и AVX2.
+Force quit this process	Bu jarayonni majburan to'xtatish	Принудительно завершить процесс
+Frame rate	Kadr tezligi	Частота кадров
+Full	To'liq	Полный
+Game stores	O'yin do'konlari	Игровые магазины
+Games	O'yinlar	Игры
+Games, Office, …	O'yinlar, Ofis, …	Игры, Офис, …
+Gaming engine	O'yin dvigateli	Игровой движок
+General	Umumiy	Основные
+Graphics	Grafika	Графика
+Graphics and performance	Grafika va unumdorlik	Графика и производительность
+Have an installer or a portable .exe?	O'rnatuvchi yoki portativ .exe bormi?	Есть установщик или портативный .exe?
+Hide from Library	Kutubxonadan yashirish	Скрыть из библиотеки
+High resolution (Retina) mode	Yuqori aniqlik (Retina) rejimi	Режим высокого разрешения (Retina)
+Import from Disk…	Diskdan import qilish…	Импорт с диска…
+Importing Game Porting Toolkit	Game Porting Toolkit import qilinmoqda	Импорт Game Porting Toolkit
+Import…	Import…	Импорт…
+Inherit (%@)	Meros (%@)	Наследовать (%@)
+Inspector	Inspektor	Инспектор
+Install	O'rnatish	Установить
+Install %@	%@ ni o'rnatish	Установить %@
+Install Components…	Komponentlarni o'rnatish…	Установить компоненты…
+Install Software	Dastur o'rnatish	Установка программ
+Install Software…	Dastur o'rnatish…	Установить программу…
+Install Steam from Install Software, then your games appear here.	"Dastur o'rnatish" bo'limidan Steam'ni o'rnating, shunda o'yinlaringiz shu yerda chiqadi.	Установите Steam в разделе «Установка программ», и ваши игры появятся здесь.
+Install into	Qayerga o'rnatiladi	Установить в
+Installed	O'rnatilgan	Установлено
+Installed. It lets Intel code, including Wine, run on Apple silicon.	O'rnatilgan. U Intel kodini, shu jumladan Wine'ni Apple silicon'da ishlatadi.	Установлена. Она позволяет коду Intel, включая Wine, работать на Apple silicon.
+Installing %@	%@ o'rnatilmoqda	Установка %@
+Installing engine	Dvigatel o'rnatilmoqda	Установка движка
+Installs into %@.	%@ ichiga o'rnatiladi.	Устанавливается в %@.
+Interface	Interfeys	Интерфейс
+Isolation	Izolyatsiya	Изоляция
+Label	Belgi	Метка
+Language	Til	Язык
+Last played	Oxirgi marta	Последний запуск
+Launch	Ishga tushirish	Запуск
+Launch a program…	Dasturni ishga tushirish…	Запустить программу…
+Launches	Ishga tushirishlar	Запусков
+Less stutter while shaders compile, at the cost of objects popping in.	Sheyderlar kompilyatsiyasi paytida kamroq qotadi, lekin obyektlar kechikib paydo bo'lishi mumkin.	Меньше рывков при компиляции шейдеров, но объекты могут появляться с задержкой.
+Less than a minute	Bir daqiqadan kam	Меньше минуты
+Library	Kutubxona	Библиотека
+Logs	Loglar	Журналы
+MSync is fastest. Switch to ESync or None if a game hangs.	MSync eng tezi. O'yin qotib qolsa, ESync yoki "Yo'q" ga o'ting.	MSync быстрее всего. Если игра зависает, переключитесь на ESync или «Нет».
+Manual snapshot	Qo'lda olingan snapshot	Снимок вручную
+Mark a program with the star to keep it here.	Dasturni shu yerda saqlash uchun yulduzcha bilan belgilang.	Отметьте программу звёздочкой, чтобы она была здесь.
+Metal Performance HUD	Metal unumdorlik HUD	HUD производительности Metal
+Metal performance HUD	Metal unumdorlik HUD	HUD производительности Metal
+Move to Trash	Savatga o'tkazish	Переместить в Корзину
+Name	Nom	Имя
+Needed to run Wine. Install it in Terminal with: softwareupdate --install-rosetta --agree-to-license	Wine ishlashi uchun kerak. Terminal'da o'rnating: softwareupdate --install-rosetta --agree-to-license	Нужна для работы Wine. Установите в Терминале: softwareupdate --install-rosetta --agree-to-license
+Needs %@. Install it in Terminal with: brew install %@	%@ kerak. Terminal'da o'rnating: brew install %@	Нужно: %@. Установите в Терминале: brew install %@
+New Bottle	Yangi bottle	Новая бутылка
+New Bottle…	Yangi bottle…	Новая бутылка…
+No Selection	Hech narsa tanlanmagan	Ничего не выбрано
+No bottle yet	Hali bottle yo'q	Бутылок пока нет
+No engine installed.	Dvigatel o'rnatilmagan.	Движок не установлен.
+No log yet	Hali log yo'q	Журнала пока нет
+No matches	Mos keladigani yo'q	Совпадений нет
+No programs found	Dastur topilmadi	Программы не найдены
+No snapshots yet.	Hali snapshot yo'q.	Снимков пока нет.
+None	Yo'q	Нет
+Not supported	Qo'llab-quvvatlanmaydi	Не поддерживается
+Notes	Izohlar	Заметки
+Nothing here yet	Hozircha bo'sh	Здесь пока пусто
+Nothing is running.	Hech narsa ishlamayapti.	Ничего не запущено.
+Nothing played yet	Hali hech narsa ishga tushirilmagan	Пока ничего не запускалось
+OK	OK	OK
+Off	O'chiq	Выкл.
+Open C: Drive	C: diskni ochish	Открыть диск C:
+Open Ko'prik	Ko'prik'ni ochish	Открыть Ko'prik
+Open-source components	Ochiq kodli komponentlar	Компоненты с открытым кодом
+Other winetricks verbs	Boshqa winetricks verblari	Другие команды winetricks
+Partial	Qisman	Частичный
+Plain Wine	Oddiy Wine	Обычный Wine
+Play	O'ynash	Играть
+Play With	Boshqacha ishga tushirish	Запустить с
+Play time	O'yin vaqti	Время в игре
+Productivity	Ish dasturlari	Работа
+Programs you run will show up here.	Ishga tushirgan dasturlaringiz shu yerda chiqadi.	Здесь появятся запущенные вами программы.
+Quick Launch…	Tezkor ishga tushirish…	Быстрый запуск…
+Quick access to recent programs, and a way to stop everything.	Oxirgi dasturlarga tezkor kirish va hammasini to'xtatish imkoni.	Быстрый доступ к недавним программам и способ остановить всё.
+Ratings come from Linux players. Expect similar, not identical, results on a Mac.	Baholar Linux o'yinchilaridan. Mac'da o'xshash, lekin aynan bir xil bo'lmagan natija kuting.	Оценки от игроков на Linux. На Mac результат будет похожим, но не таким же.
+Ray tracing (D3DMetal)	Ray tracing (D3DMetal)	Трассировка лучей (D3DMetal)
+Recently Played	Yaqinda o'ynalgan	Недавно запущенные
+Refresh Library	Kutubxonani yangilash	Обновить библиотеку
+Registry	Registr	Реестр
+Remove	Olib tashlash	Удалить
+Remove from Favorites	Sevimlilardan olib tashlash	Убрать из избранного
+Removes the bottle's access to your home folder and other drives. Programs then only see the bottle's own C: drive.	Bottle'ning uy papkangiz va boshqa disklarga kirishini olib tashlaydi. Shundan so'ng dasturlar faqat bottle'ning o'z C: diskini ko'radi.	Убирает доступ бутылки к вашей домашней папке и другим дискам. После этого программы видят только диск C: самой бутылки.
+Rename	Nomini o'zgartirish	Переименовать
+Rename Bottle	Bottle nomini o'zgartirish	Переименовать бутылку
+Reset Settings	Sozlamalarni tiklash	Сбросить настройки
+Restore	Tiklash	Восстановить
+Restore this snapshot?	Bu snapshot tiklansinmi?	Восстановить этот снимок?
+Restrict File Access…	Fayllarga kirishni cheklash…	Ограничить доступ к файлам…
+Run	Ishga tushirish	Запустить
+Run Command	Buyruq bajarish	Выполнить команду
+Run Command in %@	%@ ichida buyruq bajarish	Выполнить команду в %@
+Run Command…	Buyruq bajarish…	Выполнить команду…
+Run File	Fayl ishga tushirish	Запустить файл
+Run Windows programs and games on your Mac.	Windows dasturlari va o'yinlarini Mac'da ishlating.	Запускайте программы и игры Windows на Mac.
+Run a Windows File…	Windows faylini ishga tushirish…	Запустить файл Windows…
+Run an installer here, or drop a Windows .exe on the window.	Shu yerda o'rnatuvchini ishga tushiring yoki Windows .exe faylini oynaga tashlang.	Запустите здесь установщик или перетащите .exe в окно.
+Run the program once and its log will be here.	Dasturni bir marta ishga tushiring, logi shu yerda bo'ladi.	Запустите программу один раз, и её журнал появится здесь.
+Running	Ishlayapti	Запущено
+Running the installer	O'rnatuvchi ishlamoqda	Работает установщик
+Runtimes and fonts	Runtime'lar va shriftlar	Библиотеки и шрифты
+Same as macOS	macOS bilan bir xil	Как в macOS
+Save	Saqlash	Сохранить
+Save Snapshot	Snapshot saqlash	Сохранить снимок
+Saved	Saqlanganlar	Сохранённые
+Saving a snapshot first	Avval snapshot saqlanmoqda	Сначала сохраняется снимок
+Saving snapshot	Snapshot saqlanmoqda	Сохранение снимка
+Search programs	Dasturlarni qidirish	Поиск программ
+Section	Bo'lim	Раздел
+Select a program to see and change how it runs.	Qanday ishlashini ko'rish va o'zgartirish uchun dasturni tanlang.	Выберите программу, чтобы посмотреть и изменить параметры запуска.
+Settings	Sozlamalar	Настройки
+Settings…	Sozlamalar…	Настройки…
+Sharper picture, heavier on the GPU. Applied when you press Save.	Tasvir aniqroq, lekin GPU'ga og'irroq. "Saqlash" bosilganda qo'llanadi.	Картинка чётче, но нагрузка на GPU выше. Применяется по нажатию «Сохранить».
+Show Latest Log	Oxirgi logni ko'rsatish	Показать последний журнал
+Show in Finder	Finder'da ko'rsatish	Показать в Finder
+Show in the menu bar	Menyu satrida ko'rsatish	Показывать в строке меню
+Show or hide settings for the selection	Tanlangan narsa sozlamalarini ko'rsatish yoki yashirish	Показать или скрыть настройки выбранного
+Snapshots	Snapshot'lar	Снимки
+Snapshots…	Snapshot'lar…	Снимки…
+So that ⌘C and ⌘V work inside Windows programs.	Windows dasturlari ichida ⌘C va ⌘V ishlashi uchun.	Чтобы ⌘C и ⌘V работали в программах Windows.
+Something went wrong	Xatolik yuz berdi	Что-то пошло не так
+Statistics	Statistika	Статистика
+Stop	To'xtatish	Остановить
+Stop All	Hammasini to'xtatish	Остановить всё
+Stop All Programs	Barcha dasturlarni to'xtatish	Остановить все программы
+Stop Everything	Hammasini to'xtatish	Остановить всё
+Stop every running Windows program	Ishlayotgan barcha Windows dasturlarini to'xtatish	Остановить все запущенные программы Windows
+Storage	Xotira	Хранилище
+Synchronisation	Sinxronizatsiya	Синхронизация
+Task Manager	Vazifalar dispetcheri	Диспетчер задач
+Tasks	Vazifalar	Задачи
+Tested on this project's Mac	Shu loyihaning Mac'ida sinalgan	Проверено на Mac этого проекта
+The first bottle takes about a minute.	Birinchi bottle taxminan bir daqiqa oladi.	Первая бутылка создаётся около минуты.
+The log is empty.	Log bo'sh.	Журнал пуст.
+These bottles still use it: %@	Uni hali shu bottle'lar ishlatyapti: %@	Его ещё используют бутылки: %@
+This bottle can no longer reach files outside its own C: drive.	Bu bottle endi o'z C: diskidan tashqaridagi fayllarga kira olmaydi.	Эта бутылка больше не имеет доступа к файлам вне своего диска C:.
+This bottle is empty	Bu bottle bo'sh	Эта бутылка пуста
+This bottle uses the engine %@, which is not installed.	Bu bottle %@ dvigatelini ishlatadi, u esa o'rnatilmagan.	Эта бутылка использует движок %@, который не установлен.
+This game cannot be played online under Wine. No setting changes that.	Bu o'yinni Wine'da onlayn o'ynab bo'lmaydi. Hech qaysi sozlama buni o'zgartirmaydi.	В эту игру нельзя играть онлайн в Wine. Никакая настройка этого не изменит.
+Toggle Inspector	Inspektorni ochish/yopish	Показать или скрыть инспектор
+Tools	Asboblar	Инструменты
+Try another search.	Boshqa so'z bilan qidirib ko'ring.	Попробуйте другой запрос.
+Uninstaller	O'chirish vositasi	Удаление программ
+Updates	Yangilanishlar	Обновления
+Updates are not set up in this build: no update feed and signing key were configured. See docs/RELIZ.md.	Bu build'da yangilanish sozlanmagan: yangilanish manbai va imzo kaliti ko'rsatilmagan. docs/RELIZ.md ga qarang.	В этой сборке обновления не настроены: не заданы источник обновлений и ключ подписи. См. docs/RELIZ.md.
+Upstream Wine from the Gcenx builds. A fallback for ordinary applications.	Gcenx build'laridagi asl Wine. Oddiy dasturlar uchun zaxira variant.	Оригинальный Wine из сборок Gcenx. Запасной вариант для обычных программ.
+Utilities	Yordamchi dasturlar	Утилиты
+Verbs	Verblar	Команды
+Verifying the download	Yuklangan fayl tekshirilmoqda	Проверка загрузки
+Version	Versiya	Версия
+Version %@	Versiya %@	Версия %@
+Welcome to Ko'prik	Ko'prik'ka xush kelibsiz	Добро пожаловать в Ko'prik
+Where the software goes	Dastur qayerga o'rnatiladi	Куда устанавливается программа
+Will use	Ishlatiladi	Будет использован
+Windows processes	Windows jarayonlari	Процессы Windows
+Windows version	Windows versiyasi	Версия Windows
+Wine Config	Wine sozlamasi	Настройка Wine
+Wine engine	Wine dvigateli	Движок Wine
+Wine with CrossOver's open-source patches, DXMT and DXVK. About 480 MB to download, 1.3 GB on disk.	CrossOver'ning ochiq kodli yamoqlari, DXMT va DXVK qo'shilgan Wine. Yuklab olish taxminan 480 MB, diskda 1.3 GB.	Wine с открытыми патчами CrossOver, DXMT и DXVK. Около 480 МБ загрузки, 1,3 ГБ на диске.
+Wine with CrossOver's patches, DXMT, DXVK and MoltenVK. The only kind that can host D3DMetal. 480 MB.	CrossOver yamoqlari, DXMT, DXVK va MoltenVK qo'shilgan Wine. D3DMetal ishlay oladigan yagona tur. 480 MB.	Wine с патчами CrossOver, DXMT, DXVK и MoltenVK. Единственный вариант, на котором работает D3DMetal. 480 МБ.
+Ko'prik runs Windows software through Wine, which is free software under the LGPL. DXMT, DXVK and MoltenVK are open source. Ko'prik contains no code from CrossOver. Kernel-level anti-cheat does not work under Wine.	Ko'prik Windows dasturlarini LGPL litsenziyasidagi erkin dastur — Wine orqali ishlatadi. DXMT, DXVK va MoltenVK ochiq kodli. Ko'prik'da CrossOver kodi yo'q. Yadro darajasidagi anti-cheat Wine'da ishlamaydi.	Ko'prik запускает программы Windows через Wine — свободное ПО под лицензией LGPL. DXMT, DXVK и MoltenVK имеют открытый код. В Ko'prik нет кода CrossOver. Античит уровня ядра в Wine не работает.
+winecx-gptk engine builds	winecx-gptk dvigatel build'lari	Сборки движка winecx-gptk

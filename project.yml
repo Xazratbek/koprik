@@ -42,10 +42,10 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.utilities
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
-        NSHumanReadableCopyright: "Personal use. Wine is LGPL; see docs/KOMPONENTLAR.md."
+        NSHumanReadableCopyright: "MIT License. Wine is LGPL and is downloaded separately."
         CFBundleLocalizations: [en, uz, ru]
         CFBundleDevelopmentRegion: en
-        SUFeedURL: https://raw.githubusercontent.com/OWNER/koprik/main/appcast.xml
+        SUFeedURL: https://raw.githubusercontent.com/Xazratbek/koprik/main/appcast.xml
         SUPublicEDKey: ""
         SUEnableAutomaticChecks: false
         CFBundleURLTypes:

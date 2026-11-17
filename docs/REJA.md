@@ -26,7 +26,7 @@ Yaxshiroq bo'la olmaydigan joylar, reja bularni yashirmaydi:
 
 ### 0.1 `CROSSOVER.md` ni tasdiqlangan faktlar bilan tuzatish
 
-Plan rejimida tahrir qilib bo'lmadi, shuning uchun bu birinchi ish. Fayl: `/Users/xazratbek/programming/crossover/CROSSOVER.md`. Rasmiy saytdan 2026-11-16 da o'qilgan faktlar:
+Plan rejimida tahrir qilib bo'lmadi, shuning uchun bu birinchi ish. Fayl: `CROSSOVER.md`. Rasmiy saytdan 2026-11-16 da o'qilgan faktlar:
 
 | Band | Tuzatish |
 |---|---|

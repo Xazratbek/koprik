@@ -11,6 +11,9 @@ public enum EngineSource: Codable, Sendable, Equatable {
     case winecxGPTK(tag: String)
     /// `Gcenx/macOS_Wine_builds`: plain upstream Wine.
     case gcenx(channel: GcenxChannel, tag: String)
+    /// Ko'prik's own build (scripts/build-engine.sh), published as a release of
+    /// github.com/Xazratbek/koprik tagged `engine-v<version>`.
+    case koprik(tag: String)
     /// A Wine tree or archive supplied from disk.
     case local(path: String)
 
@@ -23,6 +26,8 @@ public enum EngineSource: Codable, Sendable, Equatable {
         switch self {
         case .winecxGPTK(let tag):
             URL(string: "https://github.com/frankea/winecx-gptk/releases/download/\(tag)/Libraries.tar.gz")
+        case .koprik(let tag):
+            URL(string: "https://github.com/Xazratbek/koprik/releases/download/\(tag)/Libraries.tar.gz")
         case .gcenx(let channel, let tag):
             URL(string: "https://github.com/Gcenx/macOS_Wine_builds/releases/download/\(tag)/wine-\(channel.rawValue)-\(tag)-osx64.tar.xz")
         case .local:
@@ -35,6 +40,8 @@ public enum EngineSource: Codable, Sendable, Equatable {
         switch self {
         case .winecxGPTK(let tag):
             URL(string: "https://github.com/frankea/winecx-gptk/releases/download/\(tag)/Libraries.tar.gz.sha256")
+        case .koprik(let tag):
+            URL(string: "https://github.com/Xazratbek/koprik/releases/download/\(tag)/Libraries.tar.gz.sha256")
         case .gcenx, .local:
             nil
         }
@@ -58,6 +65,8 @@ public enum EngineSource: Codable, Sendable, Equatable {
         switch self {
         case .winecxGPTK(let tag):
             "winecx-gptk-" + tag.replacingOccurrences(of: "runtime-v", with: "")
+        case .koprik(let tag):
+            "koprik-" + tag.replacingOccurrences(of: "engine-v", with: "")
         case .gcenx(let channel, let tag):
             "wine-\(channel.rawValue)-\(tag)"
         case .local(let path):
@@ -70,6 +79,8 @@ public enum EngineSource: Codable, Sendable, Equatable {
         switch self {
         case .winecxGPTK(let tag):
             "Wine + CrossOver patches (\(tag.replacingOccurrences(of: "runtime-v", with: "")))"
+        case .koprik(let tag):
+            "Ko'prik engine \(tag.replacingOccurrences(of: "engine-v", with: ""))"
         case .gcenx(let channel, let tag):
             "Wine \(channel.rawValue) \(tag)"
         case .local(let path):
@@ -80,8 +91,10 @@ public enum EngineSource: Codable, Sendable, Equatable {
     /// D3DMetal patches CrossOver-specific internals at load time, so it only
     /// runs on CrossOver-derived builds.
     public var d3dmetalCapable: Bool {
-        if case .winecxGPTK = self { return true }
-        return false
+        switch self {
+        case .winecxGPTK, .koprik: return true
+        case .gcenx, .local: return false
+        }
     }
 }
 
@@ -158,7 +171,10 @@ public struct Engine: Sendable, Equatable, Identifiable {
     public var defaultSettings: LaunchSettings {
         var settings = LaunchSettings()
         // MSync is a CrossOver patch; upstream Wine does not have it.
-        if case .winecxGPTK = manifest.source { settings.sync = .msync }
+        switch manifest.source {
+        case .winecxGPTK, .koprik: settings.sync = .msync
+        case .gcenx, .local: break
+        }
         return settings
     }
 }

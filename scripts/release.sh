@@ -41,7 +41,11 @@ test -d "$DERIVED/Build/Products/Release/Koprik.app" || { echo "build failed"; e
 ditto "$DERIVED/Build/Products/Release/Koprik.app" "$APP"
 
 echo "==> Signing ad hoc"
-codesign --force --deep --sign - "$APP"
+# Sign inside out. --deep would re-sign the Quick Look extension without its
+# sandbox entitlement, and macOS refuses to load an unsandboxed extension.
+codesign --force --sign - --entitlements "$ROOT/KoprikThumbnail/KoprikThumbnail.entitlements" \
+  "$APP/Contents/PlugIns/KoprikThumbnail.appex"
+codesign --force --sign - "$APP"
 codesign --verify --deep --strict "$APP"
 
 echo "==> Creating disk image"
@@ -62,7 +66,7 @@ for copy in "$APP" "$DERIVED/Build/Products/Release/Koprik.app"; do
   rm -rf "$copy"
 done
 
-SIGN_UPDATE=$(find "$ROOT/build" ~/Library/Developer/Xcode/DerivedData -name sign_update -type f -perm -u+x 2>/dev/null | head -1)
+SIGN_UPDATE=$(find "$ROOT/build" ~/Library/Developer/Xcode/DerivedData -path "*artifacts/sparkle*" -name sign_update -type f -perm -u+x 2>/dev/null | head -1)
 if [ -z "$SIGN_UPDATE" ]; then
   echo "==> Sparkle sign_update not found; skipping appcast. Build once in Xcode first."
   exit 0
@@ -73,7 +77,7 @@ if [ -z "$URL_BASE" ]; then
 fi
 
 echo "==> Signing update and writing appcast entry"
-SIGNATURE=$("$SIGN_UPDATE" "$DMG") || {
+SIGNATURE=$("$SIGN_UPDATE" --account koprik "$DMG") || {
   echo "    sign_update failed: create a key first with generate_keys (see docs/RELIZ.md)"
   exit 1
 }

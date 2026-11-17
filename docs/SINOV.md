@@ -101,6 +101,31 @@ Hal qilinmagan:
 - **Haqiqiy FPS** o'lchanmadi: o'yinni oldingi planga chiqarish foydalanuvchining ochiq oynasini almashtirib yuborardi.
 - DX12 / D3DMetal: Game Porting Toolkit import qilinmagan.
 
+### 2026-11-17 kech: FPS, kechikish, istalgan .exe
+
+**FPS va klaviatura kechikishi (Brawlhalla, 4 kishilik jang, oyna oldinda):**
+
+| Holat | FPS | Metal HUD |
+|---|---|---|
+| Boshlang'ich (foydalanuvchi o'lchagan) | 30-55 | Composited, Game Mode Off |
+| `CaptureDisplaysForFullscreen=Y` (eksklyuziv to'liq ekran) | 89-111 | **Direct**, Game Mode Off |
+| + Wine "Koprik Game.app" bundle ichidan | 88-110, menyuda 115 | **Direct, Game Mode On** |
+
+- "Direct": kadr kompozitorsiz to'g'ridan-to'g'ri ekranga chiqadi. Bir kadrlik (8-16 ms) kechikish yo'qoladi.
+- Game Mode: macOS faqat Launch Services'da `LSSupportsGameMode` li bundle sifatida tanilgan jarayonga beradi. Topilgan yo'llar: yuklovchiga joylangan plist ishlamadi (`bundleID=NULL`), symlink ham ishlamadi (Wine haqiqiy yo'lga qaytadi), hard link ham ishlamadi (`ntdll.so` topilmaydi). Ishlagan usul: `Contents/MacOS` = `x86_64-unix` ning APFS kloni, `x86_64-unix -> .` symlinki, Windows DLL papkalariga symlinklar, bundle ildizida `lib` elementlariga symlinklar. Bola jarayonlar (o'yin) ham shu yerdan ochiladi, chunki ntdll `wineloader` ni o'z papkasidan oladi.
+- GPU har kadrga 0.35-0.42 ms sarflaydi, demak 110 FPS chegarasi Adobe AIR'ning Rosetta ostidagi asosiy oqimi (protsessor). 120 Hz ekranda o'yin 9.1 ms kadr oralig'ida barqaror turadi.
+
+**Istalgan .exe (Chrome kengaytmasi ulanmagani uchun installerlar rasmiy manzillardan yuklandi):**
+
+| Dastur | Natija |
+|---|---|
+| Notion (electron-builder NSIS, 119 MB) | Avval "Notion is running" bilan to'xtagan. Sabab: Wine'ning `powershell.exe` stub'i har doim 0 qaytaradi, installer esa PowerShell'dan "ilova ishlayaptimi" deb so'raydi. Stub sukut bo'yicha o'chirildi. Jim o'rnatish 10.6 s, kutubxonada avtomatik paydo bo'ldi. DXMT'da oyna bo'sh, DXVK'da to'g'ri; Chromium/Electron ilovalari endi avtomatik DXVK oladi |
+| Zoom Workplace (182 MB) | `/silent` bilan 17 s da o'rnatildi, 9 s da ochildi, DXMT'da to'g'ri chizildi |
+
+Topilgan qo'shimcha buglar: B16 Wine `find.exe` hech qachon moslik topmaydi (bu installerlar uchun muhim emas edi); B17 XcodeGen `entitlements` faylini `properties` berilmasa bo'sh qilib qayta yozadi, natijada Quick Look kengaytmasi sandbox'siz qolib yuklanmagan; B18 `codesign --deep` kengaytma entitlement'larini o'chiradi.
+
+**Quick Look:** kengaytma ro'yxatdan o'tdi, `qlmanage -t` `.exe` uchun ikonka chizadi.
+
 ### Unumdorlik o'lchovlari
 
 | O'lchov | Qiymat |

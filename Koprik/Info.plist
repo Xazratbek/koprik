@@ -62,10 +62,10 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>MIT License. Wine is LGPL and is downloaded separately.</string>
 	<key>SUEnableAutomaticChecks</key>
-	<false/>
+	<true/>
 	<key>SUFeedURL</key>
 	<string>https://raw.githubusercontent.com/Xazratbek/koprik/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string></string>
+	<string>PPbVt5c9ObuFrgsloeiaMWI3Gcwmt5Kw6jlvZvPbuAo=</string>
 </dict>
 </plist>

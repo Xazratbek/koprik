@@ -32,7 +32,11 @@ osascript -e 'quit app "Koprik"' >/dev/null 2>&1 || true
 sleep 1
 rm -rf "$TARGET"
 ditto "$BUILT" "$TARGET"
-codesign --force --deep --sign - "$TARGET"
+# Sign inside out. --deep would re-sign the Quick Look extension without its
+# sandbox entitlement, and macOS refuses to load an unsandboxed extension.
+codesign --force --sign - --entitlements "$ROOT/KoprikThumbnail/KoprikThumbnail.entitlements" \
+  "$TARGET/Contents/PlugIns/KoprikThumbnail.appex"
+codesign --force --sign - "$TARGET"
 codesign --verify --deep --strict "$TARGET"
 
 echo "==> Unregistering build copies"

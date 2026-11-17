@@ -75,6 +75,7 @@ private extension View {
 }
 
 struct GeneralSettingsPane: View {
+    @Environment(AppModel.self) private var model
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
     @AppStorage("AppleLanguagesChoice") private var language = "system"
 
@@ -105,6 +106,25 @@ struct GeneralSettingsPane: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            if !model.whiskyBottles.isEmpty {
+                Section {
+                    ForEach(model.whiskyBottles) { bottle in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(verbatim: bottle.name)
+                                Text(verbatim: bottle.url.path).font(.caption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
+                            }
+                            Spacer()
+                            Button("Import") { model.importWhisky(bottle) }
+                        }
+                    }
+                } header: {
+                    Text("Whisky bottles")
+                } footer: {
+                    Text("Importing copies the bottle; Whisky keeps its own. On APFS the copy takes no extra space until files change.")
+                }
+            }
+
             Section("Storage") {
                 LabeledContent("Data folder") {
                     Button("Show in Finder") { NSWorkspace.shared.open(AppPaths.default.root) }
@@ -124,6 +144,7 @@ struct GeneralSettingsPane: View {
             }
         }
         .settingsPaneStyle()
+        .onAppear { model.findWhiskyBottles() }
     }
 }
 

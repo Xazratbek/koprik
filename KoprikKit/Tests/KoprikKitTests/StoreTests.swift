@@ -59,3 +59,51 @@ import Testing
         #expect(GOGStore.installedGames(in: [bottle])["1207658924"]?.lastPathComponent == "Example")
     }
 }
+
+@Suite struct WhiskyAndSavesTests {
+    @Test func readsWhiskyBottlesAndImportsACopy() async throws {
+        let scratch = try Scratch()
+        let container = scratch.root.appending(path: "Whisky", directoryHint: .isDirectory)
+        let source = container.appending(path: "Bottles/ABC", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: source.appending(path: "drive_c/windows"), withIntermediateDirectories: true)
+        try Data("REGEDIT4".utf8).write(to: source.appending(path: "system.reg"))
+        let metadata: [String: Any] = ["info": ["name": "Old Games"], "wineConfig": ["windowsVersion": "win7"]]
+        try PropertyListSerialization.data(fromPropertyList: metadata, format: .xml, options: 0)
+            .write(to: source.appending(path: "Metadata.plist"))
+        let list: [String: Any] = ["fileVersion": "1.0.0", "paths": [["relative": source.absoluteString]]]
+        try PropertyListSerialization.data(fromPropertyList: list, format: .xml, options: 0)
+            .write(to: container.appending(path: "BottleVM.plist"))
+
+        let found = WhiskyImport.bottles(container: container)
+        #expect(found.count == 1)
+        #expect(found.first?.name == "Old Games")
+        #expect(found.first?.windowsVersion == .win7)
+
+        let engine = try await scratch.installFakeEngine()
+        let imported = try await BottleStore(paths: scratch.paths).importWhisky(try #require(found.first), engine: engine)
+        #expect(imported.name == "Old Games")
+        #expect(FileManager.default.fileExists(atPath: imported.prefix.appending(path: "system.reg").path))
+        #expect(!FileManager.default.fileExists(atPath: imported.prefix.appending(path: "Metadata.plist").path))
+        #expect(FileManager.default.fileExists(atPath: source.appending(path: "Metadata.plist").path))
+    }
+
+    @Test func backsUpSavesWithoutCaches() async throws {
+        let scratch = try Scratch()
+        let bottle = Bottle(config: BottleConfig(name: "Games", engineID: "e"), directory: scratch.root.appending(path: "b"))
+        let user = bottle.driveC.appending(path: "users/player", directoryHint: .isDirectory)
+        for (path, text) in ["Saved Games/Game/slot1.sav": "save", "AppData/Local/Temp/junk.tmp": "junk"] {
+            let url = user.appending(path: path)
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try Data(text.utf8).write(to: url)
+        }
+        let tools = BottleTools(bottle: bottle, engine: sampleEngine())
+        let archive = try await tools.backupSaves(to: scratch.root.appending(path: "backups"))
+        let listing = try await ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/tar"), arguments: ["-tf", archive.path]).stdout
+        #expect(listing.contains("player/Saved Games/Game/slot1.sav"))
+        #expect(!listing.contains("junk.tmp"))
+
+        try FileManager.default.removeItem(at: user.appending(path: "Saved Games"))
+        try await tools.restoreSaves(from: archive)
+        #expect(try String(contentsOf: user.appending(path: "Saved Games/Game/slot1.sav"), encoding: .utf8) == "save")
+    }
+}

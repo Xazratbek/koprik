@@ -71,6 +71,7 @@ struct EngineCommand: AsyncParsableCommand {
             SOURCE is one of:
               gaming   Wine with CrossOver's patches (frankea/winecx-gptk). Needed for D3DMetal. About 480 MB.
               plain    Upstream Wine (Gcenx build).
+              koprik   Ko'prik's own build of the same sources (scripts/build-engine.sh).
             """
         )
 
@@ -85,8 +86,10 @@ struct EngineCommand: AsyncParsableCommand {
                 engineSource = tag.map { .winecxGPTK(tag: $0) } ?? .recommendedGaming
             case "plain":
                 engineSource = tag.map { .gcenx(channel: channel, tag: $0) } ?? .recommendedPlain
+            case "koprik":
+                engineSource = .koprik(tag: tag ?? "engine-v0.1.0")
             default:
-                throw ValidationError("Unknown source \"\(source)\". Use gaming or plain.")
+                throw ValidationError("Unknown source \"\(source)\". Use gaming, plain or koprik.")
             }
 
             print("Installing \(engineSource.displayName)")

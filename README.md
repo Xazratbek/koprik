@@ -20,11 +20,15 @@ It is not affiliated with CodeWeavers. It contains no CrossOver code: the engine
 - **Library.** Programs are found automatically from Start Menu shortcuts and Steam's manifests, with real icons from the `.exe` and Steam cover art. Favourites, recently played and play time.
 - **Per-program settings.** Graphics backend, sync mode, HUDs, AVX, ray tracing, environment variables, DLL overrides and arguments can be set for each program, not just each bottle. Settings stack: engine defaults, then the bottle, then the program, then a one-off "Play With".
 - **Graphics.** DXMT (Direct3D 10/11 to Metal), DXVK (Direct3D to Vulkan over MoltenVK), wined3d, and Apple's D3DMetal once you import the Game Porting Toolkit. "Auto" reads the program's import table to pick one and shows why.
+- **Smooth, low-latency games.** Wine runs inside an app bundle that macOS recognises as a game, so Game Mode turns on in full screen, and full-screen games get the display to themselves instead of going through the compositor. On an M2 Pro, Brawlhalla went from 30-55 to 90-115 FPS in a four-player match, with less input lag. Per-program frame rate caps and MetalFX upscaling (DXMT) are one click away.
 - **Steam that works.** Steam's interface is drawn on DXVK, the only backend it renders correctly with. Games are started directly with their own backend placed in the game folder, so a game can use DXMT while Steam keeps running. The Steam overlay, which crashes under Wine and takes the client down with it, is switched off.
+- **Any Windows program.** Drop an `.exe`, `.msi` or installer on the window. Electron apps (Notion, Discord, Slack, ...) install and run: Ko'prik works around Wine's PowerShell stub that makes their installers stop with "app is running", and draws them on DXVK, where they render. Tested with Notion and Zoom.
+- **Epic Games and GOG without their launchers.** Sign in, browse your library, install into a bottle and play, through [legendary](https://github.com/derrod/legendary) and [heroic-gogdl](https://github.com/Heroic-Games-Launcher/heroic-gogdl).
 - **Installing software.** Unattended recipes for Steam, Epic Games Launcher, GOG Galaxy, Battle.net, EA app, Ubisoft Connect, Rockstar and 7-Zip; a winetricks picker for runtimes and fonts. A snapshot is taken first, so an install that goes wrong can be undone.
 - **Compatibility.** ProtonDB ratings and anti-cheat status from [AreWeAntiCheatYet](https://areweanticheatyet.com) are shown before you spend an hour downloading a game that cannot run.
 - **Diagnostics.** A log analyser recognises common failures (missing runtimes, .NET, DirectX 12 without D3DMetal, AVX, anti-cheat) and offers the fix.
-- **macOS integration.** One window, a menu bar item, `.app` launchers for the Dock and Spotlight, `koprik://` links, English, Uzbek and Russian.
+- **macOS integration.** One window, a menu bar item, `.app` launchers for the Dock and Spotlight, Shortcuts and Siri actions ("Play … in Ko'prik"), `koprik://` links, Quick Look icons for `.exe` files in Finder, a controller tester, save-game backups, import from Whisky, English, Uzbek and Russian.
+- **Updates.** The app updates itself with Sparkle; engines and components update separately and never touch a bottle that works.
 - **Command line.** Everything the app does is available from `koprik`.
 
 ## How it compares with CrossOver
@@ -37,9 +41,14 @@ It is not affiliated with CodeWeavers. It contains no CrossOver code: the engine
 | Graphics backend | Per bottle | Per program |
 | Snapshots and rollback | No | Yes, automatic before installs |
 | Steam games with their own backend | No | Yes |
+| Epic and GOG games without their launchers | No | Yes |
+| Frame rate cap and MetalFX upscaling per program | No | Yes |
+| Shortcuts, Quick Look, controller tester, save backups | No | Yes |
 | Anti-cheat warning before download | No | Yes |
 | Install recipes | Thousands, tested by staff | A handful, plus winetricks |
 | Support | Paid staff | None |
+
+Building the engine yourself: `scripts/build-engine.sh` builds Wine with CrossOver's patches from source and packages it in the layout Ko'prik installs; `.github/workflows/build-engine.yml` runs it on GitHub's Apple silicon runners and publishes `engine-v*` releases, which `koprik engine install koprik` installs.
 
 Ko'prik cannot do what no Wine-based tool can: games with kernel-level anti-cheat (Valorant, Fortnite, Call of Duty and others) do not run.
 
@@ -100,7 +109,7 @@ Run the tests with `cd KoprikKit && swift test`.
 
 ## Status
 
-Ko'prik is young and was built for one person's Mac first. Tested so far on an M2 Pro with macOS 27: Notepad, silent 7-Zip install, the Steam client (sign-in, store, library, downloads) and Brawlhalla on DXMT, DXVK and wined3d. See [docs/SINOV.md](docs/SINOV.md) for results and measurements. DirectX 12 through D3DMetal has not been tested yet.
+Ko'prik is young and was built for one person's Mac first. Tested so far on an M2 Pro with macOS 27: Notepad, silent 7-Zip install, the Steam client (sign-in, store, library, downloads), Brawlhalla on DXMT, DXVK and wined3d with Game Mode on, Notion and Zoom. See [docs/SINOV.md](docs/SINOV.md) for results and measurements. DirectX 12 through D3DMetal has not been tested yet.
 
 ## Credits and licences
 

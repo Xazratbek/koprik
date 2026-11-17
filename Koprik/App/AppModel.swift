@@ -53,6 +53,7 @@ enum SidebarItem: Hashable {
     case activity
     case settings
     case store(StoreGame.Store)
+    case controllers
 }
 
 /// Something long-running the user started: a download or an installation.
@@ -119,8 +120,50 @@ final class AppModel {
     var selectionShowsPrograms: Bool {
         switch sidebarSelection {
         case .library, .bottle, nil: true
-        case .install, .activity, .settings, .store: false
+        case .install, .activity, .settings, .store, .controllers: false
         }
+    }
+
+    // MARK: Whisky and saves
+
+    var whiskyBottles: [WhiskyBottle] = []
+
+    func findWhiskyBottles() {
+        let known = Set(bottles.map(\.config.notes))
+        whiskyBottles = WhiskyImport.bottles().filter { bottle in !known.contains { $0.contains(bottle.url.path) } }
+    }
+
+    func importWhisky(_ source: WhiskyBottle) {
+        guard let engine = preferredEngine else { return }
+        runTask(title: String(localized: "Importing from Whisky"), detail: source.name) { [bottleStore] _ in
+            _ = try await bottleStore.importWhisky(source, engine: engine)
+        } completion: { [weak self] in
+            await self?.reload()
+            self?.findWhiskyBottles()
+        }
+    }
+
+    static var backupsFolder: URL {
+        FileManager.default.homeDirectoryForCurrentUser.appending(path: "Documents/Koprik Backups", directoryHint: .isDirectory)
+    }
+
+    func backUpSaves(of bottle: Bottle) {
+        guard let engine = engine(for: bottle) else { return }
+        runTask(title: String(localized: "Backing up saves"), detail: bottle.name) { _ in
+            let archive = try await BottleTools(bottle: bottle, engine: engine).backupSaves(to: Self.backupsFolder)
+            await MainActor.run { NSWorkspace.shared.activateFileViewerSelecting([archive]) }
+        } completion: {}
+    }
+
+    func restoreSaves(of bottle: Bottle) {
+        guard let engine = engine(for: bottle) else { return }
+        let panel = NSOpenPanel()
+        panel.directoryURL = Self.backupsFolder
+        panel.title = String(localized: "Choose a saves backup")
+        guard panel.runModal() == .OK, let archive = panel.url else { return }
+        runTask(title: String(localized: "Restoring saves"), detail: bottle.name) { _ in
+            try await BottleTools(bottle: bottle, engine: engine).restoreSaves(from: archive)
+        } completion: {}
     }
 
     // MARK: Stores

@@ -123,6 +123,8 @@ struct SidebarView: View {
                 Label("Activity", systemImage: "waveform.path.ecg")
                     .badge(model.activeTaskCount)
                     .tag(SidebarItem.activity)
+                Label("Controllers", systemImage: "gamecontroller")
+                    .tag(SidebarItem.controllers)
                 Label("Settings", systemImage: "gearshape")
                     .tag(SidebarItem.settings)
             }
@@ -144,6 +146,8 @@ struct BottleMenu: View {
         Divider()
         Button("Open C: Drive", systemImage: "externaldrive") { NSWorkspace.shared.open(bottle.driveC) }
         Button("Snapshots…", systemImage: "clock.arrow.circlepath") { model.sheet = .snapshots(bottle) }
+        Button("Back Up Saves", systemImage: "externaldrive.badge.timemachine") { model.backUpSaves(of: bottle) }
+        Button("Restore Saves…", systemImage: "arrow.uturn.backward.circle") { model.restoreSaves(of: bottle) }
         Button("Duplicate", systemImage: "plus.square.on.square") { Task { await model.duplicate(bottle) } }
         Divider()
         Button("Stop All Programs", systemImage: "stop.circle") { Task { await model.stopAll(in: bottle) } }
@@ -174,6 +178,8 @@ struct DetailView: View {
             SettingsPage()
         case .store(let store):
             StoreView(store: store)
+        case .controllers:
+            ControllersView()
         }
     }
 

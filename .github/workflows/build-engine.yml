@@ -1,0 +1,51 @@
+name: Build engine
+
+# Builds Ko'prik's own Wine engine (scripts/build-engine.sh) on a GitHub-hosted
+# Apple silicon runner and attaches it to a release tagged engine-v<version>.
+# Started by hand from the Actions tab; a full build takes hours.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Engine version (becomes the release tag engine-v<version>)
+        required: true
+        default: 0.1.0
+      winecx_commit:
+        description: dappermint/winecx commit to build
+        required: true
+        default: 9f3f6447844add700bc0dde650e4f398fd5f69ab
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        env:
+          WINECX_COMMIT: ${{ inputs.winecx_commit }}
+          RUNTIME_VERSION: ${{ inputs.version }}
+        run: scripts/build-engine.sh "$RUNNER_TEMP/engine"
+
+      - name: Keep the build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-build-logs
+          path: ${{ runner.temp }}/engine/work/build/config.log
+          if-no-files-found: ignore
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "engine-v${{ inputs.version }}" \
+            "$RUNNER_TEMP/engine/Libraries.tar.gz" \
+            "$RUNNER_TEMP/engine/Libraries.tar.gz.sha256" \
+            --title "Engine ${{ inputs.version }}" \
+            --notes "Wine 11.19 with CrossOver 26.3 patches (dappermint/winecx@${{ inputs.winecx_commit }}), DXMT 0.80, DXVK 1.10.3. Built by .github/workflows/build-engine.yml."

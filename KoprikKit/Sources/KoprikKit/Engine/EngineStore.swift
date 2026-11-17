@@ -191,7 +191,7 @@ public actor EngineStore {
         var found: URL?
         for case let url as URL in enumerator {
             if enumerator.level > 3 { enumerator.skipDescendants(); continue }
-            if url.lastPathComponent == "WhiskyWineVersion.plist" { found = url; break }
+            if ["WhiskyWineVersion.plist", "KoprikEngine.plist"].contains(url.lastPathComponent) { found = url; break }
         }
         guard let found,
               let data = try? Data(contentsOf: found),
@@ -201,7 +201,9 @@ public actor EngineStore {
         var components: [String: String] = [:]
         if let dxvk = plist["dxvkVersion"] as? String { components["dxvk"] = dxvk }
         if let dxmt = plist["dxmtVersion"] as? String { components["dxmt"] = dxmt }
-        if let version = plist["version"] as? [String: Any],
+        if let version = plist["version"] as? String {
+            components["runtime"] = version
+        } else if let version = plist["version"] as? [String: Any],
            let major = version["major"] as? Int, let minor = version["minor"] as? Int, let patch = version["patch"] as? Int {
             components["runtime"] = "\(major).\(minor).\(patch)"
         }

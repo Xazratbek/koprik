@@ -433,3 +433,24 @@ import Testing
         #expect(Launcher.mainExecutable(ofSteamGameAt: game)?.lastPathComponent == "Brawlhalla.exe")
     }
 }
+
+@Suite struct ChromiumArgumentTests {
+    @Test func electronAppsGetTheirGPUInProcess() throws {
+        let scratch = try Scratch()
+        let app = scratch.root.appending(path: "Notion", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: app, withIntermediateDirectories: true)
+        for file in ["Notion.exe", "resources.pak", "snapshot_blob.bin"] {
+            try Data().write(to: app.appending(path: file))
+        }
+        let exe = app.appending(path: "Notion.exe")
+        #expect(Launcher.chromiumArguments(for: exe, ["notion://x"]) == ["--in-process-gpu", "notion://x"])
+        #expect(Launcher.chromiumArguments(for: exe, ["--in-process-gpu"]) == ["--in-process-gpu"])
+    }
+
+    @Test func otherProgramsKeepTheirArguments() throws {
+        let scratch = try Scratch()
+        let exe = scratch.root.appending(path: "game.exe")
+        try Data().write(to: exe)
+        #expect(Launcher.chromiumArguments(for: exe, ["-windowed"]) == ["-windowed"])
+    }
+}

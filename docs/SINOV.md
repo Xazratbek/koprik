@@ -151,6 +151,21 @@ Topilgan qo'shimcha buglar: B16 Wine `find.exe` hech qachon moslik topmaydi (bu 
 
 Topilgan: B20 Seatbelt `/var` emas `/private/var` ni solishtiradi (profil yo'llari `realpath` dan o'tkaziladi); B21 sandbox'da yo'llar uchun metama'lumot o'qish ruxsati kerak, aks holda `could not load ntdll.so`; B22 `install.sh` ishlab turgan ilovani yopolmagan, eski kod havolalarga javob bergan.
 
+**Notion: xira matn va sichqoncha/klaviatura kechikishi (2026-11-17).** Matn xira edi: Wine 1x chizar, macOS uni Retina ekranga 2x cho'zardi. Bottle'lar endi sukut bo'yicha `RetinaMode=Y`, `LogPixels=192` va shrift silliqlash bilan ishlaydi (`BottleConfig.highResolution`, bottle ishga tushganda qo'llanadi).
+
+Kechikish ScreenCaptureKit o'lchagichi bilan o'lchandi: sichqoncha yon paneldagi qator ustiga olib borilgan paytdan hover rangi ekranda paydo bo'lguncha (12 urinish; 1 s dan oshganlari "qayd etilmagan" deb hisoblangan). Bottle nusxasida, foydalanuvchi ma'lumoti o'zgartirilmagan:
+
+| Sozlama | Qayd etilgan | Median |
+|---|---|---|
+| DXVK, 1x | 5/12 va 8/12 (qolganlari 0.6-1 s+) | 32-41 ms |
+| DXVK, Retina | 1/10 - 5/10 | o'lchab bo'lmaydi |
+| `--disable-gpu` (dasturiy chizish) | 3/10 | 546+ ms |
+| DXVK `maxFrameLatency=1` | 10/12 | 49 ms |
+| `--in-process-gpu` | **12/12** | **38 ms** (20-61) |
+| `--in-process-gpu` + Retina | **12/12** | **38 ms** (26-56) |
+
+B24: Chromium GPU jarayoni bilan pipe orqali gaplashadi, Wine'da har xabar wineserver orqali o'tadi va ba'zilari bir soniyadan ko'p kutadi. Ko'prik endi Chromium/Electron dasturlariga `--in-process-gpu` beradi (`Launcher.chromiumArguments`). Foydalanuvchining o'z Notion'ida: 12/12, median 38 ms.
+
 ### Unumdorlik o'lchovlari
 
 | O'lchov | Qiymat |

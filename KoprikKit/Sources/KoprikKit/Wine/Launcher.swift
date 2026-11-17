@@ -173,7 +173,7 @@ public struct Launcher: Sendable {
         var workingDirectory: URL?
         switch target {
         case .file(let url, let extra):
-            arguments = WineRunner.startArguments(for: url, programArguments: extra, wait: wait)
+            arguments = WineRunner.startArguments(for: url, programArguments: Self.chromiumArguments(for: url, extra), wait: wait)
             workingDirectory = url.deletingLastPathComponent()
         case .command(let name, let extra):
             arguments = [name] + extra
@@ -183,7 +183,7 @@ public struct Launcher: Sendable {
                 guard let url = program.executableURL(in: bottle) else {
                     throw KoprikError.invalidArgument("Cannot locate \(program.location) in the bottle.")
                 }
-                arguments = WineRunner.startArguments(for: url, programArguments: program.arguments, wait: wait)
+                arguments = WineRunner.startArguments(for: url, programArguments: Self.chromiumArguments(for: url, program.arguments), wait: wait)
                 workingDirectory = url.deletingLastPathComponent()
             case .epic, .gog:
                 guard let storeLaunch else {
@@ -412,6 +412,17 @@ public struct Launcher: Sendable {
         let manager = FileManager.default
         let markers = ["chrome_100_percent.pak", "resources.pak", "libEGL.dll", "resources/app.asar", "snapshot_blob.bin"]
         return markers.filter { manager.fileExists(atPath: folder.appending(path: $0).path) }.count >= 2
+    }
+
+    /// Arguments for a Chromium or Electron app, with its GPU work moved into
+    /// the browser process. Chromium normally talks to a separate GPU process
+    /// through pipes, and under Wine every message goes through wineserver;
+    /// measured on Notion, a third of mouse hovers then took over a second to
+    /// show, and with `--in-process-gpu` all of them showed in 20-60 ms
+    /// (docs/SINOV.md, B24). Other executables get their arguments unchanged.
+    static func chromiumArguments(for executable: URL, _ arguments: [String]) -> [String] {
+        guard isChromiumApp(executable), !arguments.contains("--in-process-gpu") else { return arguments }
+        return ["--in-process-gpu"] + arguments
     }
 
     /// Executables of launchers whose interface is a Chromium view.

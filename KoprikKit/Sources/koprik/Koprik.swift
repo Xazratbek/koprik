@@ -87,7 +87,7 @@ struct EngineCommand: AsyncParsableCommand {
             case "plain":
                 engineSource = tag.map { .gcenx(channel: channel, tag: $0) } ?? .recommendedPlain
             case "koprik":
-                engineSource = .koprik(tag: tag ?? "engine-v0.1.0")
+                if let tag { engineSource = .koprik(tag: tag) } else { engineSource = await EngineSource.latestKoprik() }
             default:
                 throw ValidationError("Unknown source \"\(source)\". Use gaming, plain or koprik.")
             }

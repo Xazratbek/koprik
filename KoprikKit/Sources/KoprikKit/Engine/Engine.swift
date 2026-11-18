@@ -21,6 +21,22 @@ public enum EngineSource: Codable, Sendable, Equatable {
     public static let recommendedGaming = EngineSource.winecxGPTK(tag: "runtime-v4.8.3")
     /// A plain Wine build for ordinary applications and as a fallback.
     public static let recommendedPlain = EngineSource.gcenx(channel: .devel, tag: "11.21")
+    /// The newest Ko'prik engine known when this version was released.
+    public static let knownKoprikTag = "engine-v0.1.1"
+
+    /// The newest `engine-v*` release of Ko'prik's own engine, asked from
+    /// GitHub; the known tag if GitHub cannot be reached.
+    public static func latestKoprik() async -> EngineSource {
+        let url = URL(string: "https://api.github.com/repos/Xazratbek/koprik/releases?per_page=30")!
+        var request = URLRequest(url: url, timeoutInterval: 15)
+        request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        struct Release: Decodable { let tag_name: String; let draft: Bool; let prerelease: Bool }
+        guard let (data, _) = try? await URLSession.shared.data(for: request),
+              let releases = try? JSONDecoder().decode([Release].self, from: data),
+              let newest = releases.first(where: { $0.tag_name.hasPrefix("engine-v") && !$0.draft && !$0.prerelease })
+        else { return .koprik(tag: knownKoprikTag) }
+        return .koprik(tag: newest.tag_name)
+    }
 
     public var archiveURL: URL? {
         switch self {

@@ -202,7 +202,7 @@ public actor ProgramStore {
 
         for shortcut in startMenuShortcuts(in: bottle) {
             guard let link = ShellLink(url: shortcut), let target = link.targetPath else { continue }
-            let name = shortcut.deletingPathExtension().lastPathComponent
+            let name = displayName(fromShortcut: shortcut.deletingPathExtension().lastPathComponent)
             let lowered = name.lowercased()
             guard target.lowercased().hasSuffix(".exe"),
                   !noiseWords.contains(where: lowered.contains),
@@ -211,7 +211,11 @@ public actor ProgramStore {
                   FileManager.default.fileExists(atPath: host.path) else { continue }
 
             let id = Program.identifier(forExecutableAt: target)
-            guard found[id] == nil else { continue }
+            // Several shortcuts to one program (Start Menu, Desktop): keep the plainest name.
+            if let existing = found[id] {
+                if name.count < existing.name.count { found[id]?.name = name }
+                continue
+            }
             let arguments = link.arguments.map(splitArguments) ?? []
             found[id] = Program(id: id, name: name, location: target, arguments: arguments)
         }
@@ -257,6 +261,18 @@ public actor ProgramStore {
             }
         }
         return shortcuts
+    }
+
+    /// A shortcut name without the verb installers put in front of it:
+    /// "Start game Need for Speed" becomes "Need for Speed".
+    static func displayName(fromShortcut name: String) -> String {
+        let verbs = ["start game ", "play game ", "launch game ", "run game ", "start ", "play ", "launch ",
+                     "запустить игру ", "запуск игры ", "играть в "]
+        let lowered = name.lowercased()
+        for verb in verbs where lowered.hasPrefix(verb) && name.count > verb.count + 2 {
+            return String(name.dropFirst(verb.count))
+        }
+        return name
     }
 
     /// Splits a Windows command line into arguments, honouring double quotes.

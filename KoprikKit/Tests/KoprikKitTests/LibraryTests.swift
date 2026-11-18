@@ -466,3 +466,12 @@ import Testing
         #expect(!Launcher.isOwnFolder(URL(fileURLWithPath: "/Volumes"), home: home))
     }
 }
+
+@Suite struct ShortcutNameTests {
+    @Test func dropsTheVerbInstallersPutInFront() {
+        #expect(ProgramStore.displayName(fromShortcut: "Start game Need for Speed - Most Wanted") == "Need for Speed - Most Wanted")
+        #expect(ProgramStore.displayName(fromShortcut: "Play Brawlhalla") == "Brawlhalla")
+        #expect(ProgramStore.displayName(fromShortcut: "Startup Manager") == "Startup Manager")
+        #expect(ProgramStore.displayName(fromShortcut: "Notepad++") == "Notepad++")
+    }
+}

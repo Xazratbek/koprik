@@ -18,3 +18,5 @@ xcuserdata/
 build/
 scripts/dx12-test/*.exe
 scripts/dx12-test/*.log
+scripts/input-test/*.exe
+scripts/input-test/*.log

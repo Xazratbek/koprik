@@ -232,7 +232,7 @@ struct LaunchSettingsRows: View {
         }
         .help("The language and character set the program sees. Change it if text shows as garbage such as \"Ïðîâåðêà\".")
 
-        OptionalToggle("Metal performance HUD", value: $settings.metalHUD)
+        OptionalToggle("Metal performance HUD", value: $settings.metalHUD, help: "Shows the frame rate. Apple's HUD takes the D key away from the game while it is on, so use it to measure, not to play.")
         Picker("DXVK HUD", selection: $settings.dxvkHUD) {
             Text(inheritLabel(inherited?.dxvkHUD?.rawValue.capitalized ?? "Off")).tag(DXVKHud?.none)
             Divider()

@@ -2193,6 +2193,22 @@
         }
       }
     },
+    "Metal Performance HUD (takes the D key)": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metal Performance HUD (D tugmasini egallaydi)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metal Performance HUD (занимает клавишу D)"
+          }
+        }
+      }
+    },
     "Metal performance HUD": {
       "localizations": {
         "uz": {
@@ -3533,6 +3549,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показать или скрыть настройки выбранного"
+          }
+        }
+      }
+    },
+    "Shows the frame rate. Apple's HUD takes the D key away from the game while it is on, so use it to measure, not to play.": {
+      "localizations": {
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FPS'ni ko'rsatadi. Apple HUD'i yoqiq turganda D tugmasini o'yindan oladi, shuning uchun uni o'yin uchun emas, o'lchash uchun ishlating."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывает частоту кадров. Пока HUD Apple включён, он забирает у игры клавишу D, поэтому используйте его для замеров, а не для игры."
           }
         }
       }

@@ -172,7 +172,9 @@ struct ProgramMenu: View {
                 Button(backend.displayName) { model.launch(item, overrides: LaunchSettings(backend: backend)) }
             }
             Divider()
-            Button("Metal Performance HUD") { model.launch(item, overrides: LaunchSettings(metalHUD: true)) }
+            // Apple's HUD adds a menu shortcut that macOS turns into the plain D
+            // key, which then never reaches the game (docs/SINOV.md, B32).
+            Button("Metal Performance HUD (takes the D key)") { model.launch(item, overrides: LaunchSettings(metalHUD: true)) }
             Button("DXVK Frame Rate HUD") { model.launch(item, overrides: LaunchSettings(dxvkHUD: .fps)) }
         }
         Divider()

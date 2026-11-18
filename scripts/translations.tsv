@@ -269,3 +269,5 @@ The language and character set the program sees. Change it if text shows as garb
 Automatic	Avtomatik	Автоматически
 On	Yoqiq	Вкл.
 Sharp text at the display's full resolution. Automatic turns it on for programs and off for games, whose full screen breaks with it.	Ekranning to'liq aniqligida tiniq matn. Avtomatik rejim dasturlar uchun yoqadi, o'yinlar uchun o'chiradi, chunki u o'yinlarning to'liq ekranini buzadi.	Чёткий текст в полном разрешении экрана. «Автоматически» включает для программ и выключает для игр: у них ломается полноэкранный режим.
+Metal Performance HUD (takes the D key)	Metal Performance HUD (D tugmasini egallaydi)	Metal Performance HUD (занимает клавишу D)
+Shows the frame rate. Apple's HUD takes the D key away from the game while it is on, so use it to measure, not to play.	FPS'ni ko'rsatadi. Apple HUD'i yoqiq turganda D tugmasini o'yindan oladi, shuning uchun uni o'yin uchun emas, o'lchash uchun ishlating.	Показывает частоту кадров. Пока HUD Apple включён, он забирает у игры клавишу D, поэтому используйте его для замеров, а не для игры.
